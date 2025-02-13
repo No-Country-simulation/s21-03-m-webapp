@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: 'Mewsa 360',
+	title: 'Mesa 360',
 	description: 'El POS para tu restaurante mas fachero!',
 };
 
