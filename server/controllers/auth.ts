@@ -35,7 +35,7 @@ export const register = async (req: Request, res: Response) => {
 
                 res.status(200).json({
                     msg: 'Usuario Creado Correctamente',
-                    user: { id: user._id, name },
+                    user: { id: user._id, name, email: user.email, role: user.role },
                     token
                 });
             });
@@ -59,7 +59,7 @@ export const currentUser = async (req: AuthRequest, res: Response) => {
                 (err: any, token: string) => {
                     if (err) throw err;
                     res.status(200).json({
-                        user: { id: user._id, name: user.name },
+                        user: { id: user._id, name: user.name, email: user.email, role: user.role },
                         token
                     });
                 });
@@ -96,7 +96,7 @@ export const login = async (req: Request, res: Response) => {
                 (err: any, token: string) => {
                     if (err) throw err;
                     res.status(200).json({
-                        user: { id: user._id, name: user.name },
+                        user: { id: user._id, name: user.name, email: user.email, role: user.role },
                         token
                     });
                 });
