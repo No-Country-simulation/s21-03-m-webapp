@@ -1,7 +1,6 @@
-import { LoginForm } from "@/components/library/forms";
+import { LoginForm } from '@/components/library/forms';
 
 const LoginPage = () => {
-	
 	return (
 		<div>
 			<LoginForm />
