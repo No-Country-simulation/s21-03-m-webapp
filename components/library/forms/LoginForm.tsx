@@ -33,17 +33,17 @@ const LoginForm = () => {
 	}
 
 	return (
-		<div className="max-w-[550px]">
+		<div className="max-w-[550px] h-full">
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
 					<FormField
 						control={form.control}
-						name="username"
+						name="email"
 						render={() => (
 							<FormItem>
 								<FormLabel>Email</FormLabel>
 								<FormControl>
-									<Input {...form.register('username')} disabled={isPending} />
+									<Input {...form.register('email')} disabled={isPending} />
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -56,7 +56,7 @@ const LoginForm = () => {
 							<FormItem>
 								<FormLabel>Password</FormLabel>
 								<FormControl>
-									<Input {...form.register('password')} disabled={isPending} />
+									<Input {...form.register('password')} disabled={isPending} type="password" />
 								</FormControl>
 								<FormMessage />
 							</FormItem>
