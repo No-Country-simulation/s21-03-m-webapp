@@ -33,7 +33,7 @@ const HomePage = () => {
 			{/* Sección de Beneficios */}
 			<div className="flex flex-col items-center gap-[2rem] sm:gap-[5rem]">
 				<div className="w-full max-w-6xl mt-16 flex flex-col items-center gap-10">
-					<h2 className="text-3xl font-semibold">¿Por qué elegir Mesa 360?</h2>
+					<h2 className="text-3xl font-semibold text-center">¿Por qué elegir Mesa 360?</h2>
 					<div className="flex flex-col md:flex-row gap-8 justify-center">
 						{/* Tarjeta 1 */}
 						<div className="max-w-sm p-6 bg-card text-card-foreground rounded-md shadow-md">
