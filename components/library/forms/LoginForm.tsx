@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
+import { Button } from '../../ui/button';
 
 const LoginForm = () => {
 	const form = useForm<LoginFormData>({
@@ -47,6 +48,7 @@ const LoginForm = () => {
 							</FormItem>
 						)}
 					></FormField>
+					<Button type="submit">Submit</Button>
 				</form>
 			</Form>
 		</div>
