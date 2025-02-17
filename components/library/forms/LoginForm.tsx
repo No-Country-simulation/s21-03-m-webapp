@@ -1,35 +1,49 @@
 'use client';
 
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { LoginFormData, loginFormDefaultValues, loginSchema } from '@/schemas/authenticationSchema';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
+import { useLoginUser } from '../../../actions/hooks/useLoginUser';
+import { useTransition } from 'react';
 import { Button } from '../../ui/button';
 
 const LoginForm = () => {
+	const [isPending, startTransition] = useTransition();
+	const { mutate: login } = useLoginUser();
+
 	const form = useForm<LoginFormData>({
 		resolver: zodResolver(loginSchema),
 		defaultValues: loginFormDefaultValues,
 		mode: 'onBlur',
 	});
+
 	function onSubmit(values: LoginFormData) {
-		console.log(values);
+		startTransition(() => {
+			login(values, {
+				onError: (error) => {
+					form.setError('root', {
+						type: 'manual',
+						message: error.message,
+					});
+				},
+			});
+		});
 	}
+
 	return (
-		<div>
+		<div className="max-w-[550px] h-full">
 			<Form {...form}>
-				<form className='space-y-4' 
-				onSubmit={form.handleSubmit(onSubmit)}>
+				<form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
 					<FormField
 						control={form.control}
-						name="username"
+						name="email"
 						render={() => (
 							<FormItem>
 								<FormLabel>Email</FormLabel>
 								<FormControl>
-									<Input {...form.register('username')} />
+									<Input {...form.register('email')} disabled={isPending} />
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -42,7 +56,7 @@ const LoginForm = () => {
 							<FormItem>
 								<FormLabel>Password</FormLabel>
 								<FormControl>
-									<Input {...form.register('password')} />
+									<Input {...form.register('password')} disabled={isPending} type="password" />
 								</FormControl>
 								<FormMessage />
 							</FormItem>

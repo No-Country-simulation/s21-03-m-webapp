@@ -2,7 +2,7 @@ import { LoginForm } from '@/components/library/forms';
 
 const LoginPage = () => {
 	return (
-		<div>
+		<div className="w-full min-h-dvh">
 			<LoginForm />
 		</div>
 	);
