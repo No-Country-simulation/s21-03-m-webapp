@@ -1,2 +1,2 @@
 export { default as useDogStore } from './useDogStore';
-export { default as useBearStore } from './useBearStore';
+export { default as useAuthenticationStore } from './useAuthenticationStore';

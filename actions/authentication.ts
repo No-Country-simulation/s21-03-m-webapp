@@ -7,7 +7,6 @@ import public_api from './api/public_api';
 export async function loginUser(body: LoginFormData): Promise<AuthenticationResponse> {
 	try {
 		const response = await public_api.post<AuthenticationResponse>(`${LOGIN_URL}`, body);
-		console.log(response);
 		return response.data;
 	} catch (error) {
 		if (axios.isAxiosError(error) && error.response) {

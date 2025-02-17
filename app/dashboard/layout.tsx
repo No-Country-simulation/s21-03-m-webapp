@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { VerticalContainer, Container } from '../../components/library/structure';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
 	return (
@@ -11,7 +12,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 					<Link href={'/'}>Salir</Link>
 				</div>
 			</nav>
-			{children}
+			<VerticalContainer escape={'all'}>
+				<Container>{children}</Container>
+			</VerticalContainer>
 		</div>
 	);
 }
