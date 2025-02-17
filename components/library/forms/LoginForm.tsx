@@ -19,7 +19,8 @@ const LoginForm = () => {
 	return (
 		<div>
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)}>
+				<form className='space-y-4' 
+				onSubmit={form.handleSubmit(onSubmit)}>
 					<FormField
 						control={form.control}
 						name="username"
