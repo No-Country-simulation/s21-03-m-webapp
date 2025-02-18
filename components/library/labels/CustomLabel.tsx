@@ -1,5 +1,4 @@
 import { cva, VariantProps } from 'class-variance-authority';
-import { Label } from '../../ui/label';
 import { cn } from '../../../lib/utils';
 
 interface Props extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof labelVariants> {

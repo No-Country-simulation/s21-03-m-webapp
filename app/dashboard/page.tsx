@@ -3,7 +3,7 @@
 import { useAuthenticationStore } from '../../store';
 
 const DashboardPage = () => {
-	const { user, token } = useAuthenticationStore();
+	const { user } = useAuthenticationStore();
 
 	return <div>Dashboard de: {user?.name}</div>;
 };
