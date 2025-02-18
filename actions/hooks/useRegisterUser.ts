@@ -1,15 +1,15 @@
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
-import { loginUser } from '../../actions/authentication';
 import { DASHBOARD_ROUTES } from '../../constants/routes';
+import { RegisterUser } from '../authentication';
 import { useAuth } from '../../context/AuthenticationContext';
 
-export function useLoginUser() {
+export function useRegisterUser() {
 	const router = useRouter();
 	const { updateToken } = useAuth();
 
 	return useMutation({
-		mutationFn: loginUser,
+		mutationFn: RegisterUser,
 		onSuccess: (response) => {
 			updateToken(response.token);
 			router.push(DASHBOARD_ROUTES.DASHBOARD);

@@ -6,3 +6,4 @@ export const SERVER_ERROR = 'Intente mas tarde.';
 
 // Authentication
 export const LOGIN_URL = '/auth/login';
+export const REGISTER_URL = '/auth/register';

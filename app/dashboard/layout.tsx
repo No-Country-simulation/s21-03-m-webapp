@@ -2,13 +2,13 @@
 
 import Link from 'next/link';
 import { VerticalContainer, Container } from '../../components/library/structure';
-import { useAuthenticationStore } from '../../store/providers/authentication-store-provider';
 import { useRouter } from 'next/navigation';
 import { DASHBOARD_ROUTES, WEBSITE_ROUTES } from '../../constants/routes';
+import { useAuth } from '../../context/AuthenticationContext';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
 	const router = useRouter();
-	const { logout } = useAuthenticationStore((state) => state);
+	const { logoutUser } = useAuth();
 
 	return (
 		<div>
@@ -19,7 +19,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 					<Link href={'/dashboard/productos'}>Productos</Link>
 					<span
 						onClick={() => {
-							logout();
+							logoutUser();
 							router.push(WEBSITE_ROUTES.HOME);
 						}}
 					>

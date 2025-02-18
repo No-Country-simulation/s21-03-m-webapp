@@ -72,7 +72,9 @@ const LoginForm = () => {
 							</FormItem>
 						)}
 					></FormField>
-					<Button type="submit">Submit</Button>
+					<Button className="w-fit m-auto" type="submit">
+						Submit
+					</Button>
 				</form>
 			</Form>
 		</div>

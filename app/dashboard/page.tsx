@@ -1,13 +1,12 @@
 'use client';
 
-import { useAuthenticationStore } from '../../store/providers/authentication-store-provider';
+import { useAuth } from '../../context/AuthenticationContext';
 
 const DashboardPage = () => {
-	const { user, role, token } = useAuthenticationStore((state) => state);
+	const { token } = useAuth();
+
 	return (
 		<>
-			<div>Dashboard de: {user?.email} </div>
-			<div>role : {role} </div>
 			<div>token : {token} </div>
 		</>
 	);
