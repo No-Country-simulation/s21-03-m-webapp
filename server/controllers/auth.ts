@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import User from "../models/User";
+
 import Member from "../models/Member";
 import { comparePassword } from "../utils/hashedPassword";
 import { generateJWT } from "../utils/jwt";
@@ -8,12 +8,7 @@ import Profile from "../models/Profile";
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-interface UserData {
-    id: string;
-    email: string;
-    role: string;
-    profile?: any;
-}
+
 
 export const register = async (req: Request, res: Response) => {
     const { email, password } = req.body;
@@ -68,7 +63,7 @@ export const currentUser = async (req: Request, res: Response) => {
     try {
       
         if(req.type==="owner"){{
-            const user = await User.findById(req.userId)
+            const user = await Owner.findById(req.ownerId)
             res.status(200).json({
                 user
             })
@@ -97,19 +92,19 @@ export const login = async (req: Request, res: Response) => {
             msg: 'Todos los campos son requeridos.'
         });
     }
-    let user = await User.findOne({ email });
+    let owner = await Owner.findOne({ email });
     let member = await Member.findOne({ email })
 
-    if (!user && !member) {
+    if (!owner && !member) {
         return res.status(401).json({
         msg:"Usuario o Contraseña Incorrecta."
-        })
+        })}
 
 
     try {
 
-        if (user) {
-            const isValidPassword = await comparePassword(password, user.password)
+        if (owner) {
+            const isValidPassword = await comparePassword(password, owner.password)
             if (!isValidPassword) {
                 res.status(400).json({
                     msg: 'Usuario o Contraseña Incorrecta.'
@@ -117,7 +112,7 @@ export const login = async (req: Request, res: Response) => {
                 return
             }
 
-            const token = generateJWT({ id: user._id,type:"owner" })
+            const token = generateJWT({ ownerId: owner._id,type:"owner" })
             res.status(200).json({
                 msg: "Logueado con éxito",
                 token

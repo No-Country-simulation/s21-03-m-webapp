@@ -77,7 +77,7 @@ export class MemberController {
     }
     static getAll = async (req: Request, res: Response) => {
 
-            const ownerId=req.userId
+            const ownerId=req.ownerId
         try {
 
             const members = await Member.find({ownerId})
@@ -99,7 +99,7 @@ export class MemberController {
   
     static create = async (req: Request, res: Response) => {
 
-        const ownerId=req.userId
+        const ownerId=req.ownerId
         const { name, email, password, rol } = req.body
         try {
 

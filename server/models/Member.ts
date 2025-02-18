@@ -8,11 +8,10 @@ export enum UserRole {
 }
 
 export interface IMember extends Document {
-    ownerId: string
+
     name: string
     email: string
     password: string
-
     rol:UserRole
     ownerId:Types.ObjectId
 

@@ -6,10 +6,9 @@ import jwt from "jsonwebtoken"
 declare global {
     namespace Express {
         interface Request {
-            userId?: Types.ObjectId
+            ownerId?: Types.ObjectId
             memberId?: Types.ObjectId
             type?:string
-
         }
     }
 }
@@ -31,12 +30,12 @@ export const authCheck = async (req: Request, res: Response, next: NextFunction)
         if (typeof decoded === "object" && decoded.type) {
 
             if (decoded.type === "owner") {
-                req.userId = decoded.id
+                req.ownerId = decoded.id
                 req.type=decoded.type
             }
             if (decoded.type === "member") {
                 req.memberId = decoded.memberId
-                req.userId=decoded.ownerId
+                req.ownerId=decoded.ownerId
                 req.type=decoded.type
             }   
         }
