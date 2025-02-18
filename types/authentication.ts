@@ -6,10 +6,6 @@ export interface LoginRequest {
 export interface User {
 	id: string;
 	email: string;
-	role: Role;
-}
-
-export interface Role {
 	role: 'Owner' | 'Member' | 'Cashier' | 'Waiter';
 }
 
@@ -19,8 +15,10 @@ export interface AuthenticationResponse {
 }
 
 export interface AuthenticationContextType {
+	user: User | null;
 	token: string | null;
 	loading: boolean;
+	updateUser: (user: User) => void;
 	updateToken: (token: string) => void;
 	logoutUser: () => void;
 }

@@ -6,11 +6,12 @@ import { useAuth } from '../../context/AuthenticationContext';
 
 export function useLoginUser() {
 	const router = useRouter();
-	const { updateToken } = useAuth();
+	const { updateUser, updateToken } = useAuth();
 
 	return useMutation({
 		mutationFn: loginUser,
 		onSuccess: (response) => {
+			updateUser(response.user);
 			updateToken(response.token);
 			router.push(DASHBOARD_ROUTES.DASHBOARD);
 		},
