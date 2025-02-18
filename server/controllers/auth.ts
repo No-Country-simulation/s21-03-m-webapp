@@ -3,15 +3,24 @@ import User from "../models/User";
 import Member from "../models/Member";
 import { comparePassword } from "../utils/hashedPassword";
 import { generateJWT } from "../utils/jwt";
+import Owner from "../models/Owner";
+import Profile from "../models/Profile";
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
+interface UserData {
+    id: string;
+    email: string;
+    role: string;
+    profile?: any;
+}
+
 export const register = async (req: Request, res: Response) => {
-    const { name, email, password } = req.body;
+    const { email, password } = req.body;
 
-    let user = await User.findOne({ email });
+    let user = await Owner.findOne({ email });
 
-    if (!name || !email || !password) {
+    if (!email || !password) {
         return res.status(400).json({
             msg: 'Todos los campos son requeridos.'
         });
@@ -23,7 +32,10 @@ export const register = async (req: Request, res: Response) => {
         });
     }
 
-    user = new User(req.body);
+    user = new Owner(req.body);
+
+    await new Profile({ ownerId: user._id }).save();
+    const profile = { name: '', address: '', logo: '', phone: '', email: '' }
 
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(password, salt);
@@ -36,9 +48,9 @@ export const register = async (req: Request, res: Response) => {
             (err: any, token: string) => {
                 if (err) throw err;
 
-                res.status(200).json({
+                res.status(201).json({
                     msg: 'Usuario Creado Correctamente',
-                    user: { id: user._id, name, email: user.email, role: user.role },
+                    user: { id: user._id, email: user.email, role: user.role, profile },
                     token
                 });
             });
@@ -54,6 +66,7 @@ export const currentUser = async (req: Request, res: Response) => {
 
   
     try {
+      
         if(req.type==="owner"){{
             const user = await User.findById(req.userId)
             res.status(200).json({
@@ -66,6 +79,7 @@ export const currentUser = async (req: Request, res: Response) => {
             res.status(200).json({
                 user
             })
+
         }
 
     } catch (error) {
@@ -88,11 +102,12 @@ export const login = async (req: Request, res: Response) => {
 
     if (!user && !member) {
         return res.status(401).json({
-            msg: 'Usuario o Contraseña Incorrecta.'
-        });
-    }
+        msg:"Usuario o Contraseña Incorrecta."
+        })
+
 
     try {
+
         if (user) {
             const isValidPassword = await comparePassword(password, user.password)
             if (!isValidPassword) {
@@ -107,6 +122,8 @@ export const login = async (req: Request, res: Response) => {
                 msg: "Logueado con éxito",
                 token
             })
+
+
         }
 
        else if(member){
