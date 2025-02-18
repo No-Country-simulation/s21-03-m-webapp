@@ -3,6 +3,9 @@ export interface LoginRequest {
 	password: string;
 }
 
+export interface msg{
+	msg: string;
+}
 export interface User {
 	id: string;
 	name: string;

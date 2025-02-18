@@ -7,14 +7,14 @@ export const loginSchema = z.object({
 
 export const registerSchema = z
 	.object({
-		username: z.string().email({ message: 'El email no es válido.' }),
+		name: z.string().min(3, { message: 'Mínimo 3 caracteres' }),
+		email: z.string().email({ message: 'El email no es válido.' }),
 		password: z.string().min(6, { message: 'Mínimo 6 caracteres' }),
-		confirmPassword: z.string(),
 	})
-	.refine((data) => data.password === data.confirmPassword, {
+	/* .refine((data) => data.password === data.confirmPassword, {
 		message: 'Las contraseñas no coinciden',
 		path: ['confirmPassword'],
-	});
+	}); */
 
 export const loginFormDefaultValues = {
 	email: '',
@@ -22,9 +22,9 @@ export const loginFormDefaultValues = {
 };
 
 export const registerFormDefaultValues = {
-	username: '',
+	name: '',
+	email: '',
 	password: '',
-	confirmPassword: '',
 };
 
 export type LoginFormData = z.infer<typeof loginSchema>;
