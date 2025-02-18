@@ -1,4 +1,8 @@
 import { Request, Response } from "express";
+import User from "../models/User";
+import Member from "../models/Member";
+import { comparePassword } from "../utils/hashedPassword";
+import { generateJWT } from "../utils/jwt";
 import Owner from "../models/Owner";
 import Profile from "../models/Profile";
 const jwt = require('jsonwebtoken');
@@ -57,30 +61,27 @@ export const register = async (req: Request, res: Response) => {
     }
 }
 
-interface AuthRequest extends Request {
-    userId?: string;
-}
-export const currentUser = async (req: AuthRequest, res: Response) => {
-    try {
-        const userId = req.userId;
-        const user = await Owner.findById(userId).exec()
-        if (user) {
-            let userData: UserData = { id: user._id.toString(), email: user.email, role: user.role }
 
-            if (user.role === 'Owner') {
-                const profileOwner = await Profile.findOne({ ownerId: user._id })
-                userData.profile = { name: profileOwner?.name, address: profileOwner?.address, logo: profileOwner?.logo, phone: profileOwner?.phone, email: profileOwner?.email }
-            }
-            jwt.sign({ userId }, process.env.JWT_SECRET,
-                { expiresIn: '2d' },
-                (err: any, token: string) => {
-                    if (err) throw err;
-                    res.status(200).json({
-                        user: userData,
-                        token
-                    });
-                });
+export const currentUser = async (req: Request, res: Response) => {
+
+  
+    try {
+      
+        if(req.type==="owner"){{
+            const user = await User.findById(req.userId)
+            res.status(200).json({
+                user
+            })
+        }}
+     
+        if(req.type==="member"){
+            const user = await Member.findById(req.memberId)
+            res.status(200).json({
+                user
+            })
+
         }
+
     } catch (error) {
         return res.status(500).json({
             msg: 'Ha ocurrido un error interno.'
@@ -96,44 +97,52 @@ export const login = async (req: Request, res: Response) => {
             msg: 'Todos los campos son requeridos.'
         });
     }
+    let user = await User.findOne({ email });
+    let member = await Member.findOne({ email })
 
-    let user = await Owner.findOne({ email });
+    if (!user && !member) {
+        return res.status(401).json({
+        msg:"Usuario o Contraseña Incorrecta."
+        })
 
-    /* if (!user) {
-        user = await Member.findOne({ email });
-    } */
-
-    if (!user) {
-        return res.status(403).json({
-            msg: 'Usuario o Contraseña Incorrecta.'
-        });
-    }
-
-    let userData: UserData = { id: user._id.toString(), email: user.email, role: user.role }
-
-    if (user.role === 'Owner') {
-        const profileOwner = await Profile.findOne({ ownerId: user._id })
-        userData.profile = { name: profileOwner?.name, address: profileOwner?.address, logo: profileOwner?.logo, phone: profileOwner?.phone, email: profileOwner?.email }
-    }
 
     try {
-        if (bcrypt.compareSync(password, user.password)) {
-            const payload = { userId: user._id };
 
-            jwt.sign(payload, process.env.JWT_SECRET,
-                { expiresIn: '2d' },
-                (err: any, token: string) => {
-                    if (err) throw err;
-                    res.status(200).json({
-                        user: userData,
-                        token
-                    });
+        if (user) {
+            const isValidPassword = await comparePassword(password, user.password)
+            if (!isValidPassword) {
+                res.status(400).json({
+                    msg: 'Usuario o Contraseña Incorrecta.'
                 });
-        } else {
-            return res.status(403).json({
-                msg: 'Usuario o Contraseña Incorrecta.'
-            });
+                return
+            }
+
+            const token = generateJWT({ id: user._id,type:"owner" })
+            res.status(200).json({
+                msg: "Logueado con éxito",
+                token
+            })
+
+
         }
+
+       else if(member){
+       
+            const isValidPassword = await comparePassword(password, member.password)
+            if (!isValidPassword) {
+                res.status(400).json({
+                    msg: 'Usuario o Contraseña Incorrecta.'
+                });
+                return
+            }
+
+            const token= generateJWT({memberId:member._id,ownerId:member.ownerId,type:"member"})
+            res.status(200).json({
+                msg:"Logueado con éxito",
+                token
+            })
+        
+       }
     } catch (error) {
         return res.status(500).json({
             msg: 'Ha ocurrido un error interno.'

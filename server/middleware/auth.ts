@@ -1,23 +1,48 @@
 import { Request, Response, NextFunction } from "express";
-const jwt = require('jsonwebtoken');
+import { Types } from "mongoose";
+import jwt from "jsonwebtoken"
 
-interface AuthRequest extends Request {
-    userId?: string;
+
+declare global {
+    namespace Express {
+        interface Request {
+            userId?: Types.ObjectId
+            memberId?: Types.ObjectId
+            type?:string
+
+        }
+    }
 }
 
-export const authCheck = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const authCheck = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.headers.token as string;
 
         if (!token) {
-            return res.status(401).send("Not Authorized");
+            res.status(401).send("No Autorizado");
+            return
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { userId: string };
+        const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+        if (!decoded) {
+            res.status(401).send("No Autorizado");
+            return
+        }
+        if (typeof decoded === "object" && decoded.type) {
 
-        req.userId = decoded.userId;
+            if (decoded.type === "owner") {
+                req.userId = decoded.id
+                req.type=decoded.type
+            }
+            if (decoded.type === "member") {
+                req.memberId = decoded.memberId
+                req.userId=decoded.ownerId
+                req.type=decoded.type
+            }   
+        }
         next();
     } catch (error) {
-        return res.status(401).send("Not Authorized");
+        res.status(401).send("No Autorizado");
+        return
     }
 };
