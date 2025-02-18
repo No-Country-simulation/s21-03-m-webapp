@@ -3,11 +3,22 @@ export interface LoginRequest {
 	password: string;
 }
 
+export interface Msg{
+	msg: string;
+}
+
+interface Profile {
+	name: string;
+	address: string;
+	logo: string;
+	phone: string;
+	email: string;
+}
 export interface User {
 	id: string;
-	name: string;
 	email: string;
 	role: string;
+	profile: Profile;
 }
 
 export interface Token {
