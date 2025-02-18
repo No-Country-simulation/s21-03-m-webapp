@@ -10,7 +10,7 @@ export async function loginUser(body: LoginFormData): Promise<AuthenticationResp
 		return response.data;
 	} catch (error) {
 		if (axios.isAxiosError(error) && error.response) {
-			throw new Error(error.response.data.message);
+			throw new Error(error.response.data.msg);
 		}
 		throw new Error(SERVER_ERROR);
 	}

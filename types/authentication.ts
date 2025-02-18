@@ -3,11 +3,6 @@ export interface LoginRequest {
 	password: string;
 }
 
-//TODO - Mover a otro lugar
-export interface Msg {
-	msg: string;
-}
-
 export interface User {
 	id: string;
 	email: string;

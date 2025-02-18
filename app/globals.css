@@ -149,6 +149,6 @@ body {
 	}
 
 	.form-response-error {
-		@apply mt-1 text-base text-center font-extralight !important;
+		@apply mt-1 text-sm text-center font-extralight !important;
 	}
 }
