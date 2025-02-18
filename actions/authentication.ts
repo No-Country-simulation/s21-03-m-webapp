@@ -19,6 +19,7 @@ export async function loginUser(body: LoginFormData): Promise<AuthenticationResp
 export async function RegisterUser(body: RegisterFormData): Promise<AuthenticationResponse> {
 	try {
 		const response = await public_api.post<AuthenticationResponse>(`${REGISTER_URL}`, body);
+		console.log(response.data);
 		return response.data;
 	} catch (error) {
 		if (axios.isAxiosError(error) && error.response) {

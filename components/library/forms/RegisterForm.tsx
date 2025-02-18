@@ -1,7 +1,7 @@
 'use client';
 
-import { Form, useForm } from 'react-hook-form';
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
+import { useForm } from 'react-hook-form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useTransition } from 'react';
 import { Input } from '../../ui/input';
 import { Button } from '../../ui/button';
@@ -32,23 +32,10 @@ const RegisterForm = () => {
 		});
 	}
 	return (
-		<div>
+		<div className="m-auto w-2/5 h-full p-6 bg-card text-card-foreground rounded-md shadow-md">
 			<Form {...form}>
-				<h1 className="text-center text-4xl font-sans font-semibold">Login</h1>
+				<h1 className="text-center text-4xl font-sans font-semibold">Register</h1>
 				<form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
-					<FormField
-						control={form.control}
-						name="name"
-						render={() => (
-							<FormItem>
-								<FormLabel>Name</FormLabel>
-								<FormControl>
-									<Input {...form.register('name')} disabled={isPending} />
-								</FormControl>
-								<FormMessage className="" />
-							</FormItem>
-						)}
-					></FormField>
 					<FormField
 						control={form.control}
 						name="email"

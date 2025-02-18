@@ -1,8 +1,8 @@
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
-import { RegisterUser } from '../../actions/authentication';
 import { DASHBOARD_ROUTES } from '../../constants/routes';
-import { useAuthenticationStore } from '../../store';
+import useAuthenticationStore from '../../store/useAuthenticationStore';
+import { RegisterUser } from '../authentication';
 
 export function useRegisterUser() {
 	const router = useRouter();
