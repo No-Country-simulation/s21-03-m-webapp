@@ -33,7 +33,7 @@ const LoginForm = () => {
 	}
 
 	return (
-		<div className="m-auto w-2/5 h-full p-6 bg-card text-card-foreground rounded-md shadow-md">
+		<div className="px-10 py-6 bg-card text-card-foreground rounded-md shadow-md forms-max-width">
 			<Form {...form}>
 				<h1 className="text-center text-4xl font-sans font-semibold">Login</h1>
 				<form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
@@ -44,9 +44,13 @@ const LoginForm = () => {
 							<FormItem>
 								<FormLabel>Email</FormLabel>
 								<FormControl>
-									<Input {...form.register('email')} disabled={isPending} />
+									<Input
+										{...form.register('email')}
+										disabled={isPending}
+										className={`form-input-text ${form.formState.errors.email && 'form-input-text-validation-error'}`}
+									/>
 								</FormControl>
-								<FormMessage />
+								<FormMessage className="form-message-validation-error" />
 							</FormItem>
 						)}
 					/>
@@ -57,9 +61,14 @@ const LoginForm = () => {
 							<FormItem>
 								<FormLabel>Password</FormLabel>
 								<FormControl>
-									<Input {...form.register('password')} disabled={isPending} type="password" />
+									<Input
+										{...form.register('password')}
+										disabled={isPending}
+										type="password"
+										className={`form-input-text ${form.formState.errors.password && 'form-input-text-validation-error'}`}
+									/>
 								</FormControl>
-								<FormMessage />
+								<FormMessage className="form-message-validation-error" />
 							</FormItem>
 						)}
 					></FormField>
