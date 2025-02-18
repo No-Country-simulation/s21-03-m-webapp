@@ -1,11 +1,16 @@
 'use client';
 
-import { useAuthenticationStore } from '../../store';
+import { useAuthenticationStore } from '../../store/providers/authentication-store-provider';
 
 const DashboardPage = () => {
-	const { user } = useAuthenticationStore();
-
-	return <div>Dashboard de: {user?.name}</div>;
+	const { user, role, token } = useAuthenticationStore((state) => state);
+	return (
+		<>
+			<div>Dashboard de: {user?.email} </div>
+			<div>role : {role} </div>
+			<div>token : {token} </div>
+		</>
+	);
 };
 
 export default DashboardPage;
