@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { MemberController } from "../controllers/memberController";
+import { authCheck  } from "../middleware/auth";
 const router=Router()
 
 
-router.post("/",MemberController.create)
-router.get("/",MemberController.getAll)
+router.post("/",authCheck,MemberController.create)
+router.get("/",authCheck,MemberController.getAll)
 router.get("/:memberId",MemberController.getById)
 router.put("/:memberId",MemberController.updateById)
 router.delete("/:memberId",MemberController.deleteById)

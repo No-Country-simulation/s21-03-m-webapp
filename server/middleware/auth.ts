@@ -1,23 +1,31 @@
 import { Request, Response, NextFunction } from "express";
+import { Types } from "mongoose";
 const jwt = require('jsonwebtoken');
 
-interface AuthRequest extends Request {
-    userId?: string;
+
+declare global {
+    namespace Express {
+        interface Request {
+            userId?: Types.ObjectId
+        }
+    }
 }
 
-export const authCheck = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const authCheck = (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.headers.token as string;
 
         if (!token) {
-            return res.status(401).send("Not Authorized");
+            res.status(401).send("Not Authorized");
+            return
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { userId: string };
+        const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
 
         req.userId = decoded.userId;
         next();
     } catch (error) {
-        return res.status(401).send("Not Authorized");
+        res.status(401).send("Not Authorized");
+        return
     }
 };

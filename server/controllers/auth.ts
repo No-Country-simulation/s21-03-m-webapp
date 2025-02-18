@@ -46,10 +46,8 @@ export const register = async (req: Request, res: Response) => {
     }
 }
 
-interface AuthRequest extends Request {
-    userId?: string;
-}
-export const currentUser = async (req: AuthRequest, res: Response) => {
+
+export const currentUser = async (req: Request, res: Response) => {
     try {
         const userId = req.userId;
         const user = await User.findById(userId).exec()

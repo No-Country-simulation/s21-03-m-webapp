@@ -3,6 +3,7 @@ import Member from "../models/Member";
 import { hashPassword } from "../utils/hashedPassword";
 
 
+
 export class MemberController {
 
     static deleteById = async (req: Request, res: Response) => {
@@ -76,10 +77,10 @@ export class MemberController {
     }
     static getAll = async (req: Request, res: Response) => {
 
-
+            const ownerId=req.userId
         try {
 
-            const members = await Member.find()
+            const members = await Member.find({ownerId})
             if (!members) {
                 res.status(400).json({
                     msg: 'No se encontraron miembros en el staff.'
@@ -95,13 +96,14 @@ export class MemberController {
             });
         }
     }
+  
     static create = async (req: Request, res: Response) => {
 
-
+        const ownerId=req.userId
         const { name, email, password, rol } = req.body
         try {
 
-            if (!name || !email || !password || !rol) {
+            if (!name || !email || !password || !rol || !ownerId) {
                 res.status(400).json({
                     msg: 'Todos los campos son requeridos.'
                 });
@@ -121,6 +123,7 @@ export class MemberController {
             newMember.name = name
             newMember.rol = rol
             newMember.email = email
+            newMember.ownerId=ownerId 
 
             await newMember.save()
             res.status(201).json({

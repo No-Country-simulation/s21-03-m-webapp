@@ -1,4 +1,4 @@
-import mongoose, {Document, Schema} from "mongoose"
+import mongoose, {Document, Schema, Types} from "mongoose"
 
 export enum UserRole{
     CASHIER="cashier",
@@ -10,6 +10,7 @@ export interface IMember extends Document{
     email: string
     password: string
     rol:UserRole
+    ownerId:Types.ObjectId
 }
 
 const MemberSchema:Schema=new Schema({
@@ -30,6 +31,10 @@ const MemberSchema:Schema=new Schema({
         type:String,
         required:true,
         enum:UserRole
+    },
+    ownerId:{
+        type:Types.ObjectId,
+        required:true
     }
 })
 
