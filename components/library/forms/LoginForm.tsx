@@ -33,8 +33,9 @@ const LoginForm = () => {
 	}
 
 	return (
-		<div className="max-w-[550px] h-full">
+		<div className="m-auto w-2/5 h-full p-6 bg-card text-card-foreground rounded-md shadow-md">
 			<Form {...form}>
+				<h1 className="text-center text-4xl font-sans font-semibold">Login</h1>
 				<form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
 					<FormField
 						control={form.control}
