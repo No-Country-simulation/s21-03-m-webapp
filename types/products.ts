@@ -11,5 +11,6 @@ interface Category {
     id: number; 
     name: string;
     description: string;
-    products: Product[];
+    icon: string;   
+    products: Product[] | [] | null;
 }

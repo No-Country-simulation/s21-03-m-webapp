@@ -12,4 +12,5 @@ export const DASHBOARD_ROUTES = {
 	DASHBOARD: '/dashboard',
 	MESAS: '/dashboard/mesas',
 	PRODUCTOS: '/dashboard/productos',
+	VENTAS: '/dashboard/ventas',
 };
