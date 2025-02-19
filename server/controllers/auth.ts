@@ -126,8 +126,6 @@ export const login = async (req: Request, res: Response) => {
                 user:owner,
                 token
             })
-
-
         }
 
         else if (member) {
@@ -146,8 +144,8 @@ export const login = async (req: Request, res: Response) => {
                 user:member,
                 token
             })
-
         }
+
     } catch (error) {
         return res.status(500).json({
             msg: 'Ha ocurrido un error interno.'
