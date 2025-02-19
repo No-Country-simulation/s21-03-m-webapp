@@ -1,6 +1,9 @@
 import { Router } from "express";
-import { MemberController } from "../controllers/memberController";
-import { authCheck  } from "../middleware/auth";
+/* import { MemberController } from "../controllers/memberController";
+import { authCheck  } from "../middleware/auth"; */
+const { MemberController } = require('../controllers/memberController')
+const { authCheck } = require('../middleware/auth');
+
 const router=Router()
 
 
