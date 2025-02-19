@@ -7,11 +7,13 @@ import { DashboardNavbar } from '../../components/library/navigation';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<ProtectedRoute>
+		<>
 			<DashboardNavbar></DashboardNavbar>
-			<VerticalContainer escape={'all'}>
-				<Container className="bg-background text-foreground">{children}</Container>
-			</VerticalContainer>
-		</ProtectedRoute>
+			<ProtectedRoute>
+				<VerticalContainer escape={'all'}>
+					<Container className="bg-background text-foreground">{children}</Container>
+				</VerticalContainer>
+			</ProtectedRoute>
+		</>
 	);
 }

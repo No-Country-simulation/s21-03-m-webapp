@@ -1,3 +1,5 @@
+import { Profile } from './profile';
+
 export interface LoginRequest {
 	username: string;
 	password: string;
@@ -7,6 +9,7 @@ export interface User {
 	id: string;
 	email: string;
 	role: 'Owner' | 'Member' | 'Cashier' | 'Waiter';
+	profile: Profile;
 }
 
 export interface AuthenticationResponse {
