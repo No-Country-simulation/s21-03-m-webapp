@@ -3,7 +3,7 @@ import Profile from "../models/Profile";
 
 
 export const edit = async (req: Request, res: Response) => {
-    const { name, address, logo, phone, email } = req.body;
+    const { name, address, phone, email } = req.body;
 
     const ownerId = req.ownerId;
     const profile = await Profile.findOne({  ownerId})
@@ -15,14 +15,14 @@ export const edit = async (req: Request, res: Response) => {
     try {
         profile.name = name
         profile.address = address
-        profile.logo = logo // TODO: como se manejara las imagenes?
         profile.phone = phone
         profile.email = email
 
         await profile.save();
 
         return res.status(200).json({
-            msg: 'Perfil Editado Correctamente.'
+            msg: 'Perfil Editado Correctamente.',
+            profile
         });
     } catch (error) {
         return res.status(500).json({
