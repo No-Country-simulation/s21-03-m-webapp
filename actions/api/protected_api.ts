@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import { COOKIE_NAME } from '../../constants/app_constants';
 
 const protectedApi = axios.create({
-	baseURL: process.env.NEXT_PUBLIC_LOCAL_BASE_API_URL,
+	baseURL: process.env.NEXT_PUBLIC_REMOTE_BASE_API_URL,
 	headers: {
 		'Content-Type': 'application/json',
 	},
