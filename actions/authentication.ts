@@ -30,7 +30,7 @@ export async function registerUser(body: RegisterFormData): Promise<Authenticati
 
 export async function currentUser(token: string): Promise<AuthenticationResponse> {
 	try {
-		console.log('Llamada al CurrentUser, Agregar TanStack');
+		console.log('[currentUser action] Token: ', token);
 		const response = await public_api.get<AuthenticationResponse>(`${CURRENT_USER}`, {
 			headers: { token: `${token}` },
 		});

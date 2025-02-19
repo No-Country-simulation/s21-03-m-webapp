@@ -1,64 +1,58 @@
 'use client';
 
 import Cookies from 'js-cookie';
-import { createContext, useContext, useEffect, useState } from 'react';
-import { AuthenticationContextType, User } from '../types/authentication';
-import { currentUser } from '../actions/authentication';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { useCurrentUserQuery } from '@/actions/hooks/useCurrentUser';
+import { AuthenticationContextType, User } from '@/types/authentication';
 
+/**
+ * Definimos el shape del contexto: guardamos `token`,
+ * exponemos el `user` leyendo la query de React Query,
+ * e incluimos `loading`, funciones de logout, etc.
+ */
 const MyAuthContext = createContext<AuthenticationContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const [token, setToken] = useState<string | null>(Cookies.get('Mesa360-Token') || null);
-	const [user, setUser] = useState<User | null>(null);
-	const [loading, setLoading] = useState(true);
+
+	const { data, isLoading, isError, refetch } = useCurrentUserQuery(token);
 
 	useEffect(() => {
-		const validateUser = async () => {
-			if (token && !user) {
-				try {
-					const response = await currentUser(token);
-					setUser(response.user);
-					setToken(response.token);
-				} catch (error) {
-					console.log('Error al fetchear user: ', error);
-					logoutUser();
-				}
-			}
-			setLoading(false);
-		};
-		validateUser();
-	}, [token, user]);
-
-	// =========================
-	//  Functions
-	// =========================
-	const updateUser = (newUser: User) => {
-		setUser(newUser);
-		setLoading(false);
-	};
-
-	const updateToken = (newToken: string) => {
-		if (newToken) {
-			Cookies.set('Mesa360-Token', newToken, {
-				expires: 7,
-			});
-			setToken(newToken);
-		} else {
-			Cookies.remove('Mesa360-Token');
-			setToken(null);
+		if (isError && token) {
+			console.log('⛔ Token inválido. Cerrando sesión...');
+			logoutUser();
 		}
-		setLoading(false);
+	}, [isError, token]);
+
+	const updateToken = (newToken: string | null) => {
+		if (!newToken) {
+			logoutUser();
+			return;
+		}
+		Cookies.set('Mesa360-Token', newToken, { expires: 7 });
+		setToken(newToken);
+		refetch();
 	};
 
 	const logoutUser = () => {
-		setUser(null);
-		setToken(null);
 		Cookies.remove('Mesa360-Token');
-		setLoading(false);
+		setToken(null);
 	};
-
 	return (
-		<MyAuthContext.Provider value={{ user, token, loading, updateUser, updateToken, logoutUser }}>
+		<MyAuthContext.Provider
+			value={{
+				token,
+				user: data?.user || null,
+				loading: isLoading,
+				updateToken,
+				updateUser: () => {
+					// Si quisieras "forzar" la mutación o un optimistic update, podrías usar:
+					// queryClient.setQueryData(['currentUser', token], (old) => ({ ...old, user: newUser }))
+					// pero aquí lo dejamos vacío o implementas según necesites.
+				},
+				logoutUser,
+			}}
+		>
 			{children}
 		</MyAuthContext.Provider>
 	);
