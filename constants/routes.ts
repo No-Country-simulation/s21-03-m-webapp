@@ -11,4 +11,5 @@ export const WEBSITE_ROUTES = {
 export const DASHBOARD_ROUTES = {
 	DASHBOARD: '/dashboard',
 	MESAS: '/dashboard/mesas',
+	PRODUCTOS: '/dashboard/productos',
 };
