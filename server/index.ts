@@ -1,12 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-
 import authRoutes from "./routes/auth";
 import profileRoutes from "./routes/profile";
 import memberRoutes from "./routes/member"
-
 import connectDb from "./config/connectDB"
+import morgan from "morgan";
 connectDb()
 
 dotenv.config();
