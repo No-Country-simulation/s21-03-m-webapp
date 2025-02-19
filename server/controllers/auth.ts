@@ -101,6 +101,7 @@ export const login = async (req: Request, res: Response) => {
     let owner = await Owner.findOne({ email });
     let member = await Member.findOne({ email })
 
+
     if (!owner && !member) {
         return res.status(401).json({
             msg: "Usuario o Contraseña Incorrecta."
@@ -122,6 +123,7 @@ export const login = async (req: Request, res: Response) => {
             const token = generateJWT({ ownerId: owner._id, type: "owner" })
             res.status(200).json({
                 msg: "Logueado con éxito",
+                user:owner,
                 token
             })
 
@@ -141,6 +143,7 @@ export const login = async (req: Request, res: Response) => {
             const token = generateJWT({ memberId: member._id, ownerId: member.ownerId, type: "member" })
             res.status(200).json({
                 msg: "Logueado con éxito",
+                user:member,
                 token
             })
 
