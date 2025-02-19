@@ -1,15 +1,12 @@
 import { Request, Response } from "express";
 import Profile from "../models/Profile";
 
-interface AuthRequest extends Request {
-    userId?: string;
-}
 
-export const edit = async (req: AuthRequest, res: Response) => {
+export const edit = async (req: Request, res: Response) => {
     const { name, address, logo, phone, email } = req.body;
-    const userId = req.userId;
 
-    const profile = await Profile.findOne({ ownerId: userId })
+    const ownerId = req.ownerId;
+    const profile = await Profile.findOne({  ownerId})
 
     if (!profile) {
         return res.status(404).send({ msg: 'No existe el perfil.' });
