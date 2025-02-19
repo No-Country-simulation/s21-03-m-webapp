@@ -9,6 +9,9 @@ export const LOGIN_URL = '/auth/login';
 export const REGISTER_URL = '/auth/register';
 export const CURRENT_USER = '/auth/current-user';
 
+// Profile
+export const PROFILE_EDIT = '/profile/edit';
+
 // ================================
 //  APP Constants
 // ================================

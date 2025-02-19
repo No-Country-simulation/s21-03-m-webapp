@@ -3,7 +3,7 @@ import { AuthenticationResponse } from '../types/authentication';
 import { LoginFormData, RegisterFormData } from '../schemas/authenticationSchema';
 import { CURRENT_USER, LOGIN_URL, REGISTER_URL, SERVER_ERROR } from '../constants/app_constants';
 import public_api from './api/public_api';
-import protectedApi from './api/protected_api';
+import protected_api from './api/protected_api';
 
 export async function loginUser(body: LoginFormData): Promise<AuthenticationResponse> {
 	try {
@@ -31,7 +31,7 @@ export async function registerUser(body: RegisterFormData): Promise<Authenticati
 
 export async function currentUser(): Promise<AuthenticationResponse> {
 	try {
-		const response = await protectedApi.get<AuthenticationResponse>(`${CURRENT_USER}`);
+		const response = await protected_api.get<AuthenticationResponse>(`${CURRENT_USER}`);
 		return response.data;
 	} catch (error) {
 		if (axios.isAxiosError(error) && error.response) {
