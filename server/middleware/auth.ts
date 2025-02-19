@@ -23,6 +23,7 @@ export const authCheck = async (req: Request, res: Response, next: NextFunction)
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+    
         if (!decoded) {
             res.status(401).send("No Autorizado");
             return
@@ -30,13 +31,15 @@ export const authCheck = async (req: Request, res: Response, next: NextFunction)
         if (typeof decoded === "object" && decoded.type) {
 
             if (decoded.type === "owner") {
-                req.ownerId = decoded.id
+                req.ownerId = decoded.ownerId
                 req.type=decoded.type
+              
             }
             if (decoded.type === "member") {
                 req.memberId = decoded.memberId
                 req.ownerId=decoded.ownerId
                 req.type=decoded.type
+               
             }   
         }
         next();
