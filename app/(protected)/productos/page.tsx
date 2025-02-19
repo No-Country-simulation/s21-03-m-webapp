@@ -23,7 +23,7 @@ const ProductosPage = () => {
 				<MenubarMenu>
 					<MenubarTrigger>Bebidas</MenubarTrigger>
 					<MenubarContent>
-						<MenubarItem className='selec'>
+						<MenubarItem className="selec">
 							Cafe
 							<MenubarShortcut>
 								<IoIosCafe />

@@ -8,9 +8,9 @@ export interface Product {
 }
 
 interface Category {
-    id: number; 
-    name: string;
-    description: string;
-    icon: string;   
-    products: Product[] | [] | null;
+	id: number;
+	name: string;
+	description: string;
+	icon: string;
+	products: Product[] | [] | null;
 }
