@@ -86,3 +86,69 @@ body {
 		@apply bg-background text-foreground;
 	}
 }
+
+@layer components {
+	/* 
+	* ================================= 
+	* Buttons
+	* ================================= 
+	*/
+
+	.button-fill {
+		@apply rounded-lg py-5 font-extralight text-base tracking-wider border-none !important;
+	}
+
+	.button-fill-dark {
+		@apply rounded-full p-5 border-none bg-[#353535] text-white w-full !important;
+	}
+
+	.button-outline {
+		@apply rounded-full p-5 bg-transparent border-white border-[1px] text-white w-full !important;
+	}
+
+	.button-fill-primary {
+		@apply w-full p-5 bg-[color:--primary-color] border-[color:--primary-color] font-semibold rounded-full !important;
+	}
+
+	.button-input {
+		@apply rounded-full p-5 border-[#353535] bg-[#353535] placeholder:text-gray-400 !important;
+	}
+
+	/* 
+	* ================================= 
+	* Forms
+	* ================================= 
+	*/
+
+	.forms-max-width {
+		@apply w-[95%] max-w-[400px] m-auto !important;
+	}
+
+	.form-title {
+		@apply text-3xl font-extralight tracking-normal self-start sm:self-center whitespace-nowrap !important;
+	}
+
+	.label-form-input-text {
+		@apply text-sm font-light !important;
+	}
+
+	.form-input-text {
+		@apply py-[18px] text-sm rounded-lg placeholder:text-gray-400 border-gray-300 !important;
+	}
+
+	.form-input-textarea {
+		@apply py-[18px] px-4 text-sm placeholder:text-gray-400 border-gray-300  resize-none !important;
+	}
+
+	.form-input-text-validation-error {
+		@apply border border-destructive !important;
+	}
+
+	.form-message-validation-error {
+		@apply pl-3 mt-1 text-xs !important;
+	}
+
+	.form-response-error {
+		@apply mt-1 text-sm text-center font-extralight !important;
+	}
+}
