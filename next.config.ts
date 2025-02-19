@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
 		unoptimized: true,
 		domains: ['upload.wikimedia.org', 'pexels.com', 'unsplash.com'], // Agrega los dominios usados en tus imágenes
 	},
-	reactStrictMode: true,
+	reactStrictMode: false,
 };
 
 export default nextConfig;

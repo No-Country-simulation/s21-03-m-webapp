@@ -3,29 +3,21 @@ export interface LoginRequest {
 	password: string;
 }
 
-export interface Msg{
-	msg: string;
-}
-
-interface Profile {
-	name: string;
-	address: string;
-	logo: string;
-	phone: string;
-	email: string;
-}
 export interface User {
 	id: string;
 	email: string;
-	role: string;
-	profile: Profile;
-}
-
-export interface Token {
-	token: string;
+	role: 'Owner' | 'Member' | 'Cashier' | 'Waiter';
 }
 
 export interface AuthenticationResponse {
 	user: User;
-	token: Token;
+	token: string;
+}
+
+export interface AuthenticationContextType {
+	user: User | null;
+	token: string | null;
+	loading: boolean;
+	updateToken: (token: string) => void;
+	logoutUser: () => void;
 }

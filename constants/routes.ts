@@ -10,5 +10,8 @@ export const WEBSITE_ROUTES = {
 
 export const DASHBOARD_ROUTES = {
 	DASHBOARD: '/dashboard',
-	MESAS: '/dashboard/mesas',
+	MESAS: '/mesas',
+	PROFILE: '/profile',
+	PRODUCTOS: '/productos',
+	VENTAS: '/ventas',
 };

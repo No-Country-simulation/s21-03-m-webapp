@@ -2,7 +2,7 @@ import { RegisterForm } from '@/components/library/forms';
 
 const RegisterPage = () => {
 	return (
-		<div>
+		<div className="h-[65vh] lg:h-[70vh] flex flex-col items-center justify-center">
 			<RegisterForm></RegisterForm>
 		</div>
 	);
