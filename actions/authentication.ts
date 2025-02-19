@@ -29,9 +29,8 @@ export async function registerUser(body: RegisterFormData): Promise<Authenticati
 	}
 }
 
-export async function currentUser(token: string): Promise<AuthenticationResponse> {
+export async function currentUser(): Promise<AuthenticationResponse> {
 	try {
-		console.log('[currentUser action] Token: ', token);
 		const response = await protectedApi.get<AuthenticationResponse>(`${CURRENT_USER}`);
 		return response.data;
 	} catch (error) {

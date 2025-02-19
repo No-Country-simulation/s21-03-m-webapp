@@ -13,7 +13,7 @@ export function useRegisterUser() {
 		mutationFn: registerUser,
 		onSuccess: (response) => {
 			updateToken(response.token);
-			queryClient.setQueryData(['currentUser', response.token], response);
+			queryClient.setQueryData(['currentUser'], response);
 			router.push(DASHBOARD_ROUTES.DASHBOARD);
 		},
 		onError: (error: Error) => {

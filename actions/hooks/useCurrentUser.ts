@@ -4,10 +4,10 @@ import { AuthenticationResponse } from '@/types/authentication';
 
 export const useCurrentUserQuery = (token: string | null) => {
 	return useQuery<AuthenticationResponse>({
-		queryKey: ['currentUser', token],
+		queryKey: ['currentUser'],
 		queryFn: () => {
 			if (!token) throw new Error('No token available');
-			return currentUser(token);
+			return currentUser();
 		},
 		enabled: !!token,
 		retry: 1,
