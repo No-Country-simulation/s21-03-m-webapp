@@ -59,7 +59,12 @@ export const register = async (req: Request, res: Response) => {
 }
 
 
-export const currentUser = async (req: Request, res: Response) => {
+interface AuthRequest extends Request {
+    ownerId?: string
+    memberId?: string
+    type?: string
+}
+export const currentUser = async (req: AuthRequest, res: Response) => {
 
 
     try {
