@@ -2,7 +2,11 @@ import { Request, Response } from "express";
 import Member from "../models/Member";
 import { hashPassword } from "../utils/hashedPassword";
 
-
+interface AuthRequest extends Request {
+    ownerId?: string
+    memberId?: string
+    type?: string
+}
 
 export class MemberController {
 
@@ -11,7 +15,7 @@ export class MemberController {
         const { id } = req.params
         try {
 
-            const member = await Member.findOne({id})
+            const member = await Member.findOne({ id })
             if (!member) {
                 res.status(400).json({
                     msg: 'No existe ningún miembro con ese id.'
@@ -75,12 +79,12 @@ export class MemberController {
             });
         }
     }
-    static getAll = async (req: Request, res: Response) => {
+    static getAll = async (req: AuthRequest, res: Response) => {
 
-            const ownerId=req.ownerId
+        const ownerId = req.ownerId
         try {
 
-            const members = await Member.find({ownerId})
+            const members = await Member.find({ ownerId })
             if (!members) {
                 res.status(400).json({
                     msg: 'No se encontraron miembros en el staff.'
@@ -96,10 +100,10 @@ export class MemberController {
             });
         }
     }
-  
-    static create = async (req: Request, res: Response) => {
 
-        const ownerId=req.ownerId
+    static create = async (req: AuthRequest, res: Response) => {
+
+        const ownerId = req.ownerId
         const { name, email, password, rol } = req.body
         try {
 
@@ -123,7 +127,7 @@ export class MemberController {
             newMember.name = name
             newMember.rol = rol
             newMember.email = email
-            newMember.ownerId=ownerId 
+            newMember.ownerId = ownerId
 
             await newMember.save()
             res.status(201).json({

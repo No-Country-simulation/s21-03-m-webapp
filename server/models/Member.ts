@@ -1,4 +1,4 @@
-import mongoose, {Document, Schema, Types} from "mongoose"
+import mongoose, { Document, Schema, Types } from "mongoose"
 
 
 
@@ -12,8 +12,8 @@ export interface IMember extends Document {
     name: string
     email: string
     password: string
-    rol:UserRole
-    ownerId:Types.ObjectId
+    rol: UserRole
+    ownerId: string
 
 }
 
@@ -31,16 +31,16 @@ const MemberSchema: Schema = new Schema({
         unique: true,
         required: true
     },
-    rol:{
-        type:String,
-        required:true,
-        enum:UserRole
+    rol: {
+        type: String,
+        required: true,
+        enum: UserRole
     },
     password: {
         type: String,
         required: true
     }
-    
+
 })
 
 const Member = mongoose.model<IMember>("Member", MemberSchema)
