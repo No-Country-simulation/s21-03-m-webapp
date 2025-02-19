@@ -9,17 +9,11 @@ import { COOKIE_NAME } from '../constants/app_constants';
 const MyAuthContext = createContext<AuthenticationContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-	const [token, setToken] = useState<string | null>(Cookies.get(COOKIE_NAME) || null);
+	const [token, setToken] = useState<string | null>(() => Cookies.get(COOKIE_NAME) || null);
 	const [user, setUser] = useState<User | null>(null);
+	const [authChecked, setAuthChecked] = useState(false);
 
 	const { data, isLoading, isError, refetch } = useCurrentUserQuery(token);
-
-	useEffect(() => {
-		if (isError && token) {
-			console.log('⛔ Token inválido. Cerrando sesión...');
-			logoutUser();
-		}
-	}, [isError, token]);
 
 	useEffect(() => {
 		if (data?.token) {
@@ -29,7 +23,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 		if (data?.user) {
 			setUser(data.user);
 		}
-	}, [data]);
+		if (!isLoading) {
+			setAuthChecked(true);
+		}
+	}, [data, isLoading]);
+
+	useEffect(() => {
+		if (isError && token) {
+			console.log('⛔ Token inválido. Cerrando sesión...');
+			logoutUser();
+		}
+	}, [isError, token]);
 
 	const updateToken = (newToken: string | null) => {
 		if (!newToken) {
@@ -45,6 +49,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 		Cookies.remove(COOKIE_NAME);
 		setToken(null);
 		setUser(null);
+		setAuthChecked(false);
 	};
 
 	return (
@@ -53,6 +58,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 				token,
 				user,
 				loading: isLoading,
+				authChecked,
 				updateToken,
 				logoutUser,
 			}}
