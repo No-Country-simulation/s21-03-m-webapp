@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuth } from '@/context/AuthenticationContext';
-import { Button } from '../../components/ui/button';
+import { Button } from '../../../components/ui/button';
 
 const DashboardPage = () => {
 	const { user, logoutUser } = useAuth();
