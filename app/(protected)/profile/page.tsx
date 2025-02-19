@@ -27,7 +27,7 @@ const ProfilePage = () => {
 	};
 
 	return (
-		<div className="h-[85vh] flex flex-col items-center justify-center">
+		<div className="pt-[4rem] flex flex-col items-center justify-center">
 			<Card className="w-full max-w-md p-4 shadow-lg">
 				<CardHeader className="text-center">
 					<CardTitle className="font-bold text-2xl">Mi Perfil</CardTitle>
