@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthenticationContext';
 import { useRouter } from 'next/navigation';
 import { WEBSITE_ROUTES } from '@/constants/routes';
@@ -10,17 +10,26 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-	const { user, loading } = useAuth();
+	const { user, loading, authChecked } = useAuth();
 	const router = useRouter();
+	const [isMounted, setIsMounted] = useState(false);
 
 	useEffect(() => {
-		if (!loading && !user) {
-			console.log('⏩ Protected Route: Redirecting to HOME...');
-			router.push(WEBSITE_ROUTES.HOME);
-		}
-	}, [loading, user, router]);
+		setIsMounted(true);
+	}, []);
 
-	if (loading) {
+	useEffect(() => {
+		if (isMounted && authChecked && !loading && user === null) {
+			console.log('⏩ Protected Route: Redirecting to HOME...');
+			router.replace(WEBSITE_ROUTES.HOME);
+		}
+	}, [isMounted, authChecked, loading, user, router]);
+
+	if (!isMounted) {
+		return null;
+	}
+
+	if (loading || !authChecked) {
 		return (
 			<div className="flex h-screen w-full items-center justify-center">
 				<div className="animate-spin w-14 h-14 border-[3px] border-primary border-t-transparent rounded-full"></div>
@@ -28,11 +37,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 		);
 	}
 
-	if (!user) {
-		return null;
-	}
-
-	return <>{children}</>;
+	return user ? <>{children}</> : null;
 };
 
 export default ProtectedRoute;
