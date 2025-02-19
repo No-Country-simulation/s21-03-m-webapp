@@ -3,8 +3,8 @@ import mongoose, {Document, Schema, Types} from "mongoose"
 
 
 export enum UserRole {
-    CASHIER = "cashier",
-    WAITER = "waiter"
+    CASHIER = "Cashier",
+    WAITER = "Waiter"
 }
 
 export interface IMember extends Document {
