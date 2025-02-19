@@ -15,11 +15,15 @@ import {
 import { Container } from '../../library/structure';
 import Link from 'next/link';
 import { Logo } from '../logo';
-import { dashboard_links } from '../../../constants/routes';
+import { dashboard_links, WEBSITE_ROUTES } from '../../../constants/routes';
 import { DoorOpen, Menu } from 'lucide-react';
+import { useAuth } from '../../../context/AuthenticationContext';
+import { useRouter } from 'next/navigation';
 
 const TAGSidebar = () => {
 	const { setOpenMobile } = useSidebar();
+	const { logoutUser } = useAuth();
+	const router = useRouter();
 	return (
 		<aside className="sm:hidden">
 			<nav className="w-full h-[5rem] bg-white fixed top-0 drop-shadow-sm z-30">
@@ -54,7 +58,15 @@ const TAGSidebar = () => {
 									<SidebarMenuButton asChild onClick={() => setOpenMobile(false)}>
 										<div className="flex flex-row gap-2">
 											<DoorOpen></DoorOpen>
-											<span className="text-xl font-normal text-primary">Salir</span>
+											<span
+												className="text-xl font-normal text-primary"
+												onClick={() => {
+													logoutUser();
+													router.push(WEBSITE_ROUTES.HOME);
+												}}
+											>
+												Salir
+											</span>
 										</div>
 									</SidebarMenuButton>
 								</SidebarMenuItem>
