@@ -4,11 +4,12 @@ import Cookies from 'js-cookie';
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useCurrentUserQuery } from '@/actions/hooks/useCurrentUser';
 import { AuthenticationContextType } from '@/types/authentication';
+import { COOKIE_NAME } from '../constants/app_constants';
 
 const MyAuthContext = createContext<AuthenticationContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-	const [token, setToken] = useState<string | null>(Cookies.get('Mesa360-Token') || null);
+	const [token, setToken] = useState<string | null>(Cookies.get(COOKIE_NAME) || null);
 
 	const { data, isLoading, isError, refetch } = useCurrentUserQuery(token);
 
@@ -24,13 +25,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 			logoutUser();
 			return;
 		}
-		Cookies.set('Mesa360-Token', newToken, { expires: 7 });
+		Cookies.set(COOKIE_NAME, newToken, { expires: 7 });
 		setToken(newToken);
 		refetch();
 	};
 
 	const logoutUser = () => {
-		Cookies.remove('Mesa360-Token');
+		Cookies.remove(COOKIE_NAME);
 		setToken(null);
 	};
 	return (
