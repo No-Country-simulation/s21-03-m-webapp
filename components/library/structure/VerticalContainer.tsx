@@ -14,6 +14,7 @@ const containerVariants = cva('m-auto', {
 			all: 'pt-[6rem] pb-[8rem]',
 			navbar: 'pt-[6rem]',
 			footer: 'pb-[8rem]',
+			none: 'pt-0 pb-0',
 		},
 	},
 	defaultVariants: {

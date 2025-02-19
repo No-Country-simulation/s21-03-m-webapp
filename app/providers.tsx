@@ -1,5 +1,6 @@
 'use client';
 
+import { SidebarProvider } from '../components/ui/sidebar';
 import { AuthProvider } from '../context/AuthenticationContext';
 import { ThemeProvider } from './theme-provider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -11,7 +12,9 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
 		<>
 			<ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
 				<QueryClientProvider client={queryClient}>
-					<AuthProvider>{children}</AuthProvider>
+					<AuthProvider>
+						<SidebarProvider>{children}</SidebarProvider>
+					</AuthProvider>
 				</QueryClientProvider>
 			</ThemeProvider>
 		</>
