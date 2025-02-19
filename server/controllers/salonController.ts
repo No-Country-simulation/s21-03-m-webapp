@@ -41,13 +41,13 @@ export class SalonController {
 
         try {
             const salones = await Salon.find({ ownerId: req.ownerId })
-            if(salones.length===0){
+            if (salones.length === 0) {
                 res.status(400).json({
-                    msg:"No hay salones creados"
+                    msg: "No hay salones creados"
                 })
                 return
             }
-           
+
             res.status(200).json(salones)
         } catch (error) {
             res.status(404).json({
@@ -58,9 +58,10 @@ export class SalonController {
     }
 
     static getOne = async (req: Request, res: Response) => {
-        const { id } = req.params
+        const { salonId } = req.params
         try {
-            const salon = await Salon.findOne({ _id: id, ownerId: req.ownerId })
+
+            const salon = await Salon.findOne({ _id: salonId, ownerId: req.ownerId })
             if (!salon) {
                 res.status(400).json({
                     msg: "No existe el salón"
@@ -75,10 +76,10 @@ export class SalonController {
         }
 
     }
-    static delete= async (req: Request, res: Response) => {
-        const { id } = req.params
+    static delete = async (req: Request, res: Response) => {
+        const { salonId } = req.params
         try {
-            const salon = await Salon.findOne({ _id: id, ownerId: req.ownerId })
+            const salon = await Salon.findOne({ _id: salonId, ownerId: req.ownerId })
             if (!salon) {
                 res.status(400).json({
                     msg: "No existe el salón"
@@ -87,10 +88,41 @@ export class SalonController {
             }
             await salon.deleteOne()
             res.status(200).json({
-                msg:"Salón eliminado"
+                msg: "Salón eliminado"
             })
 
-            
+
+        } catch (error) {
+            res.status(404).json({
+                msg: "Hubo un error"
+            })
+        }
+    }
+
+    static update = async (req: Request, res: Response) => {
+        const { salonId } = req.params
+        const { name } = req.body
+        const result = SalonSchema.safeParse(name)
+        if (!result.success) {
+            res.status(400).json({
+                msg: result.error.issues.map(err => err.message)
+            })
+            return
+        }
+        try {
+            const salon = await Salon.findOne({ _id: salonId, ownerId: req.ownerId })
+            if (!salon) {
+                res.status(400).json({
+                    msg: "No existe el salón"
+                })
+                return
+            }
+            await salon.updateOne({name})
+            res.status(200).json({
+                msg: "Salón Actualizado"
+            })
+
+
         } catch (error) {
             res.status(404).json({
                 msg: "Hubo un error"
