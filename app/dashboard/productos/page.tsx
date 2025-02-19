@@ -15,6 +15,7 @@ import {
 	MenubarTrigger,
 } from '@/components/ui/menubar';
 import { IoIosCafe } from 'react-icons/io';
+import { Toggle } from '../../../components/ui/toggle';
 const ProductosPage = () => {
 	return (
 		<div>
@@ -22,8 +23,11 @@ const ProductosPage = () => {
 				<MenubarMenu>
 					<MenubarTrigger>Bebidas</MenubarTrigger>
 					<MenubarContent>
-						<MenubarItem>
-							Cafe <MenubarShortcut>⌘N</MenubarShortcut>
+						<MenubarItem className='selec'>
+							Cafe
+							<MenubarShortcut>
+								<IoIosCafe />
+							</MenubarShortcut>
 						</MenubarItem>
 						<MenubarItem>
 							New Window <MenubarShortcut>⌘N</MenubarShortcut>
