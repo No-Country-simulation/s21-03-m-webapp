@@ -20,10 +20,11 @@ import { DoorOpen, Menu } from 'lucide-react';
 import { useAuth } from '../../../context/AuthenticationContext';
 import { useRouter } from 'next/navigation';
 
-const TAGSidebar = () => {
+const MesaSidebar = () => {
 	const { setOpenMobile } = useSidebar();
 	const { logoutUser } = useAuth();
 	const router = useRouter();
+
 	return (
 		<aside className="sm:hidden">
 			<nav className="w-full h-[5rem] bg-white fixed top-0 drop-shadow-sm z-30">
@@ -79,4 +80,4 @@ const TAGSidebar = () => {
 	);
 };
 
-export default TAGSidebar;
+export default MesaSidebar;
