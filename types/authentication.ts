@@ -18,7 +18,6 @@ export interface AuthenticationContextType {
 	user: User | null;
 	token: string | null;
 	loading: boolean;
-	updateUser: (user: User) => void;
 	updateToken: (token: string) => void;
 	logoutUser: () => void;
 }

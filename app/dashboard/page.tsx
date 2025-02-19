@@ -1,4 +1,5 @@
 'use client';
+
 import { useAuth } from '@/context/AuthenticationContext';
 import { Button } from '../../components/ui/button';
 

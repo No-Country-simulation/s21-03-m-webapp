@@ -3,13 +3,8 @@
 import Cookies from 'js-cookie';
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useCurrentUserQuery } from '@/actions/hooks/useCurrentUser';
-import { AuthenticationContextType, User } from '@/types/authentication';
+import { AuthenticationContextType } from '@/types/authentication';
 
-/**
- * Definimos el shape del contexto: guardamos `token`,
- * exponemos el `user` leyendo la query de React Query,
- * e incluimos `loading`, funciones de logout, etc.
- */
 const MyAuthContext = createContext<AuthenticationContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -45,11 +40,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 				user: data?.user || null,
 				loading: isLoading,
 				updateToken,
-				updateUser: () => {
-					// Si quisieras "forzar" la mutación o un optimistic update, podrías usar:
-					// queryClient.setQueryData(['currentUser', token], (old) => ({ ...old, user: newUser }))
-					// pero aquí lo dejamos vacío o implementas según necesites.
-				},
 				logoutUser,
 			}}
 		>
