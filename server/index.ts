@@ -6,7 +6,7 @@ import cors from "cors";
 import authRoutes from "./routes/auth";
 import profileRoutes from "./routes/profile";
 import memberRoutes from "./routes/member"
-import salonRoutes from "./routes/salon"
+import salonRoutes from "./routes/salonRoutes"
 
 
 import connectDb from "./config/connectDB"

@@ -11,4 +11,4 @@ export const LoginSchema=z.object({
     password:z.string().min(1,{message:"Debes ingresar el password"})
 }).strict()
 
-
+export const SalonSchema=z.string().min(1,{message:"Debes ingresar el nombre del salón"})
