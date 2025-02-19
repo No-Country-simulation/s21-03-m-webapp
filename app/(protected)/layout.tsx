@@ -6,7 +6,7 @@ import { VerticalContainer, Container } from '../../components/library/structure
 import { useRouter } from 'next/navigation';
 import { DASHBOARD_ROUTES, WEBSITE_ROUTES } from '../../constants/routes';
 import { useAuth } from '../../context/AuthenticationContext';
-import ProtectedRoute from '../../components/library/routing/ProtectedRoute';
+import { ProtectedRoute } from '../../components/library/routing';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
 	const router = useRouter();
