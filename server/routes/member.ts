@@ -1,11 +1,8 @@
 import { Router } from "express";
-/* import { MemberController } from "../controllers/memberController";
-import { authCheck  } from "../middleware/auth"; */
-const { MemberController } = require('../controllers/memberController')
-const { authCheck } = require('../middleware/auth');
+import { MemberController } from "../controllers/memberController";
+import { authCheck } from "../middleware/auth";
 
 const router = Router()
-
 
 router.post("/", authCheck, MemberController.create)
 router.get("/", authCheck, MemberController.getAll)

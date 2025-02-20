@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
 
 const UserSchema = new Schema({
     email: {
@@ -17,6 +17,10 @@ const UserSchema = new Schema({
         enum: ["Owner", "Member", "Cashier", "Waiter"],
         default: "Owner",
     },
+    profile:{
+        type:Types.ObjectId,
+        ref:"Profile"
+    }
 });
 
 const Owner = mongoose.model('Owner', UserSchema);

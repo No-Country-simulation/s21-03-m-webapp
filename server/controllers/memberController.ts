@@ -2,11 +2,6 @@ import { Request, Response } from "express";
 import Member from "../models/Member";
 import { hashPassword } from "../utils/hashedPassword";
 
-interface AuthRequest extends Request {
-    ownerId?: string
-    memberId?: string
-    type?: string
-}
 
 export class MemberController {
 
@@ -79,7 +74,7 @@ export class MemberController {
             });
         }
     }
-    static getAll = async (req: AuthRequest, res: Response) => {
+    static getAll = async (req: Request, res: Response) => {
 
         const ownerId = req.ownerId
         try {
@@ -101,7 +96,7 @@ export class MemberController {
         }
     }
 
-    static create = async (req: AuthRequest, res: Response) => {
+    static create = async (req: Request, res: Response) => {
 
         const ownerId = req.ownerId
         const { name, email, password, rol } = req.body

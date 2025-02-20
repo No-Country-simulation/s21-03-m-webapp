@@ -3,7 +3,7 @@ import { Types } from "mongoose";
 import jwt from "jsonwebtoken"
 
 
-/* declare global {
+declare global {
     namespace Express {
         interface Request {
             ownerId?: Types.ObjectId
@@ -11,15 +11,9 @@ import jwt from "jsonwebtoken"
             type?:string
         }
     }
-} */
-
-interface AuthRequest extends Request {
-    ownerId?: string
-    memberId?: string
-    type?: string
 }
 
-export const authCheck = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const authCheck = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.headers.token as string;
 
@@ -29,6 +23,7 @@ export const authCheck = async (req: AuthRequest, res: Response, next: NextFunct
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+    
         if (!decoded) {
             res.status(401).send("No Autorizado");
             return
@@ -36,14 +31,16 @@ export const authCheck = async (req: AuthRequest, res: Response, next: NextFunct
         if (typeof decoded === "object" && decoded.type) {
 
             if (decoded.type === "owner") {
-                req.ownerId = decoded.id
-                req.type = decoded.type
+                req.ownerId = decoded.ownerId
+                req.type=decoded.type
+              
             }
             if (decoded.type === "member") {
                 req.memberId = decoded.memberId
-                req.ownerId = decoded.ownerId
-                req.type = decoded.type
-            }
+                req.ownerId=decoded.ownerId
+                req.type=decoded.type
+               
+            }   
         }
         next();
     } catch (error) {

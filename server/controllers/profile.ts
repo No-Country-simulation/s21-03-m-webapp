@@ -1,15 +1,28 @@
 import { Request, Response } from "express";
 import Profile from "../models/Profile";
+import { ProfileSchema } from "../schemas/schemas";
 
-interface AuthRequest extends Request {
-    userId?: string;
-}
 
-export const edit = async (req: AuthRequest, res: Response) => {
-    const { name, address, logo, phone, email } = req.body;
-    const userId = req.userId;
+export const edit = async (req: Request, res: Response) => {
+    const { name, address, phone, email } = req.body;
 
-    const profile = await Profile.findOne({ ownerId: userId })
+    if (req.type !== "owner") {
+        res.status(401).json({
+            msg: "No tienes permisos para realizar esta acción."
+        })
+        return
+    }
+
+    const result=ProfileSchema.safeParse(req.body)
+    if(!result.success){
+        res.status(400).json({
+            msg:result.error.issues.map(err=>err.message)
+        })
+        return
+    }
+
+    const ownerId = req.ownerId;
+    const profile = await Profile.findOne({ ownerId })
 
     if (!profile) {
         return res.status(404).send({ msg: 'No existe el perfil.' });
@@ -18,14 +31,14 @@ export const edit = async (req: AuthRequest, res: Response) => {
     try {
         profile.name = name
         profile.address = address
-        profile.logo = logo // TODO: como se manejara las imagenes?
         profile.phone = phone
         profile.email = email
 
-        await profile.save();
+        await profile.save()
 
         return res.status(200).json({
-            msg: 'Perfil Editado Correctamente.'
+            msg: 'Perfil Editado Correctamente.',
+            profile
         });
     } catch (error) {
         return res.status(500).json({
