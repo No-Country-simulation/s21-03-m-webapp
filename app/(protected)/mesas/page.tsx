@@ -15,7 +15,7 @@ interface Table {
 
 const MAP_HEIGHT = 650;
 const TABLE_SIZE = 80;
-const SNAP_DISTANCE = 85; // 🔹 Ajusta la distancia de snap
+const SNAP_DISTANCE = TABLE_SIZE + 5; // 🔹 Ajuste fino para un mejor snap
 
 const DraggableTable = ({ table }: { table: Table }) => {
 	const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: table.id });
@@ -112,14 +112,19 @@ const TableMap = () => {
 							newY = closestTable.y + (newY > closestTable.y ? SNAP_DISTANCE : -SNAP_DISTANCE);
 							newX = closestTable.x; // Mantener el mismo eje X
 						}
-						// 📍 Snap en diagonal (si están igual de cerca en X e Y)
+						// 📍 Snap en diagonal (nuevo método con mesa virtual "C")
 						else if (diffX < SNAP_DISTANCE && diffY < SNAP_DISTANCE) {
+							// 📌 Paso 1: Snap horizontal
 							const virtualX = closestTable.x + (newX > closestTable.x ? SNAP_DISTANCE : -SNAP_DISTANCE);
-							const virtualY = closestTable.y + (newY > closestTable.y ? SNAP_DISTANCE : -SNAP_DISTANCE);
+							const virtualY = closestTable.y; // No cambiamos Y aún
 
-							// 📌 Verificar que no se salga del mapa antes de asignar
-							newX = Math.max(0, Math.min(mapWidth - TABLE_SIZE, virtualX));
-							newY = Math.max(0, Math.min(MAP_HEIGHT - TABLE_SIZE, virtualY));
+							// 📌 Paso 2: Snap vertical desde la mesa "C"
+							const finalX = virtualX;
+							const finalY = closestTable.y + (newY > closestTable.y ? SNAP_DISTANCE : -SNAP_DISTANCE);
+
+							// 📌 Validar que no se salga del mapa
+							newX = Math.max(0, Math.min(mapWidth - TABLE_SIZE, finalX));
+							newY = Math.max(0, Math.min(MAP_HEIGHT - TABLE_SIZE, finalY));
 						}
 					}
 
