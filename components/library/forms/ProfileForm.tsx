@@ -34,13 +34,21 @@ const ProfileForm = ({ currentUser }: { currentUser: User | null }) => {
 
 	function onSubmit(values: ProfileFormData) {
 		startTransition(() => {
-			updateProfile(values).then((response) => {
-				toast({
-					description: response.msg,
-					duration: 3000,
+			updateProfile(values)
+				.then((response) => {
+					toast({
+						description: response.msg,
+						duration: 3000,
+						className: 'bg-chart-2 text-white [&>button]:text-white [&>button]:hover:text-white',
+					});
+					queryClient.invalidateQueries({ queryKey: ['currentUser'] });
+				})
+				.catch((error) => {
+					form.setError('root', {
+						type: 'manual',
+						message: error.message.split(',').join('\n'),
+					});
 				});
-				queryClient.invalidateQueries({ queryKey: ['currentUser'] });
-			});
 		});
 	}
 
@@ -57,7 +65,7 @@ const ProfileForm = ({ currentUser }: { currentUser: User | null }) => {
 							alt="Avatar"
 							className="w-full h-full object-cover"
 						/> */}
-					<label className="absolute bottom-0 right-0 bg-destructive text-white p-1 rounded-full cursor-pointer">
+					<label className="absolute bottom-0 right-0 bg-chart-1 text-white p-1 rounded-full cursor-pointer">
 						<Camera className="w-5 h-5" />
 						<input type="file" className="hidden" accept="image/*" disabled />
 					</label>
@@ -165,11 +173,12 @@ const ProfileForm = ({ currentUser }: { currentUser: User | null }) => {
 						)}
 					/>
 				</article>
-
 				{form.formState.errors.root && (
-					<FormMessage className="form-response-error">{form.formState.errors.root.message}</FormMessage>
+					<FormMessage className="form-response-error whitespace-pre-line">
+						{form.formState.errors.root.message}
+					</FormMessage>
 				)}
-				<Button type="submit" className="gap-2 mt-6" variant={'destructive'}>
+				<Button type="submit" className="gap-2 mt-6 bg-chart-1 hover:bg-orange-600">
 					<Save className="w-5 h-5" />
 					Guardar cambios
 				</Button>

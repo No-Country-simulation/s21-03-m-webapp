@@ -24,17 +24,17 @@ const DashboardNavbar = () => {
 							key={id}
 							href={url}
 							className={`flex flex-col items-center transition-all delay-75 ${
-								isActive ? 'text-destructive' : 'hover:text-destructive'
+								isActive ? 'text-chart-1' : 'hover:text-chart-1'
 							}`}
 						>
 							<Icon />
 							<p className="font-thin text-sm">{name}</p>
-							{isActive && <span className="w-full border-b border-destructive"></span>}
+							{isActive && <span className="w-full border-b border-chart-1"></span>}
 						</Link>
 					);
 				})}
 				<div
-					className="cursor-pointer flex flex-col items-center hover:text-destructive transition-all delay-75"
+					className="cursor-pointer flex flex-col items-center hover:text-chart-1 transition-all delay-75"
 					onClick={() => {
 						logoutUser();
 						router.push(WEBSITE_ROUTES.HOME);

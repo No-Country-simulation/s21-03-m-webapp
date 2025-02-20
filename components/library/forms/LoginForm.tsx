@@ -10,6 +10,7 @@ import { useTransition } from 'react';
 import { Button } from '../../ui/button';
 import Link from 'next/link';
 import { WEBSITE_ROUTES } from '../../../constants/routes';
+import { AuthenticationRequest } from '../../../types/authentication';
 
 const LoginForm = () => {
 	const [isPending, startTransition] = useTransition();
@@ -21,7 +22,7 @@ const LoginForm = () => {
 		mode: 'onBlur',
 	});
 
-	function onSubmit(values: LoginFormData) {
+	function onSubmit(values: AuthenticationRequest) {
 		startTransition(() => {
 			login(values, {
 				onError: (error) => {

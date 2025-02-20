@@ -45,13 +45,13 @@ export const dashboard_links = [
 	},
 	{
 		id: 5,
-		name: 'Members',
+		name: 'Miembros',
 		icon: UsersRound,
 		url: DASHBOARD_ROUTES.MEMBERS,
 	},
 	{
 		id: 6,
-		name: 'Profile',
+		name: 'Mi Cuenta',
 		icon: CircleUserRound,
 		url: DASHBOARD_ROUTES.PROFILE,
 	},

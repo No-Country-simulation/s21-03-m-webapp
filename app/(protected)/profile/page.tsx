@@ -6,8 +6,9 @@ import ProfileForm from '../../../components/library/forms/ProfileForm';
 
 const ProfilePage = () => {
 	const { user } = useAuth();
+
 	return (
-		<div className="pt-[4rem] flex flex-col items-center justify-center">
+		<div className="flex flex-col items-center justify-center">
 			<Card className="w-full max-w-md p-4 shadow-lg">
 				<CardHeader className="text-center">
 					<CardTitle className="font-bold text-2xl">Mi Perfil</CardTitle>

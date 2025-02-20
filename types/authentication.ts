@@ -1,8 +1,13 @@
 import { Profile } from './profile';
 
-export interface LoginRequest {
-	username: string;
+export interface AuthenticationRequest {
+	email: string;
 	password: string;
+}
+
+export interface AuthenticationResponse {
+	user: User;
+	token: string;
 }
 
 export interface User {
@@ -10,11 +15,6 @@ export interface User {
 	email: string;
 	role: 'Owner' | 'Member' | 'Cashier' | 'Waiter';
 	profile: Profile;
-}
-
-export interface AuthenticationResponse {
-	user: User;
-	token: string;
 }
 
 export interface AuthenticationContextType {
