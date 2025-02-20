@@ -1,4 +1,4 @@
-import { Document, Types } from "mongoose"
+import mongoose, { Document, Schema, Types } from "mongoose"
 
 
 export enum TableStatus {
@@ -14,3 +14,32 @@ interface ITable extends Document {
     y: number
     status: TableStatus
 }
+
+
+const TableSchema=new Schema({
+    salonId:{
+        type:Types.ObjectId,
+        ref:"Salon"
+    },
+    number:{
+        type:String,
+        required:true
+    },
+    x:{
+        type:Number,
+        required:true
+    },
+    y:{
+        type:Number,
+        required:true
+    },
+    status:{
+        type:String,
+        enum:TableStatus,
+        default:TableStatus.FREE
+    }
+})
+
+const Table=mongoose.model<ITable>("Table",TableSchema)
+export default Table
+

@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import Profile from "../models/Profile";
-import { ProfileSchema } from "../schemas/schemas";
 
 
 export const edit = async (req: Request, res: Response) => {
@@ -9,14 +8,6 @@ export const edit = async (req: Request, res: Response) => {
     if (req.type !== "owner") {
         res.status(401).json({
             msg: "No tienes permisos para realizar esta acción."
-        })
-        return
-    }
-
-    const result=ProfileSchema.safeParse(req.body)
-    if(!result.success){
-        res.status(400).json({
-            msg:result.error.issues.map(err=>err.message)
         })
         return
     }

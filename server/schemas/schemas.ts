@@ -24,3 +24,9 @@ export const CategorySchema = z.object({
     name: z.string().min(1, { message: "Debes ingresar un nombre" }),
     description: z.string().min(1, { message: "Debes ingresar una descripcion" }),
 })
+
+export const TableSchema = z.object({
+    number: z.string().min(1, { message: "Debes ingresar al menos un caracter" }),
+    x: z.number().min(1, { message: "Debes ingresar un numero" }),
+    y: z.number().min(1, { message: "Debes ingresar un numero" })
+})
