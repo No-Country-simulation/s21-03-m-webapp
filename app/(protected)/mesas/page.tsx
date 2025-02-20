@@ -80,11 +80,15 @@ const TableMap = () => {
 		setTables((prev) =>
 			prev.map((table) => {
 				if (table.id === active.id) {
-					// Initial position calculation
+					// Guardamos la posición original en caso de necesitar revertir el movimiento
+					const originalX = table.x;
+					const originalY = table.y;
+
+					// Cálculo inicial de la nueva posición
 					let newX = Math.max(0, Math.min(mapWidth - TABLE_SIZE, table.x + delta.x));
 					let newY = Math.max(0, Math.min(MAP_HEIGHT - TABLE_SIZE, table.y + delta.y));
 
-					// Find closest table
+					// Encontrar la mesa más cercana
 					const result = prev.reduce<{ table: Table | null; minDistance: number }>(
 						(closest, otherTable) => {
 							if (otherTable.id === table.id) return closest;
@@ -106,30 +110,44 @@ const TableMap = () => {
 
 					const closestTable = result.table;
 
-					// Apply snapping if we found a close table
+					// Aplicar snappeo si encontramos una mesa cercana
 					if (closestTable) {
 						const diffX = Math.abs(newX - closestTable.x);
 						const diffY = Math.abs(newY - closestTable.y);
 
-						// Snap horizontally
+						// Snap horizontal
 						if (diffX < SNAP_DISTANCE && diffX > diffY) {
 							newX = closestTable.x + (newX > closestTable.x ? SNAP_DISTANCE : -SNAP_DISTANCE);
 							newY = closestTable.y;
 						}
-						// Snap vertically
+						// Snap vertical
 						else if (diffY < SNAP_DISTANCE && diffY > diffX) {
 							newY = closestTable.y + (newY > closestTable.y ? SNAP_DISTANCE : -SNAP_DISTANCE);
 							newX = closestTable.x;
 						}
-						// Snap diagonally
+						// Snap diagonal
 						else if (diffX < SNAP_DISTANCE && diffY < SNAP_DISTANCE) {
 							const virtualX = closestTable.x + (newX > closestTable.x ? SNAP_DISTANCE : -SNAP_DISTANCE);
 							const virtualY = closestTable.y + (newY > closestTable.y ? SNAP_DISTANCE : -SNAP_DISTANCE);
 
-							// Ensure we stay within bounds
-							newX = Math.max(0, Math.min(mapWidth - TABLE_SIZE, virtualX));
-							newY = Math.max(0, Math.min(MAP_HEIGHT - TABLE_SIZE, virtualY));
+							// Verificar si la nueva posición está dentro de los límites
+							const adjustedX = Math.max(0, Math.min(mapWidth - TABLE_SIZE, virtualX));
+							const adjustedY = Math.max(0, Math.min(MAP_HEIGHT - TABLE_SIZE, virtualY));
+
+							// Si la posición ajustada es diferente de la calculada, significa que se intentó salir del mapa
+							if (adjustedX !== virtualX || adjustedY !== virtualY) {
+								return { ...table, x: originalX, y: originalY }; // Revertimos el movimiento
+							}
+
+							newX = adjustedX;
+							newY = adjustedY;
 						}
+					}
+
+					// Si la nueva posición saca la mesa del mapa, revertimos el movimiento
+					if (newX < 0 || newX + TABLE_SIZE > mapWidth || newY < 0 || newY + TABLE_SIZE > MAP_HEIGHT) {
+						console.warn('🚨 Movimiento inválido, revirtiendo...');
+						return { ...table, x: originalX, y: originalY };
 					}
 
 					return { ...table, x: newX, y: newY };
