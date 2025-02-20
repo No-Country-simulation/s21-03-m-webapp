@@ -133,8 +133,6 @@ Este sistema está dirigido a restaurantes, cafeterías, bares y food trucks que
     <td><a href="https://github.com/Tolomatico" target="_blank">Tolomatico</a> </td>
     <td><img src="https://avatars.githubusercontent.com/u/114162800?v=4" width="32"> </td>
   </tr>
-
-
   <tr>
     <td>🔄 Full Stack</td>
     <td>Tomas Padilla</td>
@@ -146,8 +144,6 @@ Este sistema está dirigido a restaurantes, cafeterías, bares y food trucks que
     <td><a href="https://github.com/PadillaTom" target="_blank">PadillaTom</a> </td>
     <td><img src="https://avatars.githubusercontent.com/u/59969816?v=4" width="32"> </td>
   </tr>
-
-
   <tr>
     <td>🎨 Frontend</td>
     <td>Alan Zurita</td>
@@ -171,9 +167,6 @@ Este sistema está dirigido a restaurantes, cafeterías, bares y food trucks que
     <td><a href="https://github.com/Tomas213-V" target="_blank">Tomas213-V</a> </td>
     <td><img src="https://avatars.githubusercontent.com/u/188509281?v=4" width="32"> </td>
   </tr>
-
-
-
 </table>
 <br/>
 
@@ -192,6 +185,8 @@ La base de datos la administramos mediante el **ORM** que se usa en el proyecto 
   <img src="./project-resources/icons/svg/Mongoose.js.svg" alt="icon-svg" width="22">
 </div>
 
+`#mongoDb`,`#mongoose`
+
 ### - 🛠️ Back End {#back}
 
 Este proyecto usa las tecnologías **nodejs**, **express** con los modulos de **Data**,  **Security** y **Cloud**; entre otros.
@@ -201,6 +196,8 @@ Este proyecto usa las tecnologías **nodejs**, **express** con los modulos de **
   <img src="./project-resources/icons/svg/OpenAPI.svg" alt="icon-svg" width="22">
   <img src="./project-resources/icons/svg/Swagger.svg" alt="icon-svg" width="22">
 </div>
+
+`#express`,`#openApi`,`#nodejs`,
 
 ### - 🛠️ Front End {#front}
 
@@ -213,6 +210,8 @@ Las estrategias y herramientas que se usaron al momento de hacer las pruebas.
   <img src="./project-resources/icons/svg/TypeScript.svg" alt="icon-svg" width="22">
   <img src="./project-resources/icons/svg/HTML5.svg" alt="icon-svg" width="22">
 </div>
+
+`#react`, `#nextjs`, `#typescript`
 
 <br/>
 
@@ -246,7 +245,7 @@ Pruevas para garantizar que los usuarios tengan una buena experiencia.
   <img src="./project-resources/icons/svg/Visual-Studio-Code-(VS-Code).svg" alt="icon-svg" width="22">
 </div>
 
-`postman` `Swagger` `browser-dev-tools` `visual studio code`.
+`#postman`, `#swagger`, `#dev-tools`, `#visual-studio-code`.
 
 <br/>
 
@@ -254,7 +253,7 @@ Pruevas para garantizar que los usuarios tengan una buena experiencia.
 
 ## Agradecimientos 🎉 {#acknowledgements}
 
-Reconocer a las personas o proyectos que ayudaron en el desarrollo del software.
+Agradecimientos a [**No Country**](https://github.com/No-Country-simulation) por organizar este espacio para adquirir más experiencia laboral.
 
 <div style="text-align:left;">
   <img src="./project-resources/images/no-country-logo.png" width="120">
