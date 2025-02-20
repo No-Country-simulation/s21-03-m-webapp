@@ -1,14 +1,16 @@
-import { Types } from "mongoose"
+import { Document, Types } from "mongoose"
 
 
-enum TableStatus{
-   
+export enum TableStatus {
+    FREE = "Free",
+    OCCUPIED = "Occupied",
+    BILLING = "Billing"
 }
 
-interface ITable{
-    salonId:Types.ObjectId
+interface ITable extends Document {
+    salonId: Types.ObjectId
     number: string
-    x:number
-    y:number
-    status:TableStatus
+    x: number
+    y: number
+    status: TableStatus
 }

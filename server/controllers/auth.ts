@@ -5,6 +5,8 @@ import { generateJWT } from "../utils/jwt";
 import Owner from "../models/Owner";
 import Profile from "../models/Profile";
 import { LoginSchema, RegisterSchema } from "../schemas/schemas";
+import Salon from "../models/Salon";
+import { Types } from "mongoose";
 
 
 export class Auth {
@@ -32,11 +34,23 @@ export class Auth {
         try {
             owner = new Owner(req.body);
 
-            const profile = await new Profile({ ownerId: owner._id }).save();
+            const [profile, salon] = await Promise.allSettled(
+                [
+                    new Profile({ ownerId: owner._id }).save(),
+                    new Salon({ name: "Mi Primer Salón",ownerId:owner.id }).save()
+                ])
+
+            if (profile.status === "rejected" || salon.status === "rejected") {
+                res.status(500).json({
+                    msg: "Ha ocurrido un error interno."
+                })
+                return
+            }
+
 
             owner.password = await hashPassword(password)
-            owner.profile = profile.id
-            await owner.save();
+            owner.profile = profile.value.id
+            await owner.save()
 
             const token = generateJWT({ ownerId: owner._id, type: "owner" })
 
