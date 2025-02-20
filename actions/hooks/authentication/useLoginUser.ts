@@ -1,16 +1,16 @@
 import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { registerUser } from '../authentication';
-import { DASHBOARD_ROUTES } from '../../constants/routes';
-import { useAuth } from '../../context/AuthenticationContext';
+import { loginUser } from '@/actions/authentication';
+import { DASHBOARD_ROUTES } from '@/constants/routes';
+import { useAuth } from '@/context/AuthenticationContext';
 
-export function useRegisterUser() {
+export function useLoginUser() {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 	const { updateToken } = useAuth();
 
 	return useMutation({
-		mutationFn: registerUser,
+		mutationFn: loginUser,
 		onSuccess: (response) => {
 			updateToken(response.token);
 			queryClient.setQueryData(['currentUser'], response);
