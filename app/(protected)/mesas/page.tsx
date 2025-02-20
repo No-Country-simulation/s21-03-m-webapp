@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { DndContext, useDraggable, useDroppable, DragEndEvent } from '@dnd-kit/core';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 
 interface Table {
 	id: number;
@@ -13,8 +13,9 @@ interface Table {
 	y: number;
 }
 
-const MAP_HEIGHT = 650; // Altura fija del mapa
-const TABLE_SIZE = 80; // Tamaño de cada mesa
+const MAP_HEIGHT = 650;
+const TABLE_SIZE = 80;
+const SNAP_DISTANCE = 85; // 🔹 Ajusta la distancia de snap
 
 const DraggableTable = ({ table }: { table: Table }) => {
 	const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: table.id });
@@ -44,14 +45,12 @@ const TableMap = () => {
 	const mapRef = useRef<HTMLDivElement | null>(null);
 	const [mapWidth, setMapWidth] = useState(0);
 
-	// 🛠 Función para actualizar el ancho del mapa dinámicamente
 	const updateMapWidth = () => {
 		if (mapRef.current) {
 			setMapWidth(mapRef.current.offsetWidth);
 		}
 	};
 
-	// 📌 Se ejecuta al montar el componente y en cada resize de la ventana
 	useEffect(() => {
 		updateMapWidth();
 		window.addEventListener('resize', updateMapWidth);
@@ -65,8 +64,8 @@ const TableMap = () => {
 		const newTable: Table = {
 			id: Date.now(),
 			number: parseInt(tableNumber, 10),
-			x: (mapWidth - TABLE_SIZE) / 2, // Centrar horizontalmente dentro del mapa
-			y: (MAP_HEIGHT - TABLE_SIZE) / 2, // Centrar verticalmente
+			x: (mapWidth - TABLE_SIZE) / 2,
+			y: (MAP_HEIGHT - TABLE_SIZE) / 2,
 		};
 		setTables((prev) => [...prev, newTable]);
 		setTableNumber('');
@@ -78,9 +77,51 @@ const TableMap = () => {
 		setTables((prev) =>
 			prev.map((table) => {
 				if (table.id === active.id) {
-					// 📌 Prevenir que la mesa salga del mapa (incluyendo después de un resize)
-					const newX = Math.max(0, Math.min(mapWidth - TABLE_SIZE, table.x + delta.x));
-					const newY = Math.max(0, Math.min(MAP_HEIGHT - TABLE_SIZE, table.y + delta.y));
+					let newX = Math.max(0, Math.min(mapWidth - TABLE_SIZE, table.x + delta.x));
+					let newY = Math.max(0, Math.min(MAP_HEIGHT - TABLE_SIZE, table.y + delta.y));
+
+					let closestTable: Table | null = null;
+					let minDistance = SNAP_DISTANCE;
+
+					// 📌 Buscar la mesa más cercana
+					prev.forEach((otherTable) => {
+						if (otherTable.id !== table.id) {
+							const distanceX = Math.abs(newX - otherTable.x);
+							const distanceY = Math.abs(newY - otherTable.y);
+							const totalDistance = distanceX + distanceY;
+
+							if (totalDistance < minDistance) {
+								minDistance = totalDistance;
+								closestTable = otherTable;
+							}
+						}
+					});
+
+					// 📌 Aplicar Snap basado en la dirección predominante
+					if (closestTable) {
+						const diffX = Math.abs(newX - closestTable.x);
+						const diffY = Math.abs(newY - closestTable.y);
+
+						// 📍 Snap en X (izquierda o derecha)
+						if (diffX < SNAP_DISTANCE && diffX > diffY) {
+							newX = closestTable.x + (newX > closestTable.x ? SNAP_DISTANCE : -SNAP_DISTANCE);
+							newY = closestTable.y; // Mantener el mismo eje Y
+						}
+						// 📍 Snap en Y (arriba o abajo)
+						else if (diffY < SNAP_DISTANCE && diffY > diffX) {
+							newY = closestTable.y + (newY > closestTable.y ? SNAP_DISTANCE : -SNAP_DISTANCE);
+							newX = closestTable.x; // Mantener el mismo eje X
+						}
+						// 📍 Snap en diagonal (si están igual de cerca en X e Y)
+						else if (diffX < SNAP_DISTANCE && diffY < SNAP_DISTANCE) {
+							const virtualX = closestTable.x + (newX > closestTable.x ? SNAP_DISTANCE : -SNAP_DISTANCE);
+							const virtualY = closestTable.y + (newY > closestTable.y ? SNAP_DISTANCE : -SNAP_DISTANCE);
+
+							// 📌 Verificar que no se salga del mapa antes de asignar
+							newX = Math.max(0, Math.min(mapWidth - TABLE_SIZE, virtualX));
+							newY = Math.max(0, Math.min(MAP_HEIGHT - TABLE_SIZE, virtualY));
+						}
+					}
 
 					console.log('📌 Mesa actualizada:', { id: active.id, newX, newY });
 
