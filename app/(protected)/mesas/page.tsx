@@ -159,9 +159,17 @@ const TableMap = () => {
 
 	return (
 		<DndContext onDragEnd={handleDragEnd}>
-			<section className="flex flex-col items-center justify-center max-w-1800">
+			<section className="flex flex-col items-center justify-center max-w-1800 gap-6">
+				{/* Titulo */}
+				<article className="flex flex-col gap-2 items-center text-center">
+					<h1 className="text-3xl font-bold mb-2">📍 Mapa de Mesas</h1>
+					<p className="text-gray-600 max-w-md">
+						Organiza y ajusta la distribución de las mesas de tu restaurante de forma fácil e intuitiva.
+					</p>
+				</article>
+				{/* Mapa de mesas */}
 				<Card className="w-full px-6 py-8 shadow-lg">
-					<h1 className="text-2xl font-bold mb-4">Mapa de Mesas</h1>
+					<h1 className="text-2xl font-bold mb-4">Salon Principal</h1>
 					<div className="flex gap-2 mb-4">
 						<Input
 							placeholder="Número de mesa"
@@ -172,7 +180,6 @@ const TableMap = () => {
 						/>
 						<Button onClick={addTable}>Agregar Mesa</Button>
 					</div>
-
 					<div
 						ref={(node) => {
 							setNodeRef(node);
