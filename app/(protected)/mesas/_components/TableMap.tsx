@@ -117,7 +117,7 @@ const TableMap = ({ salon }: { salon: Salon }) => {
 
 	return (
 		<DndContext onDragEnd={handleDragEnd}>
-			<article className="w-full px-6 py-8 bg-white">
+			<article className="w-full px-6 py-8 border bg-white shadow-md rounded-tr-lg rounded-b-lg">
 				<h1 className="text-2xl font-bold mb-4">{salon.name}</h1>
 				<div className="flex gap-2 mb-4">
 					<Input

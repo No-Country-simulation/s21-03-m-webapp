@@ -17,14 +17,14 @@ const SalonTabs = ({ salones }: SalonTabsProps) => {
 			{/* Contenedor de Tabs (Pestañas) */}
 			<div className="flex">
 				<button
-					className={`px-3 py-3 text-sm font-medium transition-all duration-200 rounded-t-xl  border border-b-0'bg-white text-gray-600 hover:text-chart-1 }`}
+					className={`px-3 py-2 text-sm font-medium transition-all duration-200 rounded-t-xl  border border-b-0'bg-white text-gray-600 hover:text-chart-1 }`}
 				>
 					<Plus></Plus>
 				</button>
 				{salones.map((salon) => (
 					<button
 						key={salon._id}
-						className={`px-6 py-3 text-sm font-medium transition-all duration-200 rounded-t-xl  border border-b-0 ${
+						className={`px-6 py-2 text-sm font-medium transition-all duration-200 rounded-t-xl  border border-b-0 ${
 							activeTab === salon._id.toString() ? 'text-white bg-chart-1' : 'bg-white text-gray-600 hover:text-chart-1'
 						}`}
 						onClick={() => setActiveTab(salon._id.toString())}
