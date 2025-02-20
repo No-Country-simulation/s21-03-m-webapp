@@ -7,7 +7,7 @@ export enum TableStatus {
     BILLING = "Billing"
 }
 
-interface ITable extends Document {
+export interface ITable extends Document {
     salonId: Types.ObjectId
     number: string
     x: number

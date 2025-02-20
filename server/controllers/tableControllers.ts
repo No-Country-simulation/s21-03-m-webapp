@@ -3,11 +3,46 @@ import { TableSchema } from "../schemas/schemas"
 import Table from "../models/Table"
 
 export class TableController {
+    
+    static get= async (req: Request, res: Response) => {
+
+        try {
+            const table=await Table.findOne({_id:req.params.tableId})
+          
+            res.status(200).json({
+                table
+            })
+        } catch (error) {
+            res.status(404).json({
+                msg: "Hubo un error"
+            })
+        }
+    }
+    static getAll = async (req: Request, res: Response) => {
+
+        try {
+            const tables=await Table.find({salonId:req.salon.id})
+            if(tables.length===0){
+                res.status(400).json({
+                    msg: "No hay mesas creadas"
+                })
+                return
+            }
+            res.status(200).json({
+                tables
+            })
+        } catch (error) {
+            res.status(404).json({
+                msg: "Hubo un error"
+            })
+        }
+    }
+
 
     static create = async (req: Request, res: Response) => {
 
         const result = TableSchema.safeParse(req.body)
-        console.log(result.error.issues)
+
         if (!result.success) {
             res.status(400).json({
                 msg: result.error.issues.map(err => err.message)
@@ -17,16 +52,16 @@ export class TableController {
 
         try {
 
-            let table = await Table.findOne({number:req.body.number})
-            if(table){
+            let table = await Table.findOne({ number: req.body.number })
+            if (table) {
                 res.status(400).json({
-                    msj:"Ya existe una mesa con ese identificador"
+                    msj: "Ya existe una mesa con ese identificador"
                 })
                 return
             }
 
-            table=await Table.create(req.body)
-            table.salonId=req.salon.id
+            table = await Table.create(req.body)
+            table.salonId = req.salon.id
             await table.save()
 
             res.status(201).json({
@@ -40,4 +75,48 @@ export class TableController {
         }
 
     }
+
+    static update = async (req: Request, res: Response) => {
+
+        try {
+            const table =await Table.findByIdAndUpdate(req.table.id,
+                req.body, { new: true }     
+            )
+
+            res.status(200).json({
+                msg: "Mesa actualizada",
+                table 
+            })
+
+        } catch (error) {
+            res.status(404).json({
+                msg: "Hubo un error"
+            })
+        }
+
+    }
+
+    static delete = async (req: Request, res: Response) => {
+
+        try {
+            req.table.deleteOne()
+
+            res.status(200).json({
+                msg: "Mesa eliminada"
+            })
+
+        } catch (error) {
+            res.status(404).json({
+                msg: "Hubo un error"
+            })
+        }
+
+    }
+
+
+
+
+
+
+
 }
