@@ -15,7 +15,7 @@ interface Table {
 
 const MAP_HEIGHT = 650;
 const TABLE_SIZE = 80;
-const SNAP_DISTANCE = TABLE_SIZE + 5; // 🔹 Ajuste fino para un mejor snap
+const SNAP_DISTANCE = 85;
 
 const DraggableTable = ({ table }: { table: Table }) => {
 	const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: table.id });
@@ -61,9 +61,12 @@ const TableMap = () => {
 
 	const addTable = () => {
 		if (tableNumber.trim() === '') return;
+		const number = parseInt(tableNumber, 10);
+		if (isNaN(number)) return;
+
 		const newTable: Table = {
 			id: Date.now(),
-			number: parseInt(tableNumber, 10),
+			number,
 			x: (mapWidth - TABLE_SIZE) / 2,
 			y: (MAP_HEIGHT - TABLE_SIZE) / 2,
 		};
@@ -77,58 +80,57 @@ const TableMap = () => {
 		setTables((prev) =>
 			prev.map((table) => {
 				if (table.id === active.id) {
+					// Initial position calculation
 					let newX = Math.max(0, Math.min(mapWidth - TABLE_SIZE, table.x + delta.x));
 					let newY = Math.max(0, Math.min(MAP_HEIGHT - TABLE_SIZE, table.y + delta.y));
 
-					let closestTable: Table | null = null;
-					let minDistance = SNAP_DISTANCE;
+					// Find closest table
+					const result = prev.reduce<{ table: Table | null; minDistance: number }>(
+						(closest, otherTable) => {
+							if (otherTable.id === table.id) return closest;
 
-					// 📌 Buscar la mesa más cercana
-					prev.forEach((otherTable) => {
-						if (otherTable.id !== table.id) {
 							const distanceX = Math.abs(newX - otherTable.x);
 							const distanceY = Math.abs(newY - otherTable.y);
 							const totalDistance = distanceX + distanceY;
 
-							if (totalDistance < minDistance) {
-								minDistance = totalDistance;
-								closestTable = otherTable;
+							if (totalDistance < closest.minDistance) {
+								return {
+									table: otherTable,
+									minDistance: totalDistance,
+								};
 							}
-						}
-					});
+							return closest;
+						},
+						{ table: null, minDistance: SNAP_DISTANCE },
+					);
 
-					// 📌 Aplicar Snap basado en la dirección predominante
+					const closestTable = result.table;
+
+					// Apply snapping if we found a close table
 					if (closestTable) {
 						const diffX = Math.abs(newX - closestTable.x);
 						const diffY = Math.abs(newY - closestTable.y);
 
-						// 📍 Snap en X (izquierda o derecha)
+						// Snap horizontally
 						if (diffX < SNAP_DISTANCE && diffX > diffY) {
 							newX = closestTable.x + (newX > closestTable.x ? SNAP_DISTANCE : -SNAP_DISTANCE);
-							newY = closestTable.y; // Mantener el mismo eje Y
+							newY = closestTable.y;
 						}
-						// 📍 Snap en Y (arriba o abajo)
+						// Snap vertically
 						else if (diffY < SNAP_DISTANCE && diffY > diffX) {
 							newY = closestTable.y + (newY > closestTable.y ? SNAP_DISTANCE : -SNAP_DISTANCE);
-							newX = closestTable.x; // Mantener el mismo eje X
+							newX = closestTable.x;
 						}
-						// 📍 Snap en diagonal (nuevo método con mesa virtual "C")
+						// Snap diagonally
 						else if (diffX < SNAP_DISTANCE && diffY < SNAP_DISTANCE) {
-							// 📌 Paso 1: Snap horizontal
 							const virtualX = closestTable.x + (newX > closestTable.x ? SNAP_DISTANCE : -SNAP_DISTANCE);
-							const virtualY = closestTable.y; // No cambiamos Y aún
+							const virtualY = closestTable.y + (newY > closestTable.y ? SNAP_DISTANCE : -SNAP_DISTANCE);
 
-							// 📌 Paso 2: Snap vertical desde la mesa "C"
-							const finalX = virtualX;
-							const finalY = closestTable.y + (newY > closestTable.y ? SNAP_DISTANCE : -SNAP_DISTANCE);
-
-							// 📌 Validar que no se salga del mapa
-							newX = Math.max(0, Math.min(mapWidth - TABLE_SIZE, finalX));
-							newY = Math.max(0, Math.min(MAP_HEIGHT - TABLE_SIZE, finalY));
+							// Ensure we stay within bounds
+							newX = Math.max(0, Math.min(mapWidth - TABLE_SIZE, virtualX));
+							newY = Math.max(0, Math.min(MAP_HEIGHT - TABLE_SIZE, virtualY));
 						}
 					}
-
-					console.log('📌 Mesa actualizada:', { id: active.id, newX, newY });
 
 					return { ...table, x: newX, y: newY };
 				}
