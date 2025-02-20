@@ -1,9 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import TableMap from './TableMap';
 import { Salon } from '@/types/mesas';
-import { Plus } from 'lucide-react';
+import { SalonesCreateButton, TableMap } from './';
 
 interface SalonTabsProps {
 	salones: Salon[];
@@ -16,11 +15,7 @@ const SalonTabs = ({ salones }: SalonTabsProps) => {
 		<div className="w-full">
 			{/* Contenedor de Tabs (Pestañas) */}
 			<div className="flex">
-				<button
-					className={`px-3 py-2 text-sm font-medium transition-all duration-200 rounded-t-xl  border border-b-0'bg-white text-gray-600 hover:text-chart-1 }`}
-				>
-					<Plus></Plus>
-				</button>
+				<SalonesCreateButton></SalonesCreateButton>
 				{salones.map((salon) => (
 					<button
 						key={salon._id}

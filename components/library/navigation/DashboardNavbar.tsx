@@ -13,7 +13,7 @@ const DashboardNavbar = () => {
 	const { logoutUser } = useAuth();
 
 	return (
-		<nav className="hidden md:block fixed w-full h-[5rem] bg-white top-0 drop-shadow-md sm:flex flex-row items-center justify-center z-30">
+		<div className="hidden md:block fixed w-full h-[5rem] bg-white top-0 drop-shadow-md sm:flex flex-row items-center justify-center z-30">
 			{/* Desktop */}
 			<Container className="h-full nav-max-w-1200 flex flex-row justify-between items-center">
 				{dashboard_links.map((link) => {
@@ -44,7 +44,7 @@ const DashboardNavbar = () => {
 					<p className="font-thin text-sm">Salir</p>
 				</div>
 			</Container>
-		</nav>
+		</div>
 	);
 };
 

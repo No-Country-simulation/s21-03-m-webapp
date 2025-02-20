@@ -178,7 +178,7 @@ const ProfileForm = ({ currentUser }: { currentUser: User | null }) => {
 						{form.formState.errors.root.message}
 					</FormMessage>
 				)}
-				<Button type="submit" className="gap-2 mt-6 bg-chart-1 hover:bg-orange-600">
+				<Button type="submit" className="gap-2 mt-6 chart-1-button">
 					<Save className="w-5 h-5" />
 					Guardar cambios
 				</Button>

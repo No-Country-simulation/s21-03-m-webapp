@@ -11,3 +11,12 @@ export interface Table {
 	y: number;
 	status: 'Free' | 'Occupied' | 'Billing';
 }
+
+export interface SalonRequest {
+	name: string;
+}
+
+export interface SalonResponse {
+	msg: string;
+	salon: Salon;
+}
