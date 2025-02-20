@@ -1,11 +1,7 @@
-<div style="text-align:center;">
-  <h1 style="font-weight: bold;"> s21-03-m-webapp | placeholder</h1>
-  <picture>
-    <img src="./project-resources/images/placeholder.png" width="600">
-  </picture>
-    <p> placeholder</p>
-</div>
-
+<h1 style="font-weight: bold; text-align:center;"> s21-03-m-webapp | placeholder</h1>
+<p style="text-align:center;">
+  <img src="./project-resources/images/logo-mesa-360.png" width="720">
+</p>
 <br/>
 
 ---
@@ -69,12 +65,6 @@ Este sistema está dirigido a restaurantes, cafeterías, bares y food trucks que
   <thead>
     Equipo / contacto 
   </thead>
-  <colgroup>
-    <col style="border: 1px solid #8d8d8d;"/>
-    <col />
-    <col />
-    <col />
-  </colgroup>
   <tr>
     <th>Rol</th>
     <th>Nombre</th>
@@ -82,62 +72,108 @@ Este sistema está dirigido a restaurantes, cafeterías, bares y food trucks que
     <th>Github/+</th>
     <th>Avatar v4</th>
   </tr>
+<!--
   <tr>
-    <td style="font-weight: bold;"> 👔 Team Leader</td>
+    <td> 👔 Team Leader</td>
     <td>Fernando Vergel TL</td>
-    <td> <a href="https://www.linkedin.com/in/fernandovergel/" target="_blank">/fernandovergel/</a> </td>
-    <td> - </td>
-    <td> - </td>
+    <td><a href="https://www.linkedin.com/in/fernandovergel/" target="_blank">/fernandovergel/</a> </td>
+    <td>-</td>
+    <a href="https://www.linkedin.com/in/andresseguradev/" target="_blank">/andresseguradev/</a> 
+    <td>-</td>
+  </tr>
+-->
+  <tr>
+    <td>📜 Manager </td>
+    <td>Andrés Segura</td>
+    <td>
+      <a href="https://andres-segura.dev/" target="_blank">
+        <img src="./project-resources/icons/svg/LinkedIn.svg" alt="LinkedIn" width="32" height="32">
+      </a>
+    </td>
+        <td><a href="https://github.com/Andr7st" target="_blank">Andr7st</a> </td>
+    <td><img src="https://avatars.githubusercontent.com/u/63387323?s=96&v=4" width="32"> </td>
   </tr>
   <tr>
-    <td style="font-weight: bold;"> 📜 Manager </td>
-    <td> Andrés Segura</td>
-    <td> <a href="https://www.linkedin.com/in/andresseguradev/" target="_blank">/andresseguradev/</a> </td>
-    <td> <a href="https://andres-segura.dev/" target="_blank">andres-segura.dev</a> </td>
-    <td style="text-align:center;"> <img src="https://avatars.githubusercontent.com/u/63387323?s=96&v=4" width="32"> </td>
-  </tr>
-  <tr>
-    <td style="font-weight: bold;"> 📊 UX/UI</td>
-    <td> 🇦🇷 Malena Jara</td>
-    <td> - </td>
-    <td> <a href="https://github.com/Malena646" target="_blank">Malena646</a> </td>
-    <td style="text-align:center;"> <img src="https://avatars.githubusercontent.com/u/131561932?v=4" width="32"> </td>
+    <td>📊 UX/UI</td>
+    <td>Malena Jara</td>
+    <td>
+      <a href="https://www.linkedin.com/in/malena-jara/" target="_blank">
+        <img src="./project-resources/icons/svg/LinkedIn.svg" alt="LinkedIn" width="32" height="32">
+      </a>
+    </td>
+    <td><a href="https://github.com/Malena646" target="_blank">Malena646</a> </td>
+    <td><img src="https://avatars.githubusercontent.com/u/131561932?v=4" width="32"> </td>
   </tr> 
   <tr>
-    <td style="font-weight: bold;"> 🧪 Tests</td>
-    <td> Pía Crosa</td>
-    <td> - </td>
-    <td> - </td>
-    <td> - </td>
+    <td>🧪 Tests</td>
+    <td>Pía Crosa</td>
+    <td>-</td>
+    <td><a href="https://github.com/PiaCrosa/" target="_blank">PiaCrosa</a> </td>
+    <td><img src="https://avatars.githubusercontent.com/u/194109775?v=4" width="32"> </td>
   </tr>
   <tr>
-    <td style="font-weight: bold;"> ⚙️ Backend</td>
-    <td> Alejandro Verduguez</td>
-    <td> <a href="https://www.linkedin.com/in/alejandro-verduguez/" target="_blank">/alejandro-verduguez/</a> </td>
-    <td> <a href="https://github.com/alelex10/" target="_blank">alelex10</a> </td>
-    <td style="text-align:center;"> <img src="https://avatars.githubusercontent.com/u/70962701?v=4" width="32"> </td>
+    <td>⚙️ Backend</td>
+    <td>Alejandro Verduguez</td>
+        <td>
+      <a href="https://www.linkedin.com/in/alejandro-verduguez/" target="_blank">
+        <img src="./project-resources/icons/svg/LinkedIn.svg" alt="LinkedIn" width="32" height="32">
+      </a>
+    </td>
+    <td><a href="https://github.com/alelex10/" target="_blank">alelex10</a> </td>
+    <td><img src="https://avatars.githubusercontent.com/u/70962701?v=4" width="32"> </td>
   </tr>
   <tr>
-    <td style="font-weight: bold;"> 🔄 Full Stack</td>
-    <td> Tomás Ballesty</td>
-    <td> <a href="https://www.linkedin.com/in/tomas-ballesty-582548266/" target="_blank">/tomas-ballesty-582548266/</a> </td>
-    <td> <a href="https://github.com/Tolomatico" target="_blank">Tolomatico</a> </td>
-    <td style="text-align:center;"> <img src="https://avatars.githubusercontent.com/u/114162800?v=4" width="32"> </td>
+    <td>🔄 Full Stack</td>
+    <td>Tomás Ballesty</td>
+    <td>
+      <a href="https://www.linkedin.com/in/tomas-ballesty-582548266/" target="_blank">
+        <img src="./project-resources/icons/svg/LinkedIn.svg" alt="LinkedIn" width="32" height="32">
+      </a>
+    </td>
+    <td><a href="https://github.com/Tolomatico" target="_blank">Tolomatico</a> </td>
+    <td><img src="https://avatars.githubusercontent.com/u/114162800?v=4" width="32"> </td>
   </tr>
+
+
   <tr>
-    <td style="font-weight: bold;"> 🎨 Frontend</td>
-    <td> Alan Zurita</td>
-    <td> <a href="https://www.linkedin.com/in/alan-zurita/" target="_blank">/alan-zurita/</a> </td>
-    <td> <a href="https://github.com/AlanProgrammer93" target="_blank">AlanProgrammer93</a> </td>
-    <td style="text-align:center;"> <img src="https://avatars.githubusercontent.com/u/76537764?v=4" width="32"> </td>
+    <td>🔄 Full Stack</td>
+    <td>Tomas Padilla</td>
+    <td>
+      <a href="https://www.linkedin.com/in/padillatom/" target="_blank">
+        <img src="./project-resources/icons/svg/LinkedIn.svg" alt="LinkedIn" width="32" height="32">
+      </a>
+    </td>
+    <td><a href="https://github.com/PadillaTom" target="_blank">PadillaTom</a> </td>
+    <td><img src="https://avatars.githubusercontent.com/u/59969816?v=4" width="32"> </td>
   </tr>
+
+
   <tr>
-    <td style="font-weight: bold;"> 🎨 Frontend</td>
-    <td> Tomas Padilla</td>
-    <td> <a href="https://www.linkedin.com/in/padillatom/" target="_blank">/padillatom/</a> </td>
-    <td> <a href="https://github.com/PadillaTom" target="_blank">PadillaTom</a> </td>
-    <td style="text-align:center;"> <img src="https://avatars.githubusercontent.com/u/59969816?v=4" width="32"> </td>
+    <td>🎨 Frontend</td>
+    <td>Alan Zurita</td>
+        <td>
+      <a href="https://www.linkedin.com/in/alan-zurita/" target="_blank">
+        <img src="./project-resources/icons/svg/LinkedIn.svg" alt="LinkedIn" width="32" height="32">
+      </a>
+    </td>
+    <td><a href="https://github.com/AlanProgrammer93" target="_blank">AlanProgrammer93</a> </td>
+    <td><img src="https://avatars.githubusercontent.com/u/76537764?v=4" width="32"> </td>
   </tr>
+
+  <tr>
+    <td>🎨 Front End</td>
+    <td>Tomás Villegas</td>
+    <td>
+      <a href="https://www.linkedin.com/in/tomas-villegas-41b011272/" target="_blank">
+        <img src="./project-resources/icons/svg/LinkedIn.svg" alt="LinkedIn" width="32" height="32">
+      </a>
+    </td>
+    <td><a href="https://github.com/Tomas213-V" target="_blank">Tomas213-V</a> </td>
+    <td><img src="https://avatars.githubusercontent.com/u/188509281?v=4" width="32"> </td>
+  </tr>
+
+
+
 </table>
 <br/>
 
@@ -151,15 +187,32 @@ Nuestro proyecto, con el nombre clave **s21-03-m-webapp** está abstraido en los
 
 La base de datos la administramos mediante el **ORM** que se usa en el proyecto backend, pero también usamos el administrador de conexiones mediante la terminal de comandos para hacer las practicas.
 
+<div style="text-align:left;">
+  <img src="./project-resources/icons/svg/MongoDB.svg" alt="icon-svg" width="22">
+  <img src="./project-resources/icons/svg/Mongoose.js.svg" alt="icon-svg" width="22">
+</div>
+
 ### - 🛠️ Back End {#back}
 
-Este proyecto usa las tecnologías **java**, **spring framework** con los modulos de **Data**,  **Security** y **Cloud**; entre otros.
+Este proyecto usa las tecnologías **nodejs**, **express** con los modulos de **Data**,  **Security** y **Cloud**; entre otros.
+
+<div style="text-align:left;">
+  <img src="./project-resources/icons/svg/Express.svg" alt="icon-svg" width="22">
+  <img src="./project-resources/icons/svg/OpenAPI.svg" alt="icon-svg" width="22">
+  <img src="./project-resources/icons/svg/Swagger.svg" alt="icon-svg" width="22">
+</div>
 
 ### - 🛠️ Front End {#front}
 
 Este proyecto usa las tecnologías... **react**, **nextjs**, **typescript** y **tailwind css**.
 
 Las estrategias y herramientas que se usaron al momento de hacer las pruebas.
+
+<div style="text-align:left;">
+  <img src="./project-resources/icons/svg/React.svg" alt="icon-svg" width="22">
+  <img src="./project-resources/icons/svg/TypeScript.svg" alt="icon-svg" width="22">
+  <img src="./project-resources/icons/svg/HTML5.svg" alt="icon-svg" width="22">
+</div>
 
 <br/>
 
