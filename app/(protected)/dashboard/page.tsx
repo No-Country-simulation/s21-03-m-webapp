@@ -9,21 +9,20 @@ const DashboardPage = () => {
 	const router = useRouter();
 	const { user, logoutUser } = useAuth();
 
-	if (user)
-		return (
-			<>
-				<h1>Welcome, {user.email}!</h1>
-				<p>Role: {user.role}</p>
-				<Button
-					onClick={() => {
-						logoutUser();
-						router.push(WEBSITE_ROUTES.HOME);
-					}}
-				>
-					Logout
-				</Button>
-			</>
-		);
+	return (
+		<div className="flex flex-col gap-3">
+			<h1>Welcome, {user?.email}!</h1>
+			<p>Nombre Restaurante: {user?.profile?.name}</p>
+			<Button
+				onClick={() => {
+					logoutUser();
+					router.push(WEBSITE_ROUTES.HOME);
+				}}
+			>
+				Logout
+			</Button>
+		</div>
+	);
 };
 
 export default DashboardPage;

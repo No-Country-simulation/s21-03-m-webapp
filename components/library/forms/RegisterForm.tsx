@@ -10,6 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRegisterUser } from '../../../actions/hooks/useRegisterUser';
 import Link from 'next/link';
 import { WEBSITE_ROUTES } from '../../../constants/routes';
+import { AuthenticationRequest } from '../../../types/authentication';
 
 const RegisterForm = () => {
 	const [isPending, startTransition] = useTransition();
@@ -21,16 +22,19 @@ const RegisterForm = () => {
 		mode: 'onBlur',
 	});
 
-	function onSubmit(values: RegisterFormData) {
+	function onSubmit(values: AuthenticationRequest) {
 		startTransition(() => {
-			register(values, {
-				onError: (error) => {
-					form.setError('root', {
-						type: 'manual',
-						message: error.message,
-					});
+			register(
+				{ email: values.email, password: values.password },
+				{
+					onError: (error) => {
+						form.setError('root', {
+							type: 'manual',
+							message: error.message,
+						});
+					},
 				},
-			});
+			);
 		});
 	}
 	return (

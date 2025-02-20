@@ -13,8 +13,9 @@ const DashboardNavbar = () => {
 	const { logoutUser } = useAuth();
 
 	return (
-		<nav className="w-full h-[5rem] bg-white fixed top-0 drop-shadow-md sm:flex flex-row items-center justify-center z-30">
-			<Container className="h-full nav-max-w-1200 flex flex-row justify-between items-center">
+		<nav className="hidden md:block fixed w-full h-[5rem] bg-white top-0 drop-shadow-md sm:flex flex-row items-center justify-center z-30">
+			{/* Desktop */}
+			<Container className="h-full nav-max-w-1200 flex-row justify-between items-center hidden md:flex">
 				{dashboard_links.map((link) => {
 					const { id, name, icon: Icon, url } = link;
 					const isActive = pathname === url;
@@ -23,17 +24,17 @@ const DashboardNavbar = () => {
 							key={id}
 							href={url}
 							className={`flex flex-col items-center transition-all delay-75 ${
-								isActive ? 'text-destructive' : 'hover:text-destructive'
+								isActive ? 'text-chart-1' : 'hover:text-chart-1'
 							}`}
 						>
 							<Icon />
 							<p className="font-thin text-sm">{name}</p>
-							{isActive && <span className="w-full border-b border-destructive"></span>}
+							{isActive && <span className="w-full border-b border-chart-1"></span>}
 						</Link>
 					);
 				})}
 				<div
-					className="cursor-pointer flex flex-col items-center hover:text-destructive transition-all delay-75"
+					className="cursor-pointer flex flex-col items-center hover:text-chart-1 transition-all delay-75"
 					onClick={() => {
 						logoutUser();
 						router.push(WEBSITE_ROUTES.HOME);

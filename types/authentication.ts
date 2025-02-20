@@ -1,17 +1,20 @@
-export interface LoginRequest {
-	username: string;
+import { Profile } from './profile';
+
+export interface AuthenticationRequest {
+	email: string;
 	password: string;
+}
+
+export interface AuthenticationResponse {
+	user: User;
+	token: string;
 }
 
 export interface User {
 	id: string;
 	email: string;
 	role: 'Owner' | 'Member' | 'Cashier' | 'Waiter';
-}
-
-export interface AuthenticationResponse {
-	user: User;
-	token: string;
+	profile: Profile;
 }
 
 export interface AuthenticationContextType {

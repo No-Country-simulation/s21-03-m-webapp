@@ -11,8 +11,8 @@ interface VerticalContainerProps extends React.HTMLAttributes<HTMLDivElement>, V
 const containerVariants = cva('m-auto', {
 	variants: {
 		escape: {
-			all: 'pt-[6rem] pb-[8rem]',
-			navbar: 'pt-[6rem]',
+			all: 'pt-[10rem] pb-[8rem]',
+			navbar: 'pt-[10rem]',
 			footer: 'pb-[8rem]',
 			none: 'pt-0 pb-0',
 		},

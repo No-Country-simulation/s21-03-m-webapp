@@ -2,14 +2,14 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { COOKIE_NAME } from '../../constants/app_constants';
 
-const protectedApi = axios.create({
+const protected_api = axios.create({
 	baseURL: process.env.NEXT_PUBLIC_REMOTE_BASE_API_URL,
 	headers: {
 		'Content-Type': 'application/json',
 	},
 });
 
-protectedApi.interceptors.request.use(
+protected_api.interceptors.request.use(
 	(config) => {
 		const token = Cookies.get(COOKIE_NAME);
 		if (token) {
@@ -20,4 +20,4 @@ protectedApi.interceptors.request.use(
 	(error) => Promise.reject(error),
 );
 
-export default protectedApi;
+export default protected_api;
