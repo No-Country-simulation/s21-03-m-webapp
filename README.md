@@ -1,7 +1,7 @@
 <h1 style="font-weight: bold; text-align:center;"> s21-03-m-webapp | placeholder</h1>
-<p style="text-align:center;">
+<div align="center">
   <img src="./project-resources/images/logo-mesa-360.png" width="720">
-</p>
+</div>
 <br/>
 
 ---
@@ -61,7 +61,7 @@ Este sistema está dirigido a restaurantes, cafeterías, bares y food trucks que
 
 ## Miembros del equipo 👥 {#members}
 
-<table style="border: 1px solid #8d8d8d;">
+<table align="center">
   <thead>
     Equipo / contacto 
   </thead>
