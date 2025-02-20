@@ -7,6 +7,7 @@ export class TableController {
     static create = async (req: Request, res: Response) => {
 
         const result = TableSchema.safeParse(req.body)
+        console.log(result.error.issues)
         if (!result.success) {
             res.status(400).json({
                 msg: result.error.issues.map(err => err.message)
