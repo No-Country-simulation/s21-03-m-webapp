@@ -6,27 +6,28 @@ import { SERVER_ERROR } from '../../../../constants/app_constants';
 type peticion = 'GET' | 'POST' | 'PUT' | 'DELETE';
 type Data<T> = T | null;
 
-/* interface Params<T> {
-	data: Data<T>;
-	loading: boolean;
-	error: ErrorType;
-} */
 interface FetchOptions {
 	body?: any;
 }
 interface Props {
 	url: string;
-	requestType: 'public_api' | 'protected_api';
-	body: any;
+	requestType: 'public_api' | 'protected_api' ;
+	body?: any;
 	peticion: peticion;
 }
-export async function customFetch<T>({ url, requestType, body, peticion }: Props): Promise<Data<T>> {
+export async function customFetch<T>({ url, requestType, body, peticion }: Props): Promise<T> {
 	try {
+		console.log('BODY :', body);
+
 		const apiRequest =
-			requestType === 'public_api' ? public_api : requestType === 'protected_api' ? protected_api : null;
-		if (!apiRequest) {
-			throw new Error('Invalid request type');
-		}
+			{
+				public_api: public_api,
+				protected_api: protected_api,
+			}[requestType] ??
+			(() => {
+				console.error(`Tipo de solicitud no válido "requestType": ${requestType}`);
+			})();
+
 
 		const peticionType = {
 			GET: apiRequest.get,
@@ -35,10 +36,13 @@ export async function customFetch<T>({ url, requestType, body, peticion }: Props
 			DELETE: apiRequest.delete,
 		}[peticion];
 
-		const response = await apiRequest.post<Data<T>>(`${url}`, body);
+		const response = await peticionType(`${url}`, body);
+		console.log("RESPONSE :",response.data);
 		return response.data;
+
 	} catch (error) {
 		if (axios.isAxiosError(error) && error.response) {
+		
 			throw new Error(error.response.data.msg);
 		}
 		throw new Error(SERVER_ERROR);

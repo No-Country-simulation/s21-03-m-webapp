@@ -1,11 +1,31 @@
-export interface ProductData {
-	id: number;
+export interface Msg{
+	msg: string;
+}
+export interface Product {
+	ownerId: string;
+	categoryId: string;
 	name: string;
 	description: string;
 	price: number;
 	image: string;
 	target: ['kitchen', 'bar'];
-	// category: string | null;
+	_id: string;
+	__v: number;
+}
+
+export interface CreateProductResponse {
+	msg: Msg;
+	product: Product;
+}
+export interface CreateProductRequest {
+	categoryId: string;
+	name: string;
+	description: string;
+	price: number;
+}
+
+export interface AllProductsResponse {
+	products: Product[];
 }
 
 export interface SubCategoryData {
@@ -19,5 +39,4 @@ export interface CategoryData {
 	description: string;
 	icon: string;
 	subcategories: SubCategoryData[];
-	// products: ProductData[] | [] | null;
 }

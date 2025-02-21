@@ -10,11 +10,10 @@ export const REGISTER_URL = '/auth/register';
 export const CURRENT_USER = '/auth/current-user';
 
 // Products
-export const PRODUCTS = '/products';
-export const PRODUCT = '/product';
+export const ALL_PRODUCTS = '/product';
 export const UPDATE_PRODUCT = '/product/update/:id';
 export const DELETE_PRODUCT = '/product/delete/:id';
-export const CREATE_PRODUCT = '/product/create';
+export const CREATE_PRODUCT = '/product';
 // export const PRODUCT_ID = '/product/:id';
 
 // export const PRODUCT_CATEGORY = '/product/category/:category';
