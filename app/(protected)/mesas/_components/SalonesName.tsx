@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Check, X } from 'lucide-react';
 import { useUpdateSalon } from '@/actions/hooks/salones/useUpdateSalon';
@@ -36,12 +36,6 @@ const SalonesName = ({ salon }: { salon: Salon }) => {
 		if (e.key === 'Escape') handleCancel();
 	};
 
-	useEffect(() => {
-		if (isEditing) {
-			inputRef.current?.focus();
-		}
-	}, [isEditing]);
-
 	return (
 		<article className="pb-4 flex items-center gap-2">
 			{isEditing ? (
@@ -53,10 +47,10 @@ const SalonesName = ({ salon }: { salon: Salon }) => {
 						onChange={(e) => setTempName(e.target.value)}
 						onKeyDown={handleKeyDown}
 					/>
-					<span onClick={handleSave} className="text-green-600 hover:text-green-800 transition">
+					<span onClick={handleSave} className="cursor-pointer text-green-600 hover:text-green-800 transition">
 						<Check size={24} />
 					</span>
-					<span onClick={handleCancel} className="text-destructive hover:text-red-600 transition">
+					<span onClick={handleCancel} className="cursor-pointer text-destructive hover:text-red-600 transition">
 						<X size={24} />
 					</span>
 				</div>
