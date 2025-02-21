@@ -83,7 +83,7 @@ const SalonesCreateButton = () => {
 							)}
 						/>
 						<DialogFooter>
-							<Button type="submit" className="chart-button-1 mt-10">
+							<Button type="submit" className="chart-button-1 mt-6">
 								Crear
 							</Button>
 						</DialogFooter>
