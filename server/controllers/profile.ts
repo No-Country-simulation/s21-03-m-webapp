@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
 import Profile from "../models/Profile";
+import cloudinary from "../config/cloudinary";
+import path from "path"
 
 
 export const edit = async (req: Request, res: Response) => {
     const { name, address, phone, email } = req.body;
+    const file = req.file
 
     if (req.type !== "owner") {
         res.status(401).json({
@@ -20,6 +23,26 @@ export const edit = async (req: Request, res: Response) => {
     }
 
     try {
+
+        if (file) {
+            const extension = path.extname(file).toLowerCase()
+            const uniqueFilename = `pet_${Date.now()}${extension}`
+
+            await cloudinary.uploader.upload(file, {
+                public_id: uniqueFilename,
+                resource_type: "image"
+            }, async function (error, result) {
+                if (error) {
+                    const error = new Error("Hubo un error al subir la imágen")
+                    res.status(500).json({ msg: error.message })
+                    return
+                }
+                if (result) {
+                    profile.logo = result.secure_url
+                }
+            })
+        }
+
         profile.name = name
         profile.address = address
         profile.phone = phone
