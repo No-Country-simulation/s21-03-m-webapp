@@ -10,12 +10,8 @@ import {
 } from '@/components/ui/table';
 import { PencilIcon, Plus } from 'lucide-react';
 import { Button } from '../../../../../components/ui/button';
-import { ButtonsRounded } from '../button/ButtonRounded';
-import { Modal } from '../modal/Modal';
-import { useState } from 'react';
 import { products } from './data';
 import { ModalTable } from './ModalTable';
-import { customFetch } from '../../api/customFetch';
 
 const buttonEdit = (
 	<Button className="bg-blue-500 hover:bg-blue-600 rounded-full aspect-square size-8">

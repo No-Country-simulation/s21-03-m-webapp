@@ -19,7 +19,6 @@ export const CREATE_PRODUCT = '/product/create';
 
 // export const PRODUCT_CATEGORY = '/product/category/:category';
 // export const PRODUCT_SEARCH = '/product/search/:search';
-// export const PRODUCT_SEARCH_CATEGORY = '/product/search/:search/category/:category';
 
 
 // ================================
