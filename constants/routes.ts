@@ -1,4 +1,4 @@
-import { BadgeDollarSign, Carrot, CircleUserRound, Home, UsersRound, UtensilsCrossed } from 'lucide-react';
+import { Carrot, CircleUserRound, UsersRound, UtensilsCrossed } from 'lucide-react';
 
 // ================================
 //  Web App Routes
