@@ -68,9 +68,9 @@ Este sistema está dirigido a restaurantes, cafeterías, bares y food trucks que
   <tr>
     <th>Rol</th>
     <th>Nombre</th>
-    <th>linkedin</th>
+    <th>Contacto</th>
     <th>Github/+</th>
-    <th>Avatar v4</th>
+    <th>Avatar gh</th>
   </tr>
 <!--
   <tr>
@@ -93,6 +93,7 @@ Este sistema está dirigido a restaurantes, cafeterías, bares y food trucks que
         <td><a href="https://github.com/Andr7st" target="_blank">Andr7st</a> </td>
     <td><img src="https://avatars.githubusercontent.com/u/63387323?s=96&v=4" width="32"> </td>
   </tr>
+  <!--
   <tr>
     <td>📊 UX/UI</td>
     <td>Malena Jara</td>
@@ -104,10 +105,13 @@ Este sistema está dirigido a restaurantes, cafeterías, bares y food trucks que
     <td><a href="https://github.com/Malena646" target="_blank">Malena646</a> </td>
     <td><img src="https://avatars.githubusercontent.com/u/131561932?v=4" width="32"> </td>
   </tr> 
+  -->
   <tr>
     <td>🧪 Tests</td>
     <td>Pía Crosa</td>
-    <td>-</td>
+    <td><a href="mailto:piacrosa27@gmail.com">
+      <img src="./project-resources/icons/svg/Gmail.png" alt="Gmail" width="32" height="32">
+    </a></td>
     <td><a href="https://github.com/PiaCrosa/" target="_blank">PiaCrosa</a> </td>
     <td><img src="https://avatars.githubusercontent.com/u/194109775?v=4" width="32"> </td>
   </tr>
