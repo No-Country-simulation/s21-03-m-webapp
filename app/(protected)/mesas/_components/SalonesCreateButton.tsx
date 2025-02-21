@@ -17,13 +17,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SalonFormData, salonSchema } from '../../../../schemas/salonSchema';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../components/ui/form';
-import { toast } from '../../../../hooks/use-toast';
-import { useQueryClient } from '@tanstack/react-query';
 
 const SalonesCreateButton = () => {
 	const [open, setOpen] = useState(false);
 	const [isPending, startTransition] = useTransition();
-	const queryClient = useQueryClient();
 	const { mutate: create } = useCreateSalones();
 
 	const form = useForm<SalonFormData>({
@@ -41,13 +38,7 @@ const SalonesCreateButton = () => {
 						message: error.message,
 					});
 				},
-				onSuccess: (response) => {
-					toast({
-						description: response.msg,
-						duration: 3000,
-						className: 'bg-chart-2 text-white [&>button]:text-white [&>button]:hover:text-white',
-					});
-					queryClient.invalidateQueries({ queryKey: ['salones'] });
+				onSuccess: () => {
 					setOpen(false);
 				},
 			});

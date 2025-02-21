@@ -5,7 +5,7 @@ export interface Salon {
 }
 
 export interface Table {
-	_id: number;
+	_id: string;
 	number: number;
 	x: number;
 	y: number;
@@ -13,6 +13,11 @@ export interface Table {
 }
 
 export interface SalonRequest {
+	name: string;
+}
+
+export interface SalonUpdateRequest {
+	id: string;
 	name: string;
 }
 

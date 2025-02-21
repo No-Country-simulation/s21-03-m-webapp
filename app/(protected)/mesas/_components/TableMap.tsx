@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { DndContext, useDroppable, DragEndEvent } from '@dnd-kit/core';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { TableCard } from './';
+import { TableCard, SalonesName } from './';
 import { Salon, Table } from '@/types/mesas';
 
 const MAP_HEIGHT = 650;
@@ -12,7 +12,7 @@ const TABLE_SIZE = 80;
 const SNAP_DISTANCE = 85;
 
 const TableMap = ({ salon }: { salon: Salon }) => {
-	const [tables, setTables] = useState<Table[]>([{ _id: 1, number: 1, x: 0, y: 0, status: 'Free' }]);
+	const [tables, setTables] = useState<Table[]>([{ _id: '1', number: 1, x: 0, y: 0, status: 'Free' }]);
 	const [tableNumber, setTableNumber] = useState('');
 	const mapRef = useRef<HTMLDivElement | null>(null);
 	const [mapWidth, setMapWidth] = useState(0);
@@ -37,7 +37,7 @@ const TableMap = ({ salon }: { salon: Salon }) => {
 		if (isNaN(number)) return;
 
 		const newTable: Table = {
-			_id: Date.now(),
+			_id: String(Date.now()),
 			number,
 			x: (mapWidth - TABLE_SIZE) / 2,
 			y: (MAP_HEIGHT - TABLE_SIZE) / 2,
@@ -118,7 +118,7 @@ const TableMap = ({ salon }: { salon: Salon }) => {
 	return (
 		<DndContext onDragEnd={handleDragEnd}>
 			<article className="w-full px-6 py-8 border bg-white shadow-md rounded-tr-lg rounded-b-lg">
-				<h1 className="text-2xl font-bold mb-4">{salon.name}</h1>
+				<SalonesName salon={salon}></SalonesName>
 				<div className="flex gap-2 mb-4">
 					<Input
 						placeholder="Número de mesa"

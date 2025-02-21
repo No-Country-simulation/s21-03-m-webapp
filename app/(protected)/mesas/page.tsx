@@ -5,7 +5,11 @@ import { useSalones } from '@/actions/hooks/salones/useSalones';
 import { SalonesTabs } from './_components';
 
 const MesasPage = () => {
-	const { data: salones, isPending } = useSalones();
+	const { data: salones, isPending, isError } = useSalones();
+
+	if (isError) {
+		return <h2>Ocurrio un error, intente mas tarde...</h2>;
+	}
 
 	if (salones && !isPending)
 		return (
