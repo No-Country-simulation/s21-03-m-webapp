@@ -20,10 +20,7 @@ export class SalonController {
             return
         }
         try {
-            const salon = new Salon()
-            salon.name = name
-            salon.ownerId = ownerId
-            await salon.save()
+            const salon = await Salon.create({name,ownerId})
             res.status(201).json({
                 msg: "Salón creado",
                 salon
@@ -58,8 +55,8 @@ export class SalonController {
     }
 
     static getOne = async (req: Request, res: Response) => {
-    
-        try {      
+
+        try {
             res.status(200).json(req.salon)
 
         } catch (error) {
@@ -70,9 +67,15 @@ export class SalonController {
 
     }
     static delete = async (req: Request, res: Response) => {
-     
+
         try {
-            
+            const salones = await Salon.find({ ownerId: req.ownerId })
+            if (salones.length === 1) {
+                res.status(400).json({
+                    msg: "No puedes eliminar el único salón"
+                })
+                return
+            }
             await req.salon.deleteOne()
             res.status(200).json({
                 msg: "Salón eliminado"
@@ -98,8 +101,8 @@ export class SalonController {
         }
 
         try {
-           
-            await req.salon.updateOne({name})
+
+            await req.salon.updateOne({ name })
             await req.salon.save()
             res.status(200).json({
                 msg: "Salón Actualizado"
