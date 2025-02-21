@@ -13,7 +13,7 @@ const MesasPage = () => {
 
 	if (salones && !isPending)
 		return (
-			<section className="flex flex-col items-center justify-center max-w-1800 gap-6">
+			<section className="flex flex-col items-center justify-center max-w-1800 m-auto gap-6">
 				<article className="flex flex-col gap-2 items-center text-center">
 					<h1 className="text-3xl font-bold mb-2">📍 Mapa de Mesas</h1>
 					<p className="text-gray-600 max-w-md">
