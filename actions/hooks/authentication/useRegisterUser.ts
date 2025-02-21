@@ -15,7 +15,7 @@ export function useRegisterUser() {
 			updateToken(response.token);
 			queryClient.setQueryData(['currentUser'], response);
 			queryClient.invalidateQueries({ queryKey: ['currentUser'] });
-			router.push(DASHBOARD_ROUTES.DASHBOARD);
+			router.push(DASHBOARD_ROUTES.MESAS);
 		},
 		onError: (error: Error) => {
 			throw new Error(error.message);
