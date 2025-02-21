@@ -11,10 +11,11 @@ export const create = async (req: Request, res: Response) => {
     }
 
     try {
-        await new Product({ ownerId: req.ownerId, categoryId, name, description, price, target }).save();
+        const product = await new Product({ ownerId: req.ownerId, categoryId, name, description, price, target }).save();
 
         return res.status(200).json({
-            msg: 'Producto Creado Correctamente.'
+            msg: 'Producto Creado Correctamente.',
+            product
         });
     } catch (error) {
         return res.status(500).json({
@@ -85,7 +86,8 @@ export const edit = async (req: Request, res: Response) => {
         await product.save();
 
         return res.status(200).json({
-            msg: 'Producto Editado Correctamente.'
+            msg: 'Producto Editado Correctamente.',
+            product
         });
     } catch (error) {
         return res.status(500).json({
