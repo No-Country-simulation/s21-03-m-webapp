@@ -3,7 +3,7 @@ import Product from "../models/Product";
 
 export const create = async (req: Request, res: Response) => {
     const { categoryId, name, description, price, target } = req.body;
-    console.log(req.body)
+
     if (!categoryId?.trim() || !name?.trim() || !description?.trim() || !price) {
         return res.status(400).json({
             msg: 'Los campos nombre, precio, descripcion, objetivo y categoria son obligatorios.'
@@ -12,7 +12,7 @@ export const create = async (req: Request, res: Response) => {
 
     try {
 
-       await new Product({ ownerId: req.ownerId, categoryId, name, description, price, target }).save();
+       await new Product({ ownerId: req.ownerId, categoryId, name, description, price, target:target.toLowerCase() }).save();
   
         return res.status(200).json({
             msg: 'Producto Creado Correctamente.'

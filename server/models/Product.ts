@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 export enum Target{
     KITCHEN = "kitchen",
-    BAR = "Bar"
+    BAR = "bar"
 }
 
 const ProductSchema = new Schema({
