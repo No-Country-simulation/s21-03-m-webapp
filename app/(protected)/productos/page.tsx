@@ -23,7 +23,7 @@ const ProductosPage = () => {
 	return (
 		<div>
 			<NavFilter></NavFilter>
-			<TableDemo ></TableDemo>
+			<TableDemo></TableDemo>
 		</div>
 	);
 };

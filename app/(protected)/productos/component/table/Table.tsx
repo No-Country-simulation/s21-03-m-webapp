@@ -32,17 +32,12 @@ const fromAdd = {
 	descripcion: '',
 	precio: '',
 };
-const fetchData = async (): Promise<AllProductsResponse|undefined> => {
-	try {
-		return await customFetch<AllProductsResponse>({
-			url: ALL_PRODUCTS,
-			requestType: 'protected_api',
-			peticion: 'GET',
-		});
-	} catch (error) {
-		console.error('Error fetching products:', error);
-		// Manejar el error aquí (mostrar un mensaje al usuario, etc.)
-	}
+const fetchData = async (): Promise<AllProductsResponse | undefined> => {
+	return await customFetch<AllProductsResponse>({
+		url: ALL_PRODUCTS,
+		requestType: 'protected_api',
+		peticion: 'GET',
+	});
 };
 
 export function TableDemo() {
@@ -53,9 +48,8 @@ export function TableDemo() {
 			if (res) {
 				setProductsData(res.products);
 			}
-		})
+		});
 	}, []); // Dependencia en 'refresh'
-	console.log(productsData);
 	return (
 		<Table>
 			<TableCaption>Lista de productos</TableCaption>
@@ -64,14 +58,12 @@ export function TableDemo() {
 					<TableHead>Nombre</TableHead>
 					<TableHead>Descripcion</TableHead>
 					<TableHead>Precio</TableHead>
-					{/* <TableHead>
-						<ModalTable data={fromAdd} button={buttonAdd} type="add"  onProductUpdate={handleProductUpdate}/>
-					</TableHead> */}
+					<TableHead>
+						<ModalTable button={buttonAdd} setProductsData={setProductsData} />
+					</TableHead>
 				</TableRow>
 			</TableHeader>
 			<TableBody>
-				
-
 				{productsData.map((productData: Product) => (
 					<TableRow key={productData._id}>
 						<TableCell className="font-medium">{productData.name}</TableCell>
@@ -88,12 +80,6 @@ export function TableDemo() {
 					</TableRow>
 				))}
 			</TableBody>
-			<TableFooter>
-				<TableRow>
-					<TableCell colSpan={3}>Total</TableCell>
-					<TableCell className="text-right text-destructive">$2,500.00</TableCell>
-				</TableRow>
-			</TableFooter>
 		</Table>
 	);
 }

@@ -1,6 +1,3 @@
-export interface Msg{
-	msg: string;
-}
 export interface Product {
 	ownerId: string;
 	categoryId: string;
@@ -14,7 +11,7 @@ export interface Product {
 }
 
 export interface CreateProductResponse {
-	msg: Msg;
+	msg: string;
 	product: Product;
 }
 export interface CreateProductRequest {
@@ -26,17 +23,4 @@ export interface CreateProductRequest {
 
 export interface AllProductsResponse {
 	products: Product[];
-}
-
-export interface SubCategoryData {
-	id: number;
-	name: string;
-	icon: string;
-}
-export interface CategoryData {
-	id: number;
-	name: string;
-	description: string;
-	icon: string;
-	subcategories: SubCategoryData[];
 }

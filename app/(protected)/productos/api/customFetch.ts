@@ -11,7 +11,7 @@ interface FetchOptions {
 }
 interface Props {
 	url: string;
-	requestType: 'public_api' | 'protected_api' ;
+	requestType: 'public_api' | 'protected_api';
 	body?: any;
 	peticion: peticion;
 }
@@ -28,7 +28,6 @@ export async function customFetch<T>({ url, requestType, body, peticion }: Props
 				console.error(`Tipo de solicitud no válido "requestType": ${requestType}`);
 			})();
 
-
 		const peticionType = {
 			GET: apiRequest.get,
 			POST: apiRequest.post,
@@ -37,12 +36,10 @@ export async function customFetch<T>({ url, requestType, body, peticion }: Props
 		}[peticion];
 
 		const response = await peticionType(`${url}`, body);
-		console.log("RESPONSE :",response.data);
+		console.log('RESPONSE :', response.data);
 		return response.data;
-
 	} catch (error) {
 		if (axios.isAxiosError(error) && error.response) {
-		
 			throw new Error(error.response.data.msg);
 		}
 		throw new Error(SERVER_ERROR);

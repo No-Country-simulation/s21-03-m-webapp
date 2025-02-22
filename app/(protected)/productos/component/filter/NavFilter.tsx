@@ -79,9 +79,7 @@ export const NavFilter = ({ categories = mockCategories }: Props) => {
 				))}
 				{/* <MenubarSeparator></MenubarSeparator> */}
 
-				<div className="gap-2 flex">
-					
-				</div>
+				<div className="gap-2 flex"></div>
 			</Menubar>
 		</div>
 	);

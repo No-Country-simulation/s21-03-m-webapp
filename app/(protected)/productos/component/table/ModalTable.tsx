@@ -8,72 +8,110 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { products } from './data';
-import React, { JSX, ReactNode } from 'react';
-import { Product } from '../../types/products';
+import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react';
+import { CreateProductRequest, CreateProductResponse, Product } from '../../types/products';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { customFetch } from '../../api/customFetch';
-import { CREATE_PRODUCT } from '../../../../../constants/app_constants';
-import { createProducts } from '../../api/createProduct';
+import { ALL_CATEGORIES, CREATE_PRODUCT } from '../../../../../constants/app_constants';
+import { CInput } from '../form/input/CustomInput';
+import { RInput } from '../form/input/CustomRadioInput';
+import { Category, GetCategoriesResponse } from '../../types/category';
 
 interface Props {
-	data: (typeof products)[0] |Product /* | CategoryData  */;
+	product?: Product;
 	button: ReactNode;
-	type: 'edit' | 'add';
-	setProductsData: () => void;
+	setProductsData: Dispatch<SetStateAction<Product[]>>;
 }
 
-export function ModalTable({ data, button, type, setProductsData }: Props) {
+const getCategories = async (): Promise<GetCategoriesResponse> => {
+	const res = await customFetch<GetCategoriesResponse>({
+		url: ALL_CATEGORIES,
+		requestType: 'protected_api',
+		peticion: 'GET',
+	});
+	return res;
+};
+const createProduct = async (dataForm: CreateProductRequest) => {
+	const res = await customFetch<CreateProductResponse>({
+		url: CREATE_PRODUCT,
+		requestType: 'protected_api',
+		body: dataForm,
+		peticion: 'POST',
+	});
+	return res;
+};
+export function ModalTable({ product, button, setProductsData }: Props) {
+	const [categories, setCategories] = useState<Category[]>([]);
+
 	const {
+		control,
 		handleSubmit,
 		formState: { errors },
-	} = useForm<Product>();
+	} = useForm<CreateProductRequest>();
 
-	const onSubmit: SubmitHandler<Product> = (dataForm) => {
-		console.log(dataForm);
-		customFetch<Product>({
-			url: CREATE_PRODUCT,
-			requestType: 'protected_api',
-			body: dataForm,
-			peticion: 'POST',
-		}).then((res) => console.log(res));
+	const onSubmit: SubmitHandler<CreateProductRequest> = (dataForm) => {
+		console.log('dataForm :', dataForm);
+		createProduct(dataForm).then((res) => {
+			setProductsData((prev: Product[]) => {
+				return [...prev, res.product];
+			});
+		});
 	};
-	const test = async () => {
-		const data = await createProducts({
-			categoryId: '1',
-			name: 'Test',
-			description: 'Descripcion del Test',
-			price: 8000,
-		}).then((res) => console.log(res));
-		console.log('data desde modal ');
-	};
-
+	useEffect(() => {
+		getCategories().then((res) => setCategories(res.categories));
+	}, []);
 	return (
 		<Dialog>
 			<DialogTrigger asChild>{button}</DialogTrigger>
 			<DialogContent className="sm:max-w-[425px]">
+				<DialogHeader>
+					<DialogTitle>{!product ? 'Crear Producto' : `Editar ${product.name}`}</DialogTitle>
+					<DialogDescription>{!product?.description ? '' : `${product.description}`}</DialogDescription>
+				</DialogHeader>
 				<form onSubmit={handleSubmit(onSubmit)}>
-					<DialogHeader>
-						<DialogTitle>Editar {data.nombre}</DialogTitle>
-						<DialogDescription>{data.descripcion}</DialogDescription>
-					</DialogHeader>
-					<div className="grid gap-4 py-4">
-						<div className="grid grid-cols-4 items-center gap-4">
-							<Label htmlFor={data.nombre} className="text-right"></Label>
-							<Input id={data.nombre} defaultValue={{ edit: "", add: '' }[type]} className="col-span-3" />
-						</div>
+					<CInput
+						name="name"
+						control={control}
+						label="Nombre"
+						type="text"
+						error={errors.name}
+						defaultValue={product?.name}
+					/>
+					<CInput
+						name="description"
+						control={control}
+						label="Descripción"
+						type="text"
+						error={errors.name}
+						defaultValue={product?.name}
+					/>
+					<CInput
+						name="price"
+						control={control}
+						label="Precio"
+						type="number"
+						error={errors.name}
+						defaultValue={product?.name}
+					/>
+					<br />
+					<h2 className="text-sm">Select Category:</h2>
+					<div className="flex">
+						{categories.map((category) => (
+							<RInput
+								key={category._id}
+								name={'categoryId'}
+								control={control}
+								label={category.name}
+								error={errors.name}
+								defaultValue={category._id}
+							/>
+						))}
 					</div>
-					<input type="radio" name="radio" />
-					<input type="radio" name="radio" key={1} />
+
 					<DialogFooter>
 						<Button type="submit">Guardar</Button>
 					</DialogFooter>
 				</form>
-				<DialogFooter>
-					<Button onClick={test}>create</Button>
-				</DialogFooter>
 			</DialogContent>
 		</Dialog>
 	);
