@@ -65,7 +65,7 @@ export const edit = async (req: Request, res: Response) => {
     }
 
     if (product.ownerId?.toString() !== req.ownerId?.toString()) {
-        return res.status(400).json({
+        return res.status(403).json({
             msg: "No tiene permiso para editar producto.",
         });
     }
