@@ -1,5 +1,10 @@
 import mongoose, { Schema } from "mongoose";
 
+export enum Target{
+    KITCHEN = "kitchen",
+    BAR = "Bar"
+}
+
 const ProductSchema = new Schema({
     ownerId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -32,8 +37,8 @@ const ProductSchema = new Schema({
     },
     target: {
         type: String,
-        enum: ["kitchen", "bar"],
-        default: "kitchen"
+        enum: [Target],
+        default: Target.KITCHEN
     }
 });
 

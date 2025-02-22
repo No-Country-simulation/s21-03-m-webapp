@@ -4,11 +4,12 @@ const { create, getAll, getByCategory, edit, remove } = require('../controllers/
 const { authCheck } = require('../middleware/auth');
 
 const router = express.Router();
+router.use(authCheck)
 
-router.post('/', authCheck, create);
-router.get('/', authCheck, getAll);
-router.get('/:categoryId', authCheck, getByCategory);
-router.put("/:id", authCheck, edit)
-router.delete("/:id", authCheck, remove)
+router.post('/', create);
+router.get('/', getAll);
+router.get('/:categoryId', getByCategory);
+router.put("/:id", edit)
+router.delete("/:id", remove)
 
 export default router;
