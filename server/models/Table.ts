@@ -10,6 +10,8 @@ export enum TableStatus {
 export interface ITable extends Document {
     salonId: Types.ObjectId
     number: string
+    x:number
+    y:number
     xRatio: number
     yRatio: number
     status: TableStatus
