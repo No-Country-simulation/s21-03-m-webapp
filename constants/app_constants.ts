@@ -11,8 +11,8 @@ export const CURRENT_USER = '/auth/current-user';
 
 // Products
 export const ALL_PRODUCTS = '/product';
-export const UPDATE_PRODUCT = '/product/update/:id';
-export const DELETE_PRODUCT = '/product/delete/:id';
+export const UPDATE_PRODUCT = '/product';
+export const DELETE_PRODUCT = '/product/:id';
 export const CREATE_PRODUCT = '/product';
 
 // Categories

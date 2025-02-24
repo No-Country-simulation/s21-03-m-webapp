@@ -6,9 +6,6 @@ import { SERVER_ERROR } from '../../../../constants/app_constants';
 type peticion = 'GET' | 'POST' | 'PUT' | 'DELETE';
 type Data<T> = T | null;
 
-interface FetchOptions {
-	body?: any;
-}
 interface Props {
 	url: string;
 	requestType: 'public_api' | 'protected_api';

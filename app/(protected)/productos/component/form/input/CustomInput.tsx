@@ -11,7 +11,7 @@ interface Props {
 	label?: string;
 	type?: HTMLInputTypeAttribute;
 	error?: FieldError;
-	defaultValue?: string;
+	defaultValue?: string | number;
 }
 
 export const CInput = ({ name, control, label, type, error, defaultValue }: Props) => {
@@ -23,13 +23,7 @@ export const CInput = ({ name, control, label, type, error, defaultValue }: Prop
 				name={name}
 				control={control}
 				render={({ field }) => (
-					<Input
-						id={name}
-						type={type}
-						{...field}
-						className={`${error ? 'border-red-500' : ''}`}
-						defaultValue={defaultValue}
-					></Input>
+					<Input id={name} type={type} {...field} className={`${error ? 'border-red-500' : ''}`}></Input>
 				)}
 			></Controller>
 

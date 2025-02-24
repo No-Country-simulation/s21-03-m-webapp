@@ -12,17 +12,26 @@ interface Props {
 	control: Control<CreateProductRequest>;
 	label: string;
 	error?: FieldError;
-	defaultValue: string;
+	defaultValue?: string;
+	checked?: boolean;
 }
 
-export const RInput = ({ name, control, label, error, defaultValue }: Props) => {
+export const RInput = ({ name, control, label, error, defaultValue, checked }: Props) => {
 	return (
 		<div>
 			<Controller
 				name={name}
 				control={control}
 				render={({ field }) => (
-					<input id={defaultValue} {...field} className={`peer hidden`} value={defaultValue} type="radio"></input>
+					<input
+						defaultChecked={checked}
+						id={defaultValue}
+						{...field}
+						className={`peer hidden`}
+						defaultValue={defaultValue} /* el valor defaul se controla con el contoler de react hook form(ya viene en el field) */
+						type="radio"
+						onChange={field.onChange}
+					></input>
 				)}
 			></Controller>
 			<Label

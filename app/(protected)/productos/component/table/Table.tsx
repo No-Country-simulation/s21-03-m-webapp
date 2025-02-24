@@ -3,36 +3,23 @@ import {
 	TableBody,
 	TableCaption,
 	TableCell,
-	TableFooter,
 	TableHead,
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
-import { PencilIcon, Plus } from 'lucide-react';
-import { Button } from '../../../../../components/ui/button';
 import { ModalTable } from './ModalTable';
 import { AllProductsResponse, Product } from '../../types/products';
 import { useEffect, useState } from 'react';
 import { customFetch } from '../../api/customFetch';
 import { ALL_PRODUCTS } from '../../../../../constants/app_constants';
+import { Category} from '../../types/category';
+import { buttonAdd, buttonEdit } from '../button/Button';
 
-const buttonEdit = (
-	<Button className="bg-blue-500 hover:bg-blue-600 rounded-full aspect-square size-8">
-		<PencilIcon className="text-2xl" />
-	</Button>
-);
-const buttonAdd = (
-	<Button className="bg-green-500 hover:bg-green-600 rounded-full aspect-square size-8">
-		<Plus className="" />
-	</Button>
-);
+interface Props {
+	categories: Category[];
+}
 
-const fromAdd = {
-	nombre: '',
-	descripcion: '',
-	precio: '',
-};
-const fetchData = async (): Promise<AllProductsResponse | undefined> => {
+const getProducts = async (): Promise<AllProductsResponse> => {
 	return await customFetch<AllProductsResponse>({
 		url: ALL_PRODUCTS,
 		requestType: 'protected_api',
@@ -40,16 +27,13 @@ const fetchData = async (): Promise<AllProductsResponse | undefined> => {
 	});
 };
 
-export function TableDemo() {
+export function TableDemo({ categories }: Props) {
 	const [productsData, setProductsData] = useState<Product[]>([]);
 
 	useEffect(() => {
-		fetchData().then((res) => {
-			if (res) {
-				setProductsData(res.products);
-			}
-		});
-	}, []); // Dependencia en 'refresh'
+		getProducts().then((res) => setProductsData(res.products));
+	}, []);
+	
 	return (
 		<Table>
 			<TableCaption>Lista de productos</TableCaption>
@@ -59,7 +43,7 @@ export function TableDemo() {
 					<TableHead>Descripcion</TableHead>
 					<TableHead>Precio</TableHead>
 					<TableHead>
-						<ModalTable button={buttonAdd} setProductsData={setProductsData} />
+						<ModalTable button={buttonAdd} setProductsData={setProductsData} categories={categories} />
 					</TableHead>
 				</TableRow>
 			</TableHeader>
@@ -69,14 +53,14 @@ export function TableDemo() {
 						<TableCell className="font-medium">{productData.name}</TableCell>
 						<TableCell>{productData.description}</TableCell>
 						<TableCell>{productData.price}</TableCell>
-						{/* <TableCell>
-								<ModalTable
-								data={productData}
+						<TableCell>
+							<ModalTable
+								product={productData}
 								button={buttonEdit}
-								type="edit"
-									onProductUpdate={handleProductUpdate} // Pasa la función de actualización
-								/>
-						</TableCell> */}
+								setProductsData={setProductsData}
+								categories={categories}
+							/>
+						</TableCell>
 					</TableRow>
 				))}
 			</TableBody>

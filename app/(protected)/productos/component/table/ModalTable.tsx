@@ -9,28 +9,21 @@ import {
 	DialogTrigger,
 } from '@/components/ui/dialog';
 import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react';
-import { CreateProductRequest, CreateProductResponse, Product } from '../../types/products';
+import { CreateProductRequest, CreateProductResponse, EditProductResponse, Product } from '../../types/products';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { customFetch } from '../../api/customFetch';
-import { ALL_CATEGORIES, CREATE_PRODUCT } from '../../../../../constants/app_constants';
+import {  CREATE_PRODUCT, UPDATE_PRODUCT } from '../../../../../constants/app_constants';
 import { CInput } from '../form/input/CustomInput';
 import { RInput } from '../form/input/CustomRadioInput';
-import { Category, GetCategoriesResponse } from '../../types/category';
+import { Category} from '../../types/category';
 
 interface Props {
 	product?: Product;
+	categories: Category[];
 	button: ReactNode;
 	setProductsData: Dispatch<SetStateAction<Product[]>>;
 }
 
-const getCategories = async (): Promise<GetCategoriesResponse> => {
-	const res = await customFetch<GetCategoriesResponse>({
-		url: ALL_CATEGORIES,
-		requestType: 'protected_api',
-		peticion: 'GET',
-	});
-	return res;
-};
 const createProduct = async (dataForm: CreateProductRequest) => {
 	const res = await customFetch<CreateProductResponse>({
 		url: CREATE_PRODUCT,
@@ -40,26 +33,54 @@ const createProduct = async (dataForm: CreateProductRequest) => {
 	});
 	return res;
 };
-export function ModalTable({ product, button, setProductsData }: Props) {
-	const [categories, setCategories] = useState<Category[]>([]);
 
+const editProduct = async (dataForm: CreateProductRequest, id: string) => {
+	const res = await customFetch<EditProductResponse>({
+		url: `${UPDATE_PRODUCT}/${id}`,
+		requestType: 'protected_api',
+		body: dataForm,
+		peticion: 'PUT',
+	});
+	return res;
+};
+export function ModalTable({ product, button, setProductsData, categories }: Props) {
+	console.log('product ID:', product?._id);
 	const {
 		control,
 		handleSubmit,
 		formState: { errors },
-	} = useForm<CreateProductRequest>();
+	} = useForm<CreateProductRequest>({
+		defaultValues: {
+			name: product?.name ?? '',
+			description: product?.description ?? '',
+			// categoryId: product?.categoryId,
+			price: product?.price ?? 0,
+		},
+	});
 
 	const onSubmit: SubmitHandler<CreateProductRequest> = (dataForm) => {
+		console.log('product ID:', product?._id);
 		console.log('dataForm :', dataForm);
-		createProduct(dataForm).then((res) => {
-			setProductsData((prev: Product[]) => {
-				return [...prev, res.product];
+		if (!product?._id) {
+			createProduct(dataForm).then((res) => {
+				setProductsData((prev: Product[]) => {
+					return [...prev, res.product];
+				});
 			});
-		});
+		} else {
+			editProduct(dataForm, product._id).then((res) => {
+				setProductsData((prev: Product[]) => {
+					return prev.map((product: Product) => {
+						if (product._id === res.product._id) {
+							return res.product;
+						}
+						return product;
+					});
+				});
+			});
+		}
 	};
-	useEffect(() => {
-		getCategories().then((res) => setCategories(res.categories));
-	}, []);
+
 	return (
 		<Dialog>
 			<DialogTrigger asChild>{button}</DialogTrigger>
@@ -69,30 +90,9 @@ export function ModalTable({ product, button, setProductsData }: Props) {
 					<DialogDescription>{!product?.description ? '' : `${product.description}`}</DialogDescription>
 				</DialogHeader>
 				<form onSubmit={handleSubmit(onSubmit)}>
-					<CInput
-						name="name"
-						control={control}
-						label="Nombre"
-						type="text"
-						error={errors.name}
-						defaultValue={product?.name}
-					/>
-					<CInput
-						name="description"
-						control={control}
-						label="Descripción"
-						type="text"
-						error={errors.name}
-						defaultValue={product?.name}
-					/>
-					<CInput
-						name="price"
-						control={control}
-						label="Precio"
-						type="number"
-						error={errors.name}
-						defaultValue={product?.name}
-					/>
+					<CInput name="name" control={control} label="Nombre" type="text" error={errors.name} />
+					<CInput name="description" control={control} label="Descripción" type="text" error={errors.name} />
+					<CInput name="price" control={control} label="Precio" type="number" error={errors.name} />
 					<br />
 					<h2 className="text-sm">Select Category:</h2>
 					<div className="flex">
@@ -103,7 +103,7 @@ export function ModalTable({ product, button, setProductsData }: Props) {
 								control={control}
 								label={category.name}
 								error={errors.name}
-								defaultValue={category._id}
+								defaultValue={category._id} /* se controla con reac hook form */
 							/>
 						))}
 					</div>

@@ -3,27 +3,31 @@
 import { TableDemo } from './component/table/Table';
 import { NavFilter } from './component/filter/NavFilter';
 import { customFetch } from './api/customFetch';
-import { useState } from 'react';
-import { ProductData } from './types/products';
-import { CREATE_PRODUCT } from '../../../constants/app_constants';
+import { useEffect, useState } from 'react';
+import { ALL_CATEGORIES, CREATE_PRODUCT } from '../../../constants/app_constants';
+import { Category, GetCategoriesResponse } from './types/category';
+
+const getCategories = async (): Promise<GetCategoriesResponse> => {
+	const res = await customFetch<GetCategoriesResponse>({
+		url: ALL_CATEGORIES,
+		requestType: 'protected_api',
+		peticion: 'GET',
+	});
+	return res;
+};
 
 const ProductosPage = () => {
 	const [openEditModal, setOpenEditModal] = useState(false);
-	const [openCreateModal, setOpenCreateModal] = useState(false);
-
-	const createProduct = (createProductData: ProductData): any => {
-		customFetch<ProductData>({
-			url: CREATE_PRODUCT,
-			requestType: 'protected_api',
-			body: createProductData,
-			peticion: 'POST',
-		});
-	};
+	const [categories, setCategories] = useState<Category[]>([]);
+	useEffect(() => {
+		getCategories().then((res) => setCategories(res.categories));
+	},[]);
 	// dataNavFilter = customFetch();
 	return (
 		<div>
-			<NavFilter></NavFilter>
-			<TableDemo></TableDemo>
+			
+			<NavFilter categories={categories}></NavFilter>
+			<TableDemo categories={categories}></TableDemo>
 		</div>
 	);
 };

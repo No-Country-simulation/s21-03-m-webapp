@@ -14,6 +14,10 @@ export interface CreateProductResponse {
 	msg: string;
 	product: Product;
 }
+export interface EditProductResponse {
+	msg: string;
+	product: Product;
+}
 export interface CreateProductRequest {
 	categoryId: string;
 	name: string;
