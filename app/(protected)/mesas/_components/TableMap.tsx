@@ -6,19 +6,20 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { TableCard, SalonesName } from './';
 import { Salon } from '@/types/salones';
-import { useTables } from '../../../../actions/hooks/tables/useTables';
-import { useCreateTables } from '../../../../actions/hooks/tables/useCreateTables';
+import { useTables } from '@/actions/hooks/tables/useTables';
+import { useCreateTables } from '@/actions/hooks/tables/useCreateTables';
+import { TableResponse } from '@/types/tables';
 
 // Extendemos la definición de Table, para almacenar también los ratios
 type Table = {
 	_id: string;
 	salonId: string;
-	number: number;
+	number: string;
 	x: number; // posición absoluta calculada
 	y: number; // posición absoluta calculada
 	xRatio?: number; // posición relativa en X (0..1)
 	yRatio?: number; // posición relativa en Y (0..1)
-	status: 'Free';
+	status: 'Free' | 'Occupied' | 'Billing';
 };
 
 const MAP_HEIGHT = 650;
@@ -35,14 +36,11 @@ const TableMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =>
 	const { data: myTables } = useTables(salon._id);
 	const { mutate: create } = useCreateTables();
 
-	const [tables, setTables] = useState<Table[]>([]);
+	const [tables, setTables] = useState<Array<Table>>(myTables ? myTables : []);
 	const [tableNumber, setTableNumber] = useState('');
 	const [mapWidth, setMapWidth] = useState(0);
 	const mapRef = useRef<HTMLDivElement | null>(null);
 	const [hasLoadedFromStorage, setHasLoadedFromStorage] = useState(false);
-
-	// TODO - Remover
-	console.log(myTables);
 
 	const updateMapWidth = () => {
 		if (mapRef.current) {
@@ -87,7 +85,7 @@ const TableMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =>
 			setTables(absoluteTables);
 		} else {
 			// Si no hay nada en storage, definimos al menos una mesa
-			setTables([{ _id: '1', salonId: 'test', number: 1, x: 0, y: 0, status: 'Free', xRatio: 0, yRatio: 0 }]);
+			setTables([{ _id: '1', salonId: 'test', number: '1', x: 0, y: 0, status: 'Free', xRatio: 0, yRatio: 0 }]);
 		}
 
 		setHasLoadedFromStorage(true);
@@ -125,28 +123,43 @@ const TableMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =>
 	// Agregar mesa en el centro
 	const addTable = () => {
 		if (tableNumber.trim() === '') return;
-		const number = parseInt(tableNumber, 10);
-		if (isNaN(number)) return;
 
 		// Centrada en el contenedor
 		const centerX = (mapWidth - TABLE_SIZE) / 2;
 		const centerY = (MAP_HEIGHT - TABLE_SIZE) / 2;
 
-		const xRatio = centerX / mapWidth;
-		const yRatio = centerY / MAP_HEIGHT;
+		// Creamos la nueva mesa en el backend
+		create(
+			{
+				salonId: salon._id,
+				number: tableNumber,
+				x: centerX,
+				y: centerY,
+				status: 'Free',
+			},
+			{
+				onSuccess: (response) => {
+					// Convertimos los valores de respuesta en posiciones relativas
+					const xRatio = response.table.x / mapWidth;
+					const yRatio = response.table.y / MAP_HEIGHT;
 
-		const newTable: Table = {
-			_id: String(Date.now()),
-			salonId: String(Date.now()),
-			number,
-			x: centerX,
-			y: centerY,
-			status: 'Free',
-			xRatio,
-			yRatio,
-		};
-		setTables((prev) => [...prev, newTable]);
-		setTableNumber('');
+					const savedTable: Table = {
+						_id: response.table._id, // Ahora usamos el ID real del backend
+						salonId: response.table.salonId,
+						number: response.table.number,
+						x: response.table.x,
+						y: response.table.y,
+						status: response.table.status,
+						xRatio,
+						yRatio,
+					};
+
+					// Agregamos la nueva mesa al estado local
+					setTables((prev) => [...prev, savedTable]);
+					setTableNumber('');
+				},
+			},
+		);
 	};
 
 	// Al soltar el drag (mover mesa)

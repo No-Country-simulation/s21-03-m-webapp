@@ -1,7 +1,7 @@
 export interface Table {
 	_id: string;
 	salonId: string;
-	number: number;
+	number: string;
 	x: number;
 	y: number;
 	status: 'Free' | 'Occupied' | 'Billing';
@@ -10,8 +10,8 @@ export interface Table {
 export interface TableRequest {
 	salonId: string;
 	number: string;
-	x: string;
-	y: string;
+	x: number;
+	y: number;
 	status: 'Free' | 'Occupied' | 'Billing';
 }
 
