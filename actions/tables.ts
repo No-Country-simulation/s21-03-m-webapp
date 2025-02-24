@@ -5,10 +5,8 @@ import { Table, TableRequest, TableResponse } from '../types/tables';
 
 export async function getTables(salonId: string): Promise<Array<Table>> {
 	try {
-		const response = await protected_api.get<Array<Table>>(`${SALONES}/${salonId}${TABLES}`);
-		// TODO - Remove after test
-		console.log(response.data);
-		return response.data;
+		const response = await protected_api.get<{ tables: Array<Table> }>(`${SALONES}/${salonId}${TABLES}`);
+		return response.data.tables;
 	} catch (error) {
 		if (axios.isAxiosError(error) && error.response) {
 			throw new Error(error.response.data);
@@ -26,7 +24,7 @@ export async function createTable(body: TableRequest): Promise<TableResponse> {
 		return response.data;
 	} catch (error) {
 		if (axios.isAxiosError(error) && error.response) {
-			throw new Error(error.response.data);
+			throw new Error(error.response.data.msj);
 		}
 		throw new Error(SERVER_ERROR);
 	}

@@ -4,7 +4,7 @@ import { getTables } from '@/actions/tables';
 
 export const useTables = (salonId: string) => {
 	return useQuery<Array<Table>>({
-		queryKey: ['tables'],
+		queryKey: ['tables', salonId],
 		queryFn: () => {
 			return getTables(salonId);
 		},
