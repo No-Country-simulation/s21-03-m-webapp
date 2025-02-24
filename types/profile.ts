@@ -1,11 +1,12 @@
 export interface Profile {
+	_id: string;
 	ownerId: string;
+	image: string;
 	name: string;
 	address: string;
 	logo: string;
 	phone: string;
 	email: string;
-	_id: string;
 	__v: number;
 }
 
