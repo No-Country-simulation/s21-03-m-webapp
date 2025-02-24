@@ -12,6 +12,9 @@ export const CURRENT_USER = '/auth/current-user';
 // Profile
 export const PROFILE_EDIT = '/profile/edit';
 
+// Salones
+export const SALONES_ALL = '/salones';
+
 // ================================
 //  APP Constants
 // ================================

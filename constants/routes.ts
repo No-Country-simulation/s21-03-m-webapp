@@ -1,4 +1,4 @@
-import { BadgeDollarSign, Carrot, CircleUserRound, Home, UsersRound, UtensilsCrossed } from 'lucide-react';
+import { Carrot, CircleUserRound, UsersRound, UtensilsCrossed } from 'lucide-react';
 
 // ================================
 //  Web App Routes
@@ -19,12 +19,12 @@ export const DASHBOARD_ROUTES = {
 };
 
 export const dashboard_links = [
-	{
-		id: 1,
-		name: 'Inicio',
-		icon: Home,
-		url: DASHBOARD_ROUTES.DASHBOARD,
-	},
+	// {
+	// 	id: 1,
+	// 	name: 'Inicio',
+	// 	icon: Home,
+	// 	url: DASHBOARD_ROUTES.DASHBOARD,
+	// },
 	{
 		id: 2,
 		name: 'Mesas',
@@ -37,12 +37,12 @@ export const dashboard_links = [
 		icon: Carrot,
 		url: DASHBOARD_ROUTES.PRODUCTOS,
 	},
-	{
-		id: 4,
-		name: 'Ventas',
-		icon: BadgeDollarSign,
-		url: DASHBOARD_ROUTES.VENTAS,
-	},
+	// {
+	// 	id: 4,
+	// 	name: 'Ventas',
+	// 	icon: BadgeDollarSign,
+	// 	url: DASHBOARD_ROUTES.VENTAS,
+	// },
 	{
 		id: 5,
 		name: 'Miembros',

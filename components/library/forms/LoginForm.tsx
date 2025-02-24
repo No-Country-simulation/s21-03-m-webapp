@@ -5,12 +5,12 @@ import { LoginFormData, loginFormDefaultValues, loginSchema } from '@/schemas/au
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
-import { useLoginUser } from '../../../actions/hooks/useLoginUser';
+import { useLoginUser } from '@/actions/hooks/authentication/useLoginUser';
 import { useTransition } from 'react';
 import { Button } from '../../ui/button';
 import Link from 'next/link';
-import { WEBSITE_ROUTES } from '../../../constants/routes';
-import { AuthenticationRequest } from '../../../types/authentication';
+import { WEBSITE_ROUTES } from '@/constants/routes';
+import { AuthenticationRequest } from '@/types/authentication';
 
 const LoginForm = () => {
 	const [isPending, startTransition] = useTransition();

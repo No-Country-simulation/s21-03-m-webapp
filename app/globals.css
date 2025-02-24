@@ -28,6 +28,7 @@ body {
 		--input: 214.3 31.8% 91.4%;
 		--ring: 222.2 84% 4.9%;
 		--chart-1: 12 76% 61%;
+		--chart-1-hover: 12 95% 61%;
 		--chart-2: 173 58% 39%;
 		--chart-3: 197 37% 24%;
 		--chart-4: 43 74% 66%;
@@ -63,6 +64,7 @@ body {
 		--input: 217.2 32.6% 17.5%;
 		--ring: 212.7 26.8% 83.9%;
 		--chart-1: 220 70% 50%;
+		--chart-1-hiover: 220 55% 50%;
 		--chart-2: 160 60% 45%;
 		--chart-3: 30 80% 55%;
 		--chart-4: 280 65% 60%;
@@ -90,10 +92,18 @@ body {
 @layer components {
 	/* 
 	* ================================= 
+	* Width
+	* ================================= 
+	*/
+	.max-w-1800 {
+		@apply max-w-[1800px] !important;
+	}
+
+	/* 
+	* ================================= 
 	* Navigation
 	* ================================= 
 	*/
-
 	.nav-max-w-1200 {
 		@apply max-w-[1200px] !important;
 	}
@@ -108,8 +118,12 @@ body {
 	* ================================= 
 	*/
 
+	.chart-button-1 {
+		@apply bg-chart-1 hover:bg-orange-600 !important;
+	}
+
 	.button-fill {
-		@apply rounded-lg py-5 font-extralight text-base tracking-wider border-none !important;
+		@apply rounded-lg py-4 font-extralight text-sm border-none bg-chart-1 !important;
 	}
 
 	.button-fill-dark {
