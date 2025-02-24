@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteSalon } from '@/actions/salones';
 import { toast } from '@/hooks/use-toast';
+import { TOAST_DURATION } from '@/constants/app_constants';
 
 export function useDeleteSalon() {
 	const queryClient = useQueryClient();
@@ -22,7 +23,7 @@ export function useDeleteSalon() {
 		onSuccess: (response) => {
 			toast({
 				description: response.msg,
-				duration: 3000,
+				duration: TOAST_DURATION,
 				className: 'bg-chart-2 text-white [&>button]:text-white [&>button]:hover:text-white',
 			});
 			queryClient.invalidateQueries({ queryKey: ['salones'] });
@@ -30,7 +31,7 @@ export function useDeleteSalon() {
 		onError: (error, _, context) => {
 			toast({
 				description: error.message,
-				duration: 3000,
+				duration: TOAST_DURATION,
 				className: 'bg-destructive text-white [&>button]:text-white [&>button]:hover:text-white',
 			});
 			queryClient.setQueryData(['salones'], context?.previousSalones);

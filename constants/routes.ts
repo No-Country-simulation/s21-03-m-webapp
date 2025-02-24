@@ -10,7 +10,6 @@ export const WEBSITE_ROUTES = {
 };
 
 export const DASHBOARD_ROUTES = {
-	DASHBOARD: '/dashboard',
 	MESAS: '/mesas',
 	PRODUCTOS: '/productos',
 	VENTAS: '/ventas',

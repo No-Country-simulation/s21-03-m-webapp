@@ -19,3 +19,4 @@ export const SALONES_ALL = '/salones';
 //  APP Constants
 // ================================
 export const COOKIE_NAME = "'Mesa360-Token'";
+export const TOAST_DURATION = 1800;

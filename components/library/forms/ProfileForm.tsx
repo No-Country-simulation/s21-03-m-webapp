@@ -9,13 +9,11 @@ import { Button } from '../../ui/button';
 import { ProfileFormData, profileSchema } from '../../../schemas/profileSchema';
 import { Camera, Save } from 'lucide-react';
 import { User } from '../../../types/authentication';
-import { updateProfile } from '../../../actions/profile';
-import { useQueryClient } from '@tanstack/react-query';
-import { toast } from '../../../hooks/use-toast';
+import { useUpdateProfile } from '../../../actions/hooks/profile/useUpdateProfile';
 
 const ProfileForm = ({ currentUser }: { currentUser: User | null }) => {
 	const [isPending, startTransition] = useTransition();
-	const queryClient = useQueryClient();
+	const { mutate: update } = useUpdateProfile();
 
 	// Datos User
 	const [userEmail] = useState(currentUser?.email || '');
@@ -34,21 +32,14 @@ const ProfileForm = ({ currentUser }: { currentUser: User | null }) => {
 
 	function onSubmit(values: ProfileFormData) {
 		startTransition(() => {
-			updateProfile(values)
-				.then((response) => {
-					toast({
-						description: response.msg,
-						duration: 3000,
-						className: 'bg-chart-2 text-white [&>button]:text-white [&>button]:hover:text-white',
-					});
-					queryClient.invalidateQueries({ queryKey: ['currentUser'] });
-				})
-				.catch((error) => {
+			update(values, {
+				onError: (error) => {
 					form.setError('root', {
 						type: 'manual',
-						message: error.message.split(',').join('\n'),
+						message: error.message.split('').join('\n'),
 					});
-				});
+				},
+			});
 		});
 	}
 
@@ -178,7 +169,7 @@ const ProfileForm = ({ currentUser }: { currentUser: User | null }) => {
 						{form.formState.errors.root.message}
 					</FormMessage>
 				)}
-				<Button type="submit" className="gap-2 mt-6 chart-1-button">
+				<Button type="submit" className="gap-2 mt-6 chart-button-1">
 					<Save className="w-5 h-5" />
 					Guardar cambios
 				</Button>
