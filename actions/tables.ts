@@ -17,10 +17,7 @@ export async function getTables(salonId: string): Promise<Array<Table>> {
 
 export async function createTable(body: TableRequest): Promise<TableResponse> {
 	try {
-		console.log(body);
 		const response = await protected_api.post<TableResponse>(`${SALONES}/${body.salonId}${TABLES}`, body);
-		// TODO - Remove after test
-		console.log(response.data);
 		return response.data;
 	} catch (error) {
 		if (axios.isAxiosError(error) && error.response) {

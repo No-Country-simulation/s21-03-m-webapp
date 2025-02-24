@@ -15,14 +15,14 @@ export function useCreateSalones() {
 			toast({
 				description: response.msg,
 				duration: TOAST_DURATION,
-				className: 'bg-chart-2 text-white [&>button]:text-white [&>button]:hover:text-white',
+				variant: 'success',
 			});
 		},
 		onError: (error: Error) => {
 			toast({
 				description: error.message,
 				duration: TOAST_DURATION,
-				className: 'bg-destructive text-white [&>button]:text-white [&>button]:hover:text-white',
+				variant: 'destructive',
 			});
 		},
 	});
