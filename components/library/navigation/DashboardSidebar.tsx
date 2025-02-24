@@ -26,7 +26,7 @@ const MesaSidebar = () => {
 	const router = useRouter();
 
 	return (
-		<aside className="sm:hidden">
+		<aside className="md:hidden">
 			<nav className="w-full h-[5rem] bg-white fixed top-0 drop-shadow-sm z-30">
 				<Container className="h-full flex flex-row items-center justify-between">
 					<Logo toDashboard></Logo>

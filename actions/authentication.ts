@@ -18,9 +18,7 @@ export async function loginUser(body: AuthenticationRequest): Promise<Authentica
 
 export async function registerUser(body: AuthenticationRequest): Promise<AuthenticationResponse> {
 	try {
-		console.log(body);
 		const response = await public_api.post<AuthenticationResponse>(`${REGISTER_URL}`, body);
-		console.log(response);
 		return response.data;
 	} catch (error) {
 		if (axios.isAxiosError(error) && error.response) {

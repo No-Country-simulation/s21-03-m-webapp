@@ -5,12 +5,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useTransition } from 'react';
 import { Input } from '../../ui/input';
 import { Button } from '../../ui/button';
-import { RegisterFormData, registerFormDefaultValues, registerSchema } from '../../../schemas/authenticationSchema';
+import { RegisterFormData, registerFormDefaultValues, registerSchema } from '@/schemas/authenticationSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRegisterUser } from '../../../actions/hooks/useRegisterUser';
+import { useRegisterUser } from '@/actions/hooks/authentication/useRegisterUser';
 import Link from 'next/link';
-import { WEBSITE_ROUTES } from '../../../constants/routes';
-import { AuthenticationRequest } from '../../../types/authentication';
+import { WEBSITE_ROUTES } from '@/constants/routes';
+import { AuthenticationRequest } from '@/types/authentication';
 
 const RegisterForm = () => {
 	const [isPending, startTransition] = useTransition();

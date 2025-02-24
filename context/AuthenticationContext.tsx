@@ -2,7 +2,7 @@
 
 import Cookies from 'js-cookie';
 import { createContext, useContext, useState, useEffect } from 'react';
-import { useCurrentUserQuery } from '@/actions/hooks/useCurrentUser';
+import { useCurrentUserQuery } from '@/actions/hooks/authentication/useCurrentUser';
 import { AuthenticationContextType, User } from '@/types/authentication';
 import { COOKIE_NAME } from '../constants/app_constants';
 
