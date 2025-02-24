@@ -12,10 +12,11 @@ export const create = async (req: Request, res: Response) => {
 
     try {
 
-       await new Product({ ownerId: req.ownerId, categoryId, name, description, price, target:target.toLowerCase() }).save();
+      const product= await new Product({ ownerId: req.ownerId, categoryId, name, description, price, target:target.toLowerCase() }).save();
   
         return res.status(200).json({
-            msg: 'Producto Creado Correctamente.'
+            msg: 'Producto Creado Correctamente.',
+            product
         });
     } catch (error) {
         return res.status(500).json({
@@ -30,7 +31,7 @@ export const getAll = async (req: Request, res: Response) => {
         const products = await Product.find({ ownerId: req.ownerId }).select("_id name description price image target categoryId")
 
         return res.status(200).json({
-            products: products
+            products
         });
     } catch (error) {
         return res.status(500).json({
@@ -45,7 +46,7 @@ export const getByCategory = async (req: Request, res: Response) => {
         const products = await Product.find({ ownerId: req.ownerId, categoryId }).select("_id name description price image target")
 
         return res.status(200).json({
-            products: products
+            products
         });
     } catch (error) {
         return res.status(500).json({
@@ -61,7 +62,8 @@ export const edit = async (req: Request, res: Response) => {
     const product = await Product.findById(id)
     if (!product) {
         return res.status(404).json({
-            msg: "No existe el producto."
+            msg: "No existe el producto.",
+            product
         })
     }
 
