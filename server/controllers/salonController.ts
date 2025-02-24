@@ -117,7 +117,8 @@ export class SalonController {
             await req.salon.updateOne({ name })
             await req.salon.save()
             res.status(200).json({
-                msg: "Salón Actualizado"
+                msg: "Salón Actualizado",
+                salon:req.salon
             })
 
 

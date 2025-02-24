@@ -20,7 +20,7 @@ export const upload = async (req: Request, res: Response, next: NextFunction) =>
   
       // Convertir fields a objeto plano
       req.body = Object.fromEntries(Object.entries(fields).map(([key, value]) => [key, value?.[0]]));
-  
+      
       // Si hay una imagen, guardamos la ruta del archivo
       if (files.image && Array.isArray(files.image) && files.image.length > 0) {
         req.file = files.image[0].filepath;

@@ -29,7 +29,9 @@ export const CategorySchema = z.object({
 })
 
 export const TableSchema = z.object({
-    number: z.string().trim().min(1, { message: "Debes ingresar un identificador" }),
+    number: z.string().trim()
+    .min(1, { message: "Debes ingresar un identificador" })
+    .max(4,{ message: "Máximo 4 caracteres" }),
     xRatio: z.number({message:"Debes ingresar un número"}),
     yRatio: z.number({message:"Debes ingresar un número"}),
     x: z.number({message:"Debes ingresar un número"}),
