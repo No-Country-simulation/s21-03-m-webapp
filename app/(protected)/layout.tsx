@@ -14,9 +14,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 			<ProtectedRoute>
 				<Toaster />
 				<VerticalContainer escape={'all'}>
-					<Container className="bg-background text-foreground" variant={'large'}>
-						{children}
-					</Container>
+					<Container className="bg-background text-foreground">{children}</Container>
 				</VerticalContainer>
 			</ProtectedRoute>
 		</>

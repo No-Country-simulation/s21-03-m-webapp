@@ -180,8 +180,8 @@ const TablesMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =
 	// -----------------------------------------------------
 	return (
 		<DndContext onDragEnd={handleDragEnd}>
-			<div className="w-full  flex flex-row gap-2">
-				<article className="w-[950px] px-6 py-8 border bg-white shadow-md rounded-tr-lg rounded-b-lg">
+			<div className="w-full flex flex-row gap-2">
+				<article className="w-full px-6 py-8 border bg-white shadow-md rounded-tr-lg rounded-b-lg">
 					<SalonesName salon={salon} onDelete={onDelete} />
 					<div className="flex gap-2 mb-4">
 						<Input
