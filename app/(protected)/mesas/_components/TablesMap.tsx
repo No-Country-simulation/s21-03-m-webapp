@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { DndContext, useDroppable, DragEndEvent } from '@dnd-kit/core';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { TableCard, SalonesName } from './';
+import { TableCard, SalonesName } from '.';
 import { Salon } from '@/types/salones';
 import { useTables } from '@/actions/hooks/tables/useTables';
 import { useCreateTables } from '@/actions/hooks/tables/useCreateTables';
@@ -21,7 +21,7 @@ const clampPosition = (x: number, y: number, containerWidth: number, containerHe
 	return { clampedX, clampedY };
 };
 
-const TableMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) => void }) => {
+const TablesMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) => void }) => {
 	const { data: myTables } = useTables(salon._id); // Fetch tables from backend
 	const { mutate: create } = useCreateTables();
 	const { mutate: updateTable } = useUpdateTables(); // ✅ Mutation for updates
@@ -180,32 +180,34 @@ const TableMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =>
 	// -----------------------------------------------------
 	return (
 		<DndContext onDragEnd={handleDragEnd}>
-			<article className="w-full px-6 py-8 border bg-white shadow-md rounded-tr-lg rounded-b-lg">
-				<SalonesName salon={salon} onDelete={onDelete} />
-				<div className="flex gap-2 mb-4">
-					<Input
-						placeholder="Número de mesa"
-						value={tableNumber}
-						type="text"
-						className="form-input-text"
-						onChange={(e) => setTableNumber(e.target.value)}
-					/>
-					<Button onClick={addTable}>Agregar Mesa</Button>
-				</div>
-				<div
-					ref={(node) => {
-						setNodeRef(node);
-						mapRef.current = node;
-					}}
-					className="relative w-full h-[650px] bg-gray-200 border rounded-lg overflow-hidden"
-				>
-					{tables.map((table) => (
-						<TableCard key={table._id} table={table} size={TABLE_SIZE} />
-					))}
-				</div>
-			</article>
+			<div className="w-full  flex flex-row gap-2">
+				<article className="w-[950px] px-6 py-8 border bg-white shadow-md rounded-tr-lg rounded-b-lg">
+					<SalonesName salon={salon} onDelete={onDelete} />
+					<div className="flex gap-2 mb-4">
+						<Input
+							placeholder="Número de mesa"
+							value={tableNumber}
+							type="text"
+							className="form-input-text"
+							onChange={(e) => setTableNumber(e.target.value)}
+						/>
+						<Button onClick={addTable}>Agregar Mesa</Button>
+					</div>
+					<div
+						ref={(node) => {
+							setNodeRef(node);
+							mapRef.current = node;
+						}}
+						className="relative w-full h-[650px] bg-gray-200 border rounded-lg overflow-hidden"
+					>
+						{tables.map((table) => (
+							<TableCard key={table._id} table={table} size={TABLE_SIZE} />
+						))}
+					</div>
+				</article>
+			</div>
 		</DndContext>
 	);
 };
 
-export default TableMap;
+export default TablesMap;

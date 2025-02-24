@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { SalonesCreateButton, TableMap } from './';
+import { SalonesCreateButton, TablesMap } from './';
 import { useSalones } from '@/actions/hooks/salones/useSalones';
 import { ApiLoader } from '@/components/library/loading';
 import { Salon } from '@/types/salones';
 import { useDeleteSalon } from '@/actions/hooks/salones/useDeleteSalon';
+import TablesInfo from './TablesInfo';
 
 const SalonTabs = () => {
 	const { data: salones = [], isPending, isError } = useSalones();
@@ -21,7 +22,6 @@ const SalonTabs = () => {
 	const handleDeleteSalon = (salonId: string) => {
 		deleteSalon(salonId, {
 			onSuccess: () => {
-				// Si eliminamos el activeSalon, seleccionamos el primero disponible
 				if (activeSalon?._id === salonId) {
 					const newSalones = salones.filter((s) => s._id !== salonId);
 					if (newSalones.length > 0) {
@@ -36,7 +36,6 @@ const SalonTabs = () => {
 		});
 	};
 
-	// 🔹 Efecto para seleccionar el primer salón disponible
 	useEffect(() => {
 		if (salones.length > 0) {
 			const foundSalon = salones.find((s) => s._id === activeTab);
@@ -66,21 +65,26 @@ const SalonTabs = () => {
 
 	return (
 		<div className="w-full">
-			<div className="flex">
-				<SalonesCreateButton />
-				{salones.map((salon) => (
-					<button
-						key={salon._id}
-						className={`px-6 py-2 text-sm font-medium transition-all duration-200 rounded-t-xl border border-b-0 ${
-							activeTab === salon._id ? 'text-white bg-chart-1' : 'bg-white text-gray-600 hover:text-chart-1'
-						}`}
-						onClick={() => handleSelectSalon(salon)}
-					>
-						{salon.name}
-					</button>
-				))}
+			<div className="flex flex-row w-ful h-screen">
+				<article>
+					<div className="flex">
+						<SalonesCreateButton />
+						{salones.map((salon) => (
+							<button
+								key={salon._id}
+								className={`px-6 py-2 text-sm font-medium transition-all duration-200 rounded-t-xl border border-b-0 ${
+									activeTab === salon._id ? 'text-white bg-chart-1' : 'bg-white text-gray-600 hover:text-chart-1'
+								}`}
+								onClick={() => handleSelectSalon(salon)}
+							>
+								{salon.name}
+							</button>
+						))}
+					</div>
+					<TablesMap salon={activeSalon} key={activeSalon._id} onDelete={handleDeleteSalon} />
+				</article>
+				<TablesInfo></TablesInfo>
 			</div>
-			<TableMap salon={activeSalon} key={activeSalon._id} onDelete={handleDeleteSalon} />
 		</div>
 	);
 };
