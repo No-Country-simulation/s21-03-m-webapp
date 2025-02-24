@@ -52,7 +52,8 @@ export class TableController {
 
         try {
 
-            let table = await Table.findOne({ number: req.body.number })
+            let table = await Table.findOne({salonId:req.salon.id,number: req.body.number })
+
             if (table) {
                 res.status(400).json({
                     msj: "Ya existe una mesa con ese identificador"
@@ -99,8 +100,7 @@ export class TableController {
     static delete = async (req: Request, res: Response) => {
 
         try {
-            req.table.deleteOne()
-
+            await req.table.deleteOne()
             res.status(200).json({
                 msg: "Mesa eliminada"
             })
@@ -112,11 +112,5 @@ export class TableController {
         }
 
     }
-
-
-
-
-
-
 
 }
