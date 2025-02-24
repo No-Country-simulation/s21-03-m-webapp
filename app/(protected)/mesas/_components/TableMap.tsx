@@ -28,7 +28,7 @@ const clampPosition = (x: number, y: number, containerWidth: number, containerHe
 	return { clampedX, clampedY };
 };
 
-const TableMap = ({ salon }: { salon: Salon }) => {
+const TableMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) => void }) => {
 	const [tables, setTables] = useState<Table[]>([]);
 	const [tableNumber, setTableNumber] = useState('');
 
@@ -230,7 +230,7 @@ const TableMap = ({ salon }: { salon: Salon }) => {
 	return (
 		<DndContext onDragEnd={handleDragEnd}>
 			<article className="w-full px-6 py-8 border bg-white shadow-md rounded-tr-lg rounded-b-lg">
-				<SalonesName salon={salon} />
+				<SalonesName salon={salon} onDelete={onDelete} />
 				<div className="flex gap-2 mb-4">
 					<Input
 						placeholder="Número de mesa"
