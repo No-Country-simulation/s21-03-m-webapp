@@ -10,10 +10,12 @@ import { ProfileFormData, profileSchema } from '../../../schemas/profileSchema';
 import { Camera, Save } from 'lucide-react';
 import { User } from '../../../types/authentication';
 import { useUpdateProfile } from '../../../actions/hooks/profile/useUpdateProfile';
+import Image from 'next/image';
 
 const ProfileForm = ({ currentUser }: { currentUser: User | null }) => {
 	const [isPending, startTransition] = useTransition();
 	const { mutate: update } = useUpdateProfile();
+	const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
 	// Datos User
 	const [userEmail] = useState(currentUser?.email || '');
@@ -30,9 +32,21 @@ const ProfileForm = ({ currentUser }: { currentUser: User | null }) => {
 		mode: 'onBlur',
 	});
 
+	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setSelectedImage(event.target.files?.[0] || null);
+	};
+
 	function onSubmit(values: ProfileFormData) {
 		startTransition(() => {
-			update(values, {
+			const formData = new FormData();
+			if (selectedImage) {
+				formData.append('image', selectedImage);
+			}
+			formData.append('name', values.name);
+			formData.append('address', values.address);
+			formData.append('phone', values.phone);
+			formData.append('email', values.email);
+			update(formData, {
 				onError: (error) => {
 					form.setError('root', {
 						type: 'manual',
@@ -51,15 +65,46 @@ const ProfileForm = ({ currentUser }: { currentUser: User | null }) => {
 			>
 				{/* Avatar */}
 				<article className="relative w-24 h-24 rounded-full border-2 border-gray-300">
-					{/* <Image
-							src={avatar || user?.avatar || '/default-avatar.png'}
-							alt="Avatar"
-							className="w-full h-full object-cover"
-						/> */}
-					<label className="absolute bottom-0 right-0 bg-chart-1 text-white p-1 rounded-full cursor-pointer">
-						<Camera className="w-5 h-5" />
-						<input type="file" className="hidden" accept="image/*" disabled />
-					</label>
+					<FormField
+						name="image"
+						control={form.control}
+						render={({}) => {
+							const imageUrl = selectedImage ? URL.createObjectURL(selectedImage) : currentUser?.profile.logo;
+							return (
+								<FormItem className="w-full h-full bg-gray-300 overflow-hidden rounded-full">
+									<FormControl>
+										<div>
+											{/* Contenedor de la imagen */}
+											<div className="w-auto h-24">
+												{imageUrl && (
+													<Image
+														src={imageUrl}
+														alt="Preview"
+														width={0}
+														height={0}
+														className="w-full h-full object-cover"
+														priority // Carga la imagen de inmediato
+														loading={'eager'} // Las demás, con carga diferida
+														quality={75} // Reduce el peso de las imágenes sin perder mucha calidad
+													/>
+												)}
+											</div>
+											<div className="absolute bottom-0 right-0 bg-chart-1 text-white  p-1 rounded-full cursor-pointer">
+												<Camera className="w-5 h-5" />
+												<Input
+													type="file"
+													className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+													onChange={handleFileChange}
+													disabled={isPending}
+												/>
+											</div>
+										</div>
+									</FormControl>
+									<FormMessage className="form-message-validation-error" />
+								</FormItem>
+							);
+						}}
+					/>
 				</article>
 
 				<article className="w-full flex flex-col gap-4">
