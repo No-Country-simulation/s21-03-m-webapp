@@ -19,8 +19,20 @@ export class SalonController {
             })
             return
         }
+
+
         try {
-            const salon = await Salon.create({name,ownerId})
+            const salonExists = await Salon.findOne({name})
+            console.log(salonExists)
+            if (salonExists) {
+                res.status(400).json({
+                    msg: "Ya existe un salón con ese nombre"
+                })
+                return
+            }
+
+
+            const salon = await Salon.create({ name, ownerId })
             res.status(201).json({
                 msg: "Salón creado",
                 salon

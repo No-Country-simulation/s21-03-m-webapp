@@ -7,10 +7,8 @@ export class TableController {
     static get= async (req: Request, res: Response) => {
 
         try {
-            const table=await Table.findOne({_id:req.params.tableId})
-          
             res.status(200).json({
-                table
+                table:req.table
             })
         } catch (error) {
             res.status(404).json({

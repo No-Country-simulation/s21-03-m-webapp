@@ -3,15 +3,18 @@ import z from "zod";
 
 export const RegisterSchema = z.object({
     email: z.string().email({ message: "Email inválido" }),
-    password: z.string().min(6, { message: "Mínimo de 6 caracteres" })
+    password: z.string().trim().min(6, { message: "Mínimo de 6 caracteres" })
 }).strict()
 
 export const LoginSchema = z.object({
     email: z.string().email({ message: "Email inválido" }),
-    password: z.string().min(1, { message: "Debes ingresar el password" })
+    password: z.string().trim().min(1, { message: "Debes ingresar el password" })
 }).strict()
 
-export const SalonSchema = z.string().min(1, { message: "Debes ingresar el nombre del salón" })
+export const SalonSchema = z.string()
+  .trim()
+  .min(1, { message: "Debes ingresar el nombre del salón" })
+
 
 export const ProfileSchema = z.object({
     name: z.string().min(1, { message: "Debes ingresar el nombre" }),
@@ -21,12 +24,12 @@ export const ProfileSchema = z.object({
 })
 
 export const CategorySchema = z.object({
-    name: z.string().min(1, { message: "Debes ingresar un nombre" }),
+    name: z.string().trim().min(1, { message: "Debes ingresar un nombre" }),
     description: z.string().min(1, { message: "Debes ingresar una descripcion" }),
 })
 
 export const TableSchema = z.object({
-    number: z.string().min(1, { message: "Debes ingresar un identificador" }),
+    number: z.string().trim().min(1, { message: "Debes ingresar un identificador" }),
     xRatio: z.number({message:"Debes ingresar un número"}),
     yRatio: z.number({message:"Debes ingresar un número"}),
     x: z.number({message:"Debes ingresar un número"}),
