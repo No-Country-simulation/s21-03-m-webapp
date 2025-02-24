@@ -4,6 +4,8 @@ export interface Table {
 	number: string;
 	x: number;
 	y: number;
+	xRatio: number;
+	yRatio: number;
 	status: 'Free' | 'Occupied' | 'Billing';
 }
 
@@ -12,6 +14,8 @@ export interface TableRequest {
 	number: string;
 	x: number;
 	y: number;
+	xRatio: number;
+	yRatio: number;
 	status: 'Free' | 'Occupied' | 'Billing';
 }
 

@@ -8,18 +8,7 @@ import { TableCard, SalonesName } from './';
 import { Salon } from '@/types/salones';
 import { useTables } from '@/actions/hooks/tables/useTables';
 import { useCreateTables } from '@/actions/hooks/tables/useCreateTables';
-
-// Extendemos la definición de Table, para almacenar también los ratios
-type Table = {
-	_id: string;
-	salonId: string;
-	number: string;
-	x: number; // posición absoluta calculada
-	y: number; // posición absoluta calculada
-	xRatio?: number; // posición relativa en X (0..1)
-	yRatio?: number; // posición relativa en Y (0..1)
-	status: 'Free' | 'Occupied' | 'Billing';
-};
+import { Table } from '@/types/tables';
 
 const MAP_HEIGHT = 650;
 const TABLE_SIZE = 70;
@@ -81,11 +70,7 @@ const TableMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =>
 				return { ...t, xRatio, yRatio, x, y };
 			});
 			setTables(absoluteTables);
-		} else {
-			// Si no hay nada en storage, definimos al menos una mesa
-			setTables([{ _id: '1', salonId: 'test', number: '1', x: 0, y: 0, status: 'Free', xRatio: 0, yRatio: 0 }]);
-		}
-
+		} 
 		setHasLoadedFromStorage(true);
 	}, [mapWidth, hasLoadedFromStorage, tables]);
 
@@ -125,10 +110,8 @@ const TableMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =>
 		// Centrada en el contenedor
 		const centerX = (mapWidth - TABLE_SIZE) / 2;
 		const centerY = (MAP_HEIGHT - TABLE_SIZE) / 2;
-
-		// TODO - APlicar esto cuando backend tenga
-		// const xRatio = centerX / mapWidth;
-		// const yRatio = centerY / MAP_HEIGHT;
+		const xRatio = centerX / mapWidth;
+		const yRatio = centerY / MAP_HEIGHT;
 
 		// Creamos la nueva mesa en el backend
 		create(
@@ -138,23 +121,20 @@ const TableMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =>
 				x: centerX,
 				y: centerY,
 				status: 'Free',
-				// TODO - Agregar Ratios al backend
+				xRatio: xRatio,
+				yRatio: yRatio,
 			},
 			{
 				onSuccess: (response) => {
-					// Convertimos los valores de respuesta en posiciones relativas
-					const xRatio = response.table.x / mapWidth;
-					const yRatio = response.table.y / MAP_HEIGHT;
-
 					const savedTable: Table = {
-						_id: response.table._id, // Ahora usamos el ID real del backend
+						_id: response.table._id,
 						salonId: response.table.salonId,
 						number: response.table.number,
 						x: response.table.x,
 						y: response.table.y,
 						status: response.table.status,
-						xRatio,
-						yRatio,
+						xRatio: response.table.xRatio,
+						yRatio: response.table.yRatio,
 					};
 
 					// Agregamos la nueva mesa al estado local
