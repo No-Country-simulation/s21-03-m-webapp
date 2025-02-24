@@ -10,6 +10,7 @@ export interface Table {
 }
 
 export interface TableRequest {
+	id?: string;
 	salonId: string;
 	number: string;
 	x: number;

@@ -26,3 +26,15 @@ export async function createTable(body: TableRequest): Promise<TableResponse> {
 		throw new Error(SERVER_ERROR);
 	}
 }
+
+export async function updateTable(body: TableRequest): Promise<TableResponse> {
+	try {
+		const response = await protected_api.put<TableResponse>(`${SALONES}/${body.salonId}${TABLES}/${body.id}`, body);
+		return response.data;
+	} catch (error) {
+		if (axios.isAxiosError(error) && error.response) {
+			throw new Error(error.response.data.msj);
+		}
+		throw new Error(SERVER_ERROR);
+	}
+}
