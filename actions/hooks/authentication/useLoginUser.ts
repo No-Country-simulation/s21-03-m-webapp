@@ -13,7 +13,7 @@ export function useLoginUser() {
 		mutationFn: loginUser,
 		onSuccess: (response) => {
 			updateToken(response.token);
-			queryClient.setQueryData(['currentUser'], response);
+			queryClient.setQueryData(['currentUser'], response.token);
 			queryClient.invalidateQueries({ queryKey: ['currentUser'] });
 			router.push(DASHBOARD_ROUTES.MESAS);
 		},

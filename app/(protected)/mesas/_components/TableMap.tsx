@@ -154,11 +154,9 @@ const TableMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =>
 						}
 					}
 
-					// Calculate new ratios
 					const xRatio = newX / mapWidth;
 					const yRatio = newY / MAP_HEIGHT;
 
-					// ✅ Update table in DB
 					updateTable({
 						id: table._id,
 						salonId: table.salonId,

@@ -11,7 +11,7 @@ export function useUpdateSalon() {
 		mutationFn: (salon: SalonUpdateRequest) => updateSalon(salon),
 		onSuccess: (response) => {
 			queryClient.invalidateQueries({ queryKey: ['salones'] });
-			queryClient.setQueryData(['salon'], response.salon);
+			queryClient.setQueryData(['salon'], response.salon._id);
 			queryClient.invalidateQueries({ queryKey: ['salon'] });
 			toast({
 				description: response.msg,

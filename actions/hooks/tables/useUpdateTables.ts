@@ -10,7 +10,7 @@ export function useUpdateTables() {
 	return useMutation({
 		mutationFn: (salon: TableRequest) => updateTable(salon),
 		onSuccess: (response) => {
-			queryClient.setQueryData(['table'], response.table);
+			queryClient.setQueryData(['table'], response.table._id);
 			queryClient.invalidateQueries({ queryKey: ['tables'] });
 			toast({
 				description: response.msg,

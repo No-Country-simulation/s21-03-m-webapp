@@ -9,7 +9,7 @@ export function useCreateTables() {
 	return useMutation({
 		mutationFn: createTable,
 		onSuccess: (response) => {
-			queryClient.setQueryData(['table'], response.table);
+			queryClient.setQueryData(['table'], response.table._id);
 			queryClient.invalidateQueries({ queryKey: ['tables'] });
 			queryClient.invalidateQueries({ queryKey: ['table'] });
 			toast({
