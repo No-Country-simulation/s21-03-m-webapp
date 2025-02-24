@@ -11,7 +11,7 @@ export const create = async (req: Request, res: Response) => {
     }
 
     try {
-        const product = await new Product({ ownerId: req.ownerId, categoryId, name, description, price, target }).save();
+        const product = await new Product({ ownerId: req.ownerId, categoryId, name, description, price, target:target.toLowerCase() }).save();
 
         return res.status(200).json({
             msg: 'Producto Creado Correctamente.',
@@ -19,14 +19,15 @@ export const create = async (req: Request, res: Response) => {
         });
     } catch (error) {
         return res.status(500).json({
-            msg: 'Ocurrio un problema en el servidor.'
+            msg: 'Ocurrio un problema en el servidor.',
+            error
         });
     }
 }
 
 export const getAll = async (req: Request, res: Response) => {
     try {
-        const products = await Product.find({ ownerId: req.ownerId }).select("_id name description price image target")
+        const products = await Product.find({ ownerId: req.ownerId }).select("_id name description price image target categoryId")
 
         return res.status(200).json({
             products: products
@@ -41,7 +42,7 @@ export const getAll = async (req: Request, res: Response) => {
 export const getByCategory = async (req: Request, res: Response) => {
     const { categoryId } = req.params
     try {
-        const products = await Product.find({ ownerId: req.ownerId, categoryId }).select("_id name description price image target")
+        const products = await Product.find({ ownerId: req.ownerId, categoryId }).select("_id name description price image target categoryId")
 
         return res.status(200).json({
             products: products
