@@ -10,16 +10,13 @@ export function useDeleteSalon() {
 		onMutate: async (deletedSalonId) => {
 			await queryClient.cancelQueries({ queryKey: ['salones'] });
 
-			// Tomamos la data actual antes de modificarla
 			const previousSalones = queryClient.getQueryData<Array<{ _id: string }>>(['salones']);
 
-			// Filtramos el salón eliminado y actualizamos cache
-			if (previousSalones) {
+			if (previousSalones && previousSalones.length > 1) {
 				const updatedSalones = previousSalones.filter((s) => s._id !== deletedSalonId);
 				queryClient.setQueryData(['salones'], updatedSalones);
 			}
 
-			// Retornamos el snapshot en caso de rollback
 			return { previousSalones };
 		},
 		onSuccess: (response) => {
@@ -36,7 +33,7 @@ export function useDeleteSalon() {
 				duration: 3000,
 				className: 'bg-destructive text-white [&>button]:text-white [&>button]:hover:text-white',
 			});
-			queryClient.setQueryData(['salones'], context?.previousSalones); // Rollback
+			queryClient.setQueryData(['salones'], context?.previousSalones);
 		},
 	});
 }

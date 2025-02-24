@@ -54,7 +54,7 @@ const SalonTabs = () => {
 	if (salones.length === 0 || !activeSalon) {
 		return (
 			<div className="w-full">
-				<div className="flex">
+				<div className="flex flex-col">
 					<SalonesCreateButton />
 					<p className="w-full px-6 py-8 border bg-white shadow-md rounded-tr-lg rounded-b-lg">
 						No hay salones disponibles
