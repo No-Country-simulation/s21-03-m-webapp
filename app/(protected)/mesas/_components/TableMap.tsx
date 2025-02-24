@@ -8,7 +8,6 @@ import { TableCard, SalonesName } from './';
 import { Salon } from '@/types/salones';
 import { useTables } from '@/actions/hooks/tables/useTables';
 import { useCreateTables } from '@/actions/hooks/tables/useCreateTables';
-import { useQueryClient } from '@tanstack/react-query';
 
 // Extendemos la definición de Table, para almacenar también los ratios
 type Table = {
@@ -33,7 +32,6 @@ const clampPosition = (x: number, y: number, containerWidth: number, containerHe
 };
 
 const TableMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) => void }) => {
-	const queryClient = useQueryClient();
 	const { data: myTables } = useTables(salon._id);
 	const { mutate: create } = useCreateTables();
 
@@ -62,17 +60,20 @@ const TableMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =>
 	//    - Leer xRatio, yRatio, calcular x, y absolutos (clamp)
 	// -----------------------------------------------------
 	useEffect(() => {
-		if (myTables) {
-			const absoluteTables = myTables.map((t) => {
-				// Si no existen, calculamos ratio=0
-				// Convertimos los valores de respuesta en posiciones relativas
-				const xRatio = t.x / mapWidth;
-				const yRatio = t.y / MAP_HEIGHT;
+		if (hasLoadedFromStorage || mapWidth === 0) return;
 
+		if (tables) {
+			// Asumimos que en el localStorage guardamos
+			//  { xRatio, yRatio, ... } para cada mesa
+			// const ratioTables = JSON.parse(storedTables) as Array<Table>;
+
+			const absoluteTables = tables.map((t) => {
+				// Si no existen, calculamos ratio=0
+				const xRatio = t.xRatio ?? 0;
+				const yRatio = t.yRatio ?? 0;
 				// Calculamos posiciones absolutas
 				let x = xRatio * mapWidth;
 				let y = yRatio * MAP_HEIGHT;
-
 				// Clamp
 				const { clampedX, clampedY } = clampPosition(x, y, mapWidth, MAP_HEIGHT);
 				x = clampedX;
@@ -80,9 +81,13 @@ const TableMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =>
 				return { ...t, xRatio, yRatio, x, y };
 			});
 			setTables(absoluteTables);
+		} else {
+			// Si no hay nada en storage, definimos al menos una mesa
+			setTables([{ _id: '1', salonId: 'test', number: '1', x: 0, y: 0, status: 'Free', xRatio: 0, yRatio: 0 }]);
 		}
+
 		setHasLoadedFromStorage(true);
-	}, [mapWidth, myTables]);
+	}, [mapWidth, hasLoadedFromStorage, tables]);
 
 	// -----------------------------------------------------
 	// 2) Cada vez que cambie el array de mesas,
@@ -121,6 +126,10 @@ const TableMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =>
 		const centerX = (mapWidth - TABLE_SIZE) / 2;
 		const centerY = (MAP_HEIGHT - TABLE_SIZE) / 2;
 
+		// TODO - APlicar esto cuando backend tenga
+		// const xRatio = centerX / mapWidth;
+		// const yRatio = centerY / MAP_HEIGHT;
+
 		// Creamos la nueva mesa en el backend
 		create(
 			{
@@ -129,6 +138,7 @@ const TableMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =>
 				x: centerX,
 				y: centerY,
 				status: 'Free',
+				// TODO - Agregar Ratios al backend
 			},
 			{
 				onSuccess: (response) => {
