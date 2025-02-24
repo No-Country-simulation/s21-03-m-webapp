@@ -10,8 +10,8 @@ export enum TableStatus {
 export interface ITable extends Document {
     salonId: Types.ObjectId
     number: string
-    x: number
-    y: number
+    xRatio: number
+    yRatio: number
     status: TableStatus
 }
 
@@ -25,11 +25,11 @@ const TableSchema=new Schema({
         type:String,
         required:true
     },
-    x:{
+    xRatio:{
         type:Number,
         required:true
     },
-    y:{
+    yRatio:{
         type:Number,
         required:true
     },

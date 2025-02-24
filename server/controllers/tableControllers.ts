@@ -23,8 +23,8 @@ export class TableController {
         try {
             const tables=await Table.find({salonId:req.salon.id})
             if(tables.length===0){
-                res.status(400).json({
-                    msg: "No hay mesas creadas"
+                res.status(200).json({
+                    tables:[]
                 })
                 return
             }
