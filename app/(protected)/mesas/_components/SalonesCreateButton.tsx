@@ -11,12 +11,14 @@ import {
 import { Button } from '../../../../components/ui/button';
 import { Input } from '../../../../components/ui/input';
 import { useCreateSalones } from '../../../../actions/hooks/salones/useCreateSalones';
-import { SalonRequest } from '../../../../types/mesas';
+import { SalonRequest } from '../../../../types/salones';
 import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SalonFormData, salonSchema } from '../../../../schemas/salonSchema';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../components/ui/form';
+import { toast } from '../../../../hooks/use-toast';
+import { TOAST_DURATION } from '../../../../constants/app_constants';
 
 const SalonesCreateButton = () => {
 	const [open, setOpen] = useState(false);
@@ -30,6 +32,14 @@ const SalonesCreateButton = () => {
 	});
 
 	function onSubmit(values: SalonRequest) {
+		if (values.name == ' ') {
+			toast({
+				description: 'No puedes crear un salón sin nombre.',
+				duration: TOAST_DURATION,
+				variant: 'destructive',
+			});
+			return;
+		}
 		startTransition(() => {
 			create(values, {
 				onError: (error) => {

@@ -5,18 +5,11 @@ import { DndContext, useDroppable, DragEndEvent } from '@dnd-kit/core';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { TableCard, SalonesName } from './';
-import { Salon } from '@/types/mesas';
-
-// Extendemos la definición de Table, para almacenar también los ratios
-type Table = {
-	_id: string;
-	number: number;
-	x: number; // posición absoluta calculada
-	y: number; // posición absoluta calculada
-	xRatio?: number; // posición relativa en X (0..1)
-	yRatio?: number; // posición relativa en Y (0..1)
-	status: 'Free';
-};
+import { Salon } from '@/types/salones';
+import { useTables } from '@/actions/hooks/tables/useTables';
+import { useCreateTables } from '@/actions/hooks/tables/useCreateTables';
+import { Table } from '@/types/tables';
+import { useUpdateTables } from '../../../../actions/hooks/tables/useUpdateTables';
 
 const MAP_HEIGHT = 650;
 const TABLE_SIZE = 70;
@@ -29,14 +22,14 @@ const clampPosition = (x: number, y: number, containerWidth: number, containerHe
 };
 
 const TableMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) => void }) => {
-	const [tables, setTables] = useState<Table[]>([]);
+	const { data: myTables } = useTables(salon._id); // Fetch tables from backend
+	const { mutate: create } = useCreateTables();
+	const { mutate: updateTable } = useUpdateTables(); // ✅ Mutation for updates
+
+	const [tables, setTables] = useState<Array<Table>>([]);
 	const [tableNumber, setTableNumber] = useState('');
-
-	const mapRef = useRef<HTMLDivElement | null>(null);
 	const [mapWidth, setMapWidth] = useState(0);
-
-	// Para evitar recargar desde localStorage varias veces
-	const [hasLoadedFromStorage, setHasLoadedFromStorage] = useState(false);
+	const mapRef = useRef<HTMLDivElement | null>(null);
 
 	const updateMapWidth = () => {
 		if (mapRef.current) {
@@ -53,118 +46,88 @@ const TableMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =>
 	const { setNodeRef } = useDroppable({ id: 'map-area' });
 
 	// -----------------------------------------------------
-	// 1) Cargar mesas desde localStorage al tener mapWidth:
-	//    - Leer xRatio, yRatio, calcular x, y absolutos (clamp)
+	// 1) Ensure tables update when backend data changes
 	// -----------------------------------------------------
 	useEffect(() => {
-		if (hasLoadedFromStorage || mapWidth === 0) return;
+		if (!myTables || mapWidth === 0) return;
 
-		const storedTables = localStorage.getItem('tables');
-		if (storedTables) {
-			// Asumimos que en el localStorage guardamos
-			//  { xRatio, yRatio, ... } para cada mesa
-			const ratioTables = JSON.parse(storedTables) as Array<Table>;
+		const absoluteTables = myTables.map((t) => {
+			const xRatio = t.xRatio ?? t.x / mapWidth;
+			const yRatio = t.yRatio ?? t.y / MAP_HEIGHT;
+			const x = xRatio * mapWidth;
+			const y = yRatio * MAP_HEIGHT;
 
-			const absoluteTables = ratioTables.map((t) => {
-				// Si no existen, calculamos ratio=0
-				const xRatio = t.xRatio ?? 0;
-				const yRatio = t.yRatio ?? 0;
-				// Calculamos posiciones absolutas
-				let x = xRatio * mapWidth;
-				let y = yRatio * MAP_HEIGHT;
-				// Clamp
-				const { clampedX, clampedY } = clampPosition(x, y, mapWidth, MAP_HEIGHT);
-				x = clampedX;
-				y = clampedY;
-				return { ...t, xRatio, yRatio, x, y };
-			});
-			setTables(absoluteTables);
-		} else {
-			// Si no hay nada en storage, definimos al menos una mesa
-			setTables([{ _id: '1', number: 1, x: 0, y: 0, status: 'Free', xRatio: 0, yRatio: 0 }]);
-		}
+			// Clamp position
+			const { clampedX, clampedY } = clampPosition(x, y, mapWidth, MAP_HEIGHT);
 
-		setHasLoadedFromStorage(true);
-	}, [mapWidth, hasLoadedFromStorage]);
+			return { ...t, xRatio, yRatio, x: clampedX, y: clampedY };
+		});
+
+		setTables(absoluteTables);
+	}, [mapWidth, myTables]);
 
 	// -----------------------------------------------------
-	// 2) Cada vez que cambie el array de mesas,
-	//    guardamos en localStorage (usando xRatio,yRatio).
+	// 2) Add Table to Backend & Update State
 	// -----------------------------------------------------
-	useEffect(() => {
-		if (!hasLoadedFromStorage || mapWidth === 0) return;
-		localStorage.setItem('tables', JSON.stringify(tables));
-	}, [tables, mapWidth, hasLoadedFromStorage]);
-
-	// -----------------------------------------------------
-	// 3) Cada vez que se *redimensiona* la ventana y cambia
-	//    mapWidth (ya cargado) recalc x,y = ratio * dimension
-	// -----------------------------------------------------
-	useEffect(() => {
-		if (!hasLoadedFromStorage || mapWidth === 0) return;
-
-		setTables((prev) =>
-			prev.map((table) => {
-				const xRatio = table.xRatio ?? 0;
-				const yRatio = table.yRatio ?? 0;
-				const newX = xRatio * mapWidth;
-				const newY = yRatio * MAP_HEIGHT;
-				// Clamp y asignamos
-				const { clampedX, clampedY } = clampPosition(newX, newY, mapWidth, MAP_HEIGHT);
-				return { ...table, x: clampedX, y: clampedY };
-			}),
-		);
-	}, [mapWidth, hasLoadedFromStorage]);
-
-	// Agregar mesa en el centro
 	const addTable = () => {
 		if (tableNumber.trim() === '') return;
-		const number = parseInt(tableNumber, 10);
-		if (isNaN(number)) return;
 
-		// Centrada en el contenedor
+		// Centered Position
 		const centerX = (mapWidth - TABLE_SIZE) / 2;
 		const centerY = (MAP_HEIGHT - TABLE_SIZE) / 2;
-
 		const xRatio = centerX / mapWidth;
 		const yRatio = centerY / MAP_HEIGHT;
 
-		const newTable: Table = {
-			_id: String(Date.now()),
-			number,
-			x: centerX,
-			y: centerY,
-			status: 'Free',
-			xRatio,
-			yRatio,
-		};
-		setTables((prev) => [...prev, newTable]);
-		setTableNumber('');
+		// Create Table in Backend
+		create(
+			{
+				salonId: salon._id,
+				number: tableNumber,
+				x: centerX,
+				y: centerY,
+				status: 'Free',
+				xRatio,
+				yRatio,
+			},
+			{
+				onSuccess: (response) => {
+					const savedTable: Table = {
+						_id: response.table._id,
+						salonId: response.table.salonId,
+						number: response.table.number,
+						x: response.table.x,
+						y: response.table.y,
+						status: response.table.status,
+						xRatio: response.table.xRatio,
+						yRatio: response.table.yRatio,
+					};
+
+					setTables((prev) => [...prev, savedTable]);
+					setTableNumber('');
+				},
+			},
+		);
 	};
 
-	// Al soltar el drag (mover mesa)
+	// -----------------------------------------------------
+	// 3) Drag & Drop + Update Table Position in DB (WITH SNAP LOGIC)
+	// -----------------------------------------------------
 	const handleDragEnd = (event: DragEndEvent) => {
 		const { active, delta } = event;
 
 		setTables((prev) =>
 			prev.map((table) => {
 				if (table._id === active.id) {
-					const originalX = table.x;
-					const originalY = table.y;
+					let newX = table.x + delta.x;
+					let newY = table.y + delta.y;
 
-					let newX = originalX + delta.x;
-					let newY = originalY + delta.y;
-
-					// Clamp inicial (para no salirse del área)
+					// Clamp position
 					const { clampedX, clampedY } = clampPosition(newX, newY, mapWidth, MAP_HEIGHT);
 					newX = clampedX;
 					newY = clampedY;
 
-					// Buscamos la mesa más cercana para “encajar”
-					const { table: closestTable } = prev.reduce<{
-						table: Table | null;
-						minDistance: number;
-					}>(
+					// 🟢 Snap to closest table
+					const { table: closestTable } = prev.reduce<{ table: Table | null; minDistance: number }>(
 						(closest, otherTable) => {
 							if (otherTable._id === table._id) return closest;
 							const distanceX = Math.abs(newX - otherTable.x);
@@ -188,45 +151,33 @@ const TableMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =>
 						} else if (diffY < SNAP_DISTANCE && diffY > diffX) {
 							newY = closestTable.y + (newY > closestTable.y ? SNAP_DISTANCE : -SNAP_DISTANCE);
 							newX = closestTable.x;
-						} else if (diffX < SNAP_DISTANCE && diffY < SNAP_DISTANCE) {
-							const virtualX = closestTable.x + (newX > closestTable.x ? SNAP_DISTANCE : -SNAP_DISTANCE);
-							const virtualY = closestTable.y + (newY > closestTable.y ? SNAP_DISTANCE : -SNAP_DISTANCE);
-
-							const snapped = clampPosition(virtualX, virtualY, mapWidth, MAP_HEIGHT);
-							// Si se sale del mapa, revertimos a su posición original
-							if (snapped.clampedX !== virtualX || snapped.clampedY !== virtualY) {
-								return { ...table, x: originalX, y: originalY };
-							}
-							newX = snapped.clampedX;
-							newY = snapped.clampedY;
 						}
 					}
 
-					// Verificamos si se sale tras el snap
-					const finalPos = clampPosition(newX, newY, mapWidth, MAP_HEIGHT);
-					if (finalPos.clampedX !== newX || finalPos.clampedY !== newY) {
-						// Se sale => revertimos
-						console.warn('🚨 Movimiento inválido, revirtiendo...');
-						return { ...table, x: originalX, y: originalY };
-					}
+					const xRatio = newX / mapWidth;
+					const yRatio = newY / MAP_HEIGHT;
 
-					// Se calcula la nueva relación con respecto al ancho/alto
-					const xRatio = finalPos.clampedX / mapWidth;
-					const yRatio = finalPos.clampedY / MAP_HEIGHT;
-
-					return {
-						...table,
-						x: finalPos.clampedX,
-						y: finalPos.clampedY,
+					updateTable({
+						id: table._id,
+						salonId: table.salonId,
+						number: table.number,
+						x: newX,
+						y: newY,
+						status: table.status,
 						xRatio,
 						yRatio,
-					};
+					});
+
+					return { ...table, x: newX, y: newY, xRatio, yRatio };
 				}
 				return table;
 			}),
 		);
 	};
 
+	// -----------------------------------------------------
+	// 4) Render Tables in UI
+	// -----------------------------------------------------
 	return (
 		<DndContext onDragEnd={handleDragEnd}>
 			<article className="w-full px-6 py-8 border bg-white shadow-md rounded-tr-lg rounded-b-lg">

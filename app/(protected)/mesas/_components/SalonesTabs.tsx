@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { SalonesCreateButton, TableMap } from './';
 import { useSalones } from '@/actions/hooks/salones/useSalones';
 import { ApiLoader } from '@/components/library/loading';
-import { Salon } from '@/types/mesas';
+import { Salon } from '@/types/salones';
 import { useDeleteSalon } from '@/actions/hooks/salones/useDeleteSalon';
 
 const SalonTabs = () => {

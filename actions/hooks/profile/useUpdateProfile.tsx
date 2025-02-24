@@ -14,7 +14,7 @@ export function useUpdateProfile() {
 			toast({
 				description: response.msg,
 				duration: TOAST_DURATION,
-				className: 'bg-chart-2 text-white [&>button]:text-white [&>button]:hover:text-white',
+				variant: 'success',
 			});
 		},
 	});
