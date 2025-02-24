@@ -1,15 +1,9 @@
+import { Table } from './tables';
+
 export interface Salon {
 	_id: string;
 	name: string;
 	tables: Array<Table>;
-}
-
-export interface Table {
-	_id: string;
-	number: number;
-	x: number;
-	y: number;
-	status: 'Free' | 'Occupied' | 'Billing';
 }
 
 export interface SalonRequest {

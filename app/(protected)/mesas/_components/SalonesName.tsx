@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { Check, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useUpdateSalon } from '@/actions/hooks/salones/useUpdateSalon';
-import { Salon } from '@/types/mesas';
+import { Salon } from '@/types/salones';
 import { ConfirmDialog } from '@/components/library/dialog';
 
 const SalonesName = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) => void }) => {

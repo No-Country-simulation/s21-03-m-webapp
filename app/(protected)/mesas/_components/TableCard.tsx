@@ -1,7 +1,7 @@
 'use client';
 
 import { useDraggable } from '@dnd-kit/core';
-import { Table } from '../../../../types/mesas';
+import { Table } from '@/types/tables';
 
 const TableCard = ({ table, size }: { table: Table; size: number }) => {
 	const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: table._id });

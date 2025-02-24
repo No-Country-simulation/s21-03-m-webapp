@@ -11,7 +11,7 @@ import {
 import { Button } from '../../../../components/ui/button';
 import { Input } from '../../../../components/ui/input';
 import { useCreateSalones } from '../../../../actions/hooks/salones/useCreateSalones';
-import { SalonRequest } from '../../../../types/mesas';
+import { SalonRequest } from '../../../../types/salones';
 import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';

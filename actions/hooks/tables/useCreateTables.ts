@@ -1,25 +1,24 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { SalonUpdateRequest } from '@/types/salones';
-import { updateSalon } from '@/actions/salones';
 import { toast } from '@/hooks/use-toast';
 import { TOAST_DURATION } from '@/constants/app_constants';
+import { createTable } from '../../tables';
 
-export function useUpdateSalon() {
+export function useCreateTables() {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (salon: SalonUpdateRequest) => updateSalon(salon),
+		mutationFn: createTable,
 		onSuccess: (response) => {
-			queryClient.invalidateQueries({ queryKey: ['salones'] });
-			queryClient.setQueryData(['salon'], response.salon);
-			queryClient.invalidateQueries({ queryKey: ['salon'] });
+			queryClient.invalidateQueries({ queryKey: ['tables'] });
+			queryClient.setQueryData(['table'], response.table);
+			queryClient.invalidateQueries({ queryKey: ['table'] });
 			toast({
 				description: response.msg,
 				duration: TOAST_DURATION,
 				className: 'bg-chart-2 text-white [&>button]:text-white [&>button]:hover:text-white',
 			});
 		},
-		onError: (error) => {
+		onError: (error: Error) => {
 			toast({
 				description: error.message,
 				duration: TOAST_DURATION,

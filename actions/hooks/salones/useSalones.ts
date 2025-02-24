@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getSalones } from '../../salones';
-import { Salon } from '../../../types/mesas';
+import { Salon } from '../../../types/salones';
 
 export const useSalones = () => {
 	return useQuery<Array<Salon>>({

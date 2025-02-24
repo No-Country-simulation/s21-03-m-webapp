@@ -5,11 +5,14 @@ import { DndContext, useDroppable, DragEndEvent } from '@dnd-kit/core';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { TableCard, SalonesName } from './';
-import { Salon } from '@/types/mesas';
+import { Salon } from '@/types/salones';
+import { useTables } from '../../../../actions/hooks/tables/useTables';
+import { useCreateTables } from '../../../../actions/hooks/tables/useCreateTables';
 
 // Extendemos la definición de Table, para almacenar también los ratios
 type Table = {
 	_id: string;
+	salonId: string;
 	number: number;
 	x: number; // posición absoluta calculada
 	y: number; // posición absoluta calculada
@@ -29,14 +32,17 @@ const clampPosition = (x: number, y: number, containerWidth: number, containerHe
 };
 
 const TableMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) => void }) => {
+	const { data: myTables } = useTables(salon._id);
+	const { mutate: create } = useCreateTables();
+
 	const [tables, setTables] = useState<Table[]>([]);
 	const [tableNumber, setTableNumber] = useState('');
-
-	const mapRef = useRef<HTMLDivElement | null>(null);
 	const [mapWidth, setMapWidth] = useState(0);
-
-	// Para evitar recargar desde localStorage varias veces
+	const mapRef = useRef<HTMLDivElement | null>(null);
 	const [hasLoadedFromStorage, setHasLoadedFromStorage] = useState(false);
+
+	// TODO - Remover
+	console.log(myTables);
 
 	const updateMapWidth = () => {
 		if (mapRef.current) {
@@ -81,7 +87,7 @@ const TableMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =>
 			setTables(absoluteTables);
 		} else {
 			// Si no hay nada en storage, definimos al menos una mesa
-			setTables([{ _id: '1', number: 1, x: 0, y: 0, status: 'Free', xRatio: 0, yRatio: 0 }]);
+			setTables([{ _id: '1', salonId: 'test', number: 1, x: 0, y: 0, status: 'Free', xRatio: 0, yRatio: 0 }]);
 		}
 
 		setHasLoadedFromStorage(true);
@@ -131,6 +137,7 @@ const TableMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =>
 
 		const newTable: Table = {
 			_id: String(Date.now()),
+			salonId: String(Date.now()),
 			number,
 			x: centerX,
 			y: centerY,
