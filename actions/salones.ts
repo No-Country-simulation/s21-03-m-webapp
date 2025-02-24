@@ -38,3 +38,15 @@ export async function updateSalon(body: SalonUpdateRequest): Promise<SalonRespon
 		throw new Error(SERVER_ERROR);
 	}
 }
+
+export async function deleteSalon(body: string): Promise<SalonResponse> {
+	try {
+		const response = await protected_api.delete<SalonResponse>(`${SALONES_ALL}/${body}`);
+		return response.data;
+	} catch (error) {
+		if (axios.isAxiosError(error) && error.response) {
+			throw new Error(error.response.data.msg);
+		}
+		throw new Error(SERVER_ERROR);
+	}
+}

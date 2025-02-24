@@ -53,6 +53,9 @@ const SalonesName = ({ salon }: { salon: Salon }) => {
 					<span onClick={handleCancel} className="cursor-pointer text-destructive hover:text-red-600 transition">
 						<X size={24} />
 					</span>
+					<span className="ml-6 cursor-pointer underline text-xs transition text-nowrap hover:text-destructive">
+						Borrar Salon
+					</span>
 				</div>
 			) : (
 				<span
