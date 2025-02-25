@@ -4,7 +4,6 @@ import Table from "./Table"
 export interface ISalon extends Document{
     name:string
     ownerId:Types.ObjectId
-    tables:[Types.ObjectId]
 }
 
 
@@ -12,15 +11,12 @@ const SalonSchema=new Schema({
 
     name:{
         type:String,
-        required:true
+        required:true,
+        trim:true
     },
     ownerId:{
         type:Types.ObjectId,
         ref:"Owner"
-    },
-    tables:{
-        type:[Types.ObjectId],
-        ref:"Table"
     }
 
 })

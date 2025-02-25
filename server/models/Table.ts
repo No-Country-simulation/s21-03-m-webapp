@@ -25,7 +25,8 @@ const TableSchema=new Schema({
     },
     number:{
         type:String,
-        required:true
+        required:true,
+        trim:true
     },
     x:{
         type:Number,

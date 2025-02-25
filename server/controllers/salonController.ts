@@ -22,8 +22,8 @@ export class SalonController {
 
 
         try {
-            const salonExists = await Salon.findOne({name, ownerId})
-         
+            const salonExists = await Salon.findOne({ name, ownerId })
+
             if (salonExists) {
                 res.status(400).json({
                     msg: "Ya existe un salón con ese nombre"
@@ -113,12 +113,18 @@ export class SalonController {
         }
 
         try {
-
-            await req.salon.updateOne({ name })
+            const salonExists = await Salon.findOne({ name, ownerId: req.ownerId })
+            if (salonExists) {
+                res.status(400).json({
+                    msg: "Ya existe un salón con ese nombre"
+                })
+                return
+            }
+            req.salon.name = name
             await req.salon.save()
             res.status(200).json({
                 msg: "Salón Actualizado",
-                salon:req.salon
+                salon: req.salon
             })
 
 

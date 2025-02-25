@@ -36,6 +36,7 @@ export const salonExists = async (req: Request, res: Response, next: NextFunctio
 
 }
 
+
 export const tableExists = async (req: Request, res: Response, next: NextFunction) => {
 
     const { tableId } = req.params
