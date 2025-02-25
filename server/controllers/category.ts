@@ -11,10 +11,11 @@ export const create = async (req: Request, res: Response) => {
     }
 
     try {
-        await new Category({ ownerId: req.ownerId, name, description }).save();
+        const category = await new Category({ ownerId: req.ownerId, name, description }).save();
 
         return res.status(200).json({
-            msg: 'Categoria Creada Correctamente.'
+            msg: 'Categoria Creada Correctamente.',
+            category
         });
     } catch (error) {
         return res.status(500).json({
@@ -67,7 +68,8 @@ export const edit = async (req: Request, res: Response) => {
         await category.save();
 
         return res.status(200).json({
-            msg: 'Categoria Editada Correctamente.'
+            msg: 'Categoria Editada Correctamente.',
+            category
         });
     } catch (error) {
         return res.status(500).json({

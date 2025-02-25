@@ -11,15 +11,8 @@ export const create = async (req: Request, res: Response) => {
     }
 
     try {
-        const product = await new Product({
-            ownerId: req.ownerId,
-            categoryId,
-            name,
-            description,
-            price,
-            target: target?.toLowerCase()
-        }).save()
-        
+        const product = await new Product({ ownerId: req.ownerId, categoryId, name, description, price, target:target?.toLowerCase() }).save();
+
         return res.status(200).json({
             msg: 'Producto Creado Correctamente.',
             product
@@ -49,7 +42,7 @@ export const getAll = async (req: Request, res: Response) => {
 export const getByCategory = async (req: Request, res: Response) => {
     const { categoryId } = req.params
     try {
-        const products = await Product.find({ ownerId: req.ownerId, categoryId }).select("_id name description price image target")
+        const products = await Product.find({ ownerId: req.ownerId, categoryId }).select("_id name description price image target categoryId")
 
         return res.status(200).json({
             products
@@ -74,7 +67,7 @@ export const edit = async (req: Request, res: Response) => {
     }
 
     if (product.ownerId?.toString() !== req.ownerId?.toString()) {
-        return res.status(400).json({
+        return res.status(403).json({
             msg: "No tiene permiso para editar producto.",
         });
     }
@@ -95,7 +88,8 @@ export const edit = async (req: Request, res: Response) => {
         await product.save();
 
         return res.status(200).json({
-            msg: 'Producto Editado Correctamente.'
+            msg: 'Producto Editado Correctamente.',
+            product
         });
     } catch (error) {
         return res.status(500).json({
