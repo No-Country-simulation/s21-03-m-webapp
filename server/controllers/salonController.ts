@@ -22,8 +22,8 @@ export class SalonController {
 
 
         try {
-            const salonExists = await Salon.findOne({name})
-            console.log(salonExists)
+            const salonExists = await Salon.findOne({name, ownerId})
+         
             if (salonExists) {
                 res.status(400).json({
                     msg: "Ya existe un salón con ese nombre"

@@ -19,7 +19,8 @@ export const edit = async (req: Request, res: Response) => {
     const profile = await Profile.findOne({ ownerId })
 
     if (!profile) {
-        return res.status(404).send({ msg: 'No existe el perfil.' });
+       res.status(404).send({ msg: 'No existe el perfil.' });
+       return 
     }
 
     try {
@@ -50,7 +51,7 @@ export const edit = async (req: Request, res: Response) => {
 
         await profile.save()
 
-        return res.status(200).json({
+         res.status(200).json({
             msg: 'Perfil Editado Correctamente.',
             profile
         });

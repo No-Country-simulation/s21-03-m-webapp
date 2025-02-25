@@ -11,9 +11,15 @@ export const create = async (req: Request, res: Response) => {
     }
 
     try {
-
-      const product= await new Product({ ownerId: req.ownerId, categoryId, name, description, price, target:target.toLowerCase() }).save();
-  
+        const product = await new Product({
+            ownerId: req.ownerId,
+            categoryId,
+            name,
+            description,
+            price,
+            target: target?.toLowerCase()
+        }).save()
+        
         return res.status(200).json({
             msg: 'Producto Creado Correctamente.',
             product
