@@ -6,7 +6,6 @@ import { useSalones } from '@/actions/hooks/salones/useSalones';
 import { ApiLoader } from '@/components/library/loading';
 import { Salon } from '@/types/salones';
 import { useDeleteSalon } from '@/actions/hooks/salones/useDeleteSalon';
-import TablesInfo from './TablesInfo';
 
 const SalonTabs = () => {
 	const { data: salones = [], isPending, isError } = useSalones();
