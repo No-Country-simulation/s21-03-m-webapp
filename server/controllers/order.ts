@@ -3,9 +3,9 @@ import Order from "../models/Order";
 import Product from "../models/Product";
 
 export const create = async (req: Request, res: Response) => {
-    const { tableNumber, people, items, discount } = req.body;
+    const { tableNumber, people, items, discount, discountPercentage } = req.body;
 
-    if (!tableNumber || !people) {
+    if (!tableNumber?.trim() || !people) {
         return res.status(400).json({
             msg: 'Los campos numero de mesa y cantidad de personas son obligatorios.'
         });
@@ -25,8 +25,9 @@ export const create = async (req: Request, res: Response) => {
             subtotal += product.price * item.quantity;
             item.price = product.price
         }
-
-        const total = subtotal - (discount || 0);
+        
+        const discountPer = discountPercentage ? (subtotal * discountPercentage) / 100 : 0;
+        const total = subtotal - (discount || 0) - discountPer;
 
         const newOrder = new Order({
             ownerId: req.ownerId,
@@ -84,7 +85,7 @@ export const edit = async (req: Request, res: Response) => {
         });
     }
 
-    if (!tableNumber || !people) {
+    if (!tableNumber?.trim() || !people) {
         return res.status(400).json({
             msg: 'Los campos numero de mesa y cantidad de personas son obligatorios.'
         });

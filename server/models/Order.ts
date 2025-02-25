@@ -6,7 +6,7 @@ const OrderSchema = new Schema({
         ref: "Owner",
     },
     tableNumber: {
-        type: Number,
+        type: String,
         require: true
     },
     people: {
@@ -32,6 +32,10 @@ const OrderSchema = new Schema({
         type: Number,
     },
     discount: {
+        type: Number,
+        default: 0,
+    },
+    discountPercentage: {
         type: Number,
         default: 0,
     },
