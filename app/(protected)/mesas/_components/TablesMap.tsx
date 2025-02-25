@@ -10,6 +10,7 @@ import { useTables } from '@/actions/hooks/tables/useTables';
 import { useCreateTables } from '@/actions/hooks/tables/useCreateTables';
 import { Table } from '@/types/tables';
 import { useUpdateTables } from '../../../../actions/hooks/tables/useUpdateTables';
+import TablesInfo from './TablesInfo';
 
 const MAP_HEIGHT = 650;
 const TABLE_SIZE = 70;
@@ -180,7 +181,7 @@ const TablesMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =
 	// -----------------------------------------------------
 	return (
 		<DndContext onDragEnd={handleDragEnd}>
-			<div className="w-full flex flex-row gap-2">
+			<div className="w-full flex flex-row">
 				<article className="w-full px-6 py-8 border bg-white shadow-md rounded-tr-lg rounded-b-lg">
 					<SalonesName salon={salon} onDelete={onDelete} />
 					<div className="flex gap-2 mb-4">
@@ -204,6 +205,9 @@ const TablesMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =
 							<TableCard key={table._id} table={table} size={TABLE_SIZE} />
 						))}
 					</div>
+				</article>
+				<article className="w-[550px] lg:w-[650px] rounded-lg flex flex-col gap-2 items-center justify-center bg-chart-1">
+					<TablesInfo></TablesInfo>
 				</article>
 			</div>
 		</DndContext>

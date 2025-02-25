@@ -83,7 +83,6 @@ const SalonTabs = () => {
 					</div>
 					<TablesMap salon={activeSalon} key={activeSalon._id} onDelete={handleDeleteSalon} />
 				</article>
-				<TablesInfo></TablesInfo>
 			</div>
 		</div>
 	);
