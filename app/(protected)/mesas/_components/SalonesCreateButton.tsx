@@ -49,7 +49,7 @@ const SalonesCreateButton = () => {
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
 				<button
-					className={`px-3 py-2 text-sm font-medium transition-all duration-200 rounded-t-xl border border-b-0'bg-white text-gray-600 hover:text-chart-1 }`}
+					className={`px-2 py-2 text-sm font-medium transition-all duration-200 rounded-t-xl border border-b-0'bg-white text-gray-600 hover:text-chart-1 }`}
 				>
 					<Plus></Plus>
 				</button>

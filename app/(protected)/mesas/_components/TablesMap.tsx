@@ -206,7 +206,7 @@ const TablesMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =
 						))}
 					</div>
 				</article>
-				<article className="w-[550px] lg:w-[650px] rounded-lg flex flex-col gap-2 items-center justify-center bg-chart-1">
+				<article className="w-[550px] rounded-lg flex flex-col gap-2 items-center justify-center bg-chart-1">
 					<TablesInfo></TablesInfo>
 				</article>
 			</div>

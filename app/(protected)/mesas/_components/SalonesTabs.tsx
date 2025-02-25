@@ -64,26 +64,22 @@ const SalonTabs = () => {
 	}
 
 	return (
-		<div className="w-full">
-			<div className="flex flex-row w-full h-screen">
-				<article className="w-full">
-					<div className="flex">
-						<SalonesCreateButton />
-						{salones.map((salon) => (
-							<button
-								key={salon._id}
-								className={`px-6 py-2 text-sm font-medium transition-all duration-200 rounded-t-xl border border-b-0 ${
-									activeTab === salon._id ? 'text-white bg-chart-1' : 'bg-white text-gray-600 hover:text-chart-1'
-								}`}
-								onClick={() => handleSelectSalon(salon)}
-							>
-								{salon.name}
-							</button>
-						))}
-					</div>
-					<TablesMap salon={activeSalon} key={activeSalon._id} onDelete={handleDeleteSalon} />
-				</article>
+		<div className="w-[1000px] h-screen">
+			<div className="flex">
+				<SalonesCreateButton />
+				{salones.map((salon) => (
+					<button
+						key={salon._id}
+						className={`px-4 py-2 text-sm font-medium transition-all duration-200 rounded-t-xl border border-b-0 ${
+							activeTab === salon._id ? 'text-white bg-chart-1' : 'bg-white text-gray-600 hover:text-chart-1'
+						}`}
+						onClick={() => handleSelectSalon(salon)}
+					>
+						{salon.name}
+					</button>
+				))}
 			</div>
+			<TablesMap salon={activeSalon} key={activeSalon._id} onDelete={handleDeleteSalon} />
 		</div>
 	);
 };
