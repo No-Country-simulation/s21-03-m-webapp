@@ -8,8 +8,8 @@ import { TableCard, SalonesName } from '.';
 import { Salon } from '@/types/salones';
 import { useTables } from '@/actions/hooks/tables/useTables';
 import { useCreateTables } from '@/actions/hooks/tables/useCreateTables';
-import { Table } from '@/types/tables';
 import { useUpdateTables } from '../../../../actions/hooks/tables/useUpdateTables';
+import { Table } from '@/types/tables';
 import TablesInfo from './TablesInfo';
 
 const MAP_HEIGHT = 650;
@@ -23,65 +23,56 @@ const clampPosition = (x: number, y: number, containerWidth: number, containerHe
 };
 
 const TablesMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) => void }) => {
-	const { data: myTables } = useTables(salon._id); // Fetch tables from backend
-	const { mutate: create } = useCreateTables();
-	const { mutate: updateTable } = useUpdateTables(); // ✅ Mutation for updates
+	const { data: myTables } = useTables(salon._id);
+	const { mutate: createTableMutation } = useCreateTables();
+	const { mutate: updateTableMutation } = useUpdateTables();
 
-	const [tables, setTables] = useState<Array<Table>>([]);
+	const [tables, setTables] = useState<Table[]>([]);
 	const [currentTable, setCurrentTable] = useState<Table | null>(null);
 	const [tableNumber, setTableNumber] = useState('');
 	const [mapWidth, setMapWidth] = useState(0);
 	const mapRef = useRef<HTMLDivElement | null>(null);
 
-	const updateMapWidth = () => {
-		if (mapRef.current) {
-			setMapWidth(mapRef.current.offsetWidth);
-		}
-	};
+	const { setNodeRef } = useDroppable({ id: 'map-area' });
 
 	useEffect(() => {
+		function updateMapWidth() {
+			if (mapRef.current) {
+				setMapWidth(mapRef.current.offsetWidth);
+			}
+		}
 		updateMapWidth();
 		window.addEventListener('resize', updateMapWidth);
 		return () => window.removeEventListener('resize', updateMapWidth);
 	}, []);
 
-	const { setNodeRef } = useDroppable({ id: 'map-area' });
-
-	// -----------------------------------------------------
-	// 1) Ensure tables update when backend data changes
-	// -----------------------------------------------------
 	useEffect(() => {
 		if (!myTables || mapWidth === 0) return;
 
-		const absoluteTables = myTables.map((t) => {
+		const newTables = myTables.map((t) => {
 			const xRatio = t.xRatio ?? t.x / mapWidth;
 			const yRatio = t.yRatio ?? t.y / MAP_HEIGHT;
+
 			const x = xRatio * mapWidth;
 			const y = yRatio * MAP_HEIGHT;
 
-			// Clamp position
 			const { clampedX, clampedY } = clampPosition(x, y, mapWidth, MAP_HEIGHT);
-
 			return { ...t, xRatio, yRatio, x: clampedX, y: clampedY };
 		});
 
-		setTables(absoluteTables);
-	}, [mapWidth, myTables]);
+		setTables(newTables);
+	}, [myTables, mapWidth]);
 
-	// -----------------------------------------------------
-	// 2) Add Table to Backend & Update State
-	// -----------------------------------------------------
+	// Add table in center
 	const addTable = () => {
-		if (tableNumber.trim() === '') return;
+		if (!tableNumber.trim()) return;
 
-		// Centered Position
 		const centerX = (mapWidth - TABLE_SIZE) / 2;
 		const centerY = (MAP_HEIGHT - TABLE_SIZE) / 2;
 		const xRatio = centerX / mapWidth;
 		const yRatio = centerY / MAP_HEIGHT;
 
-		// Create Table in Backend
-		create(
+		createTableMutation(
 			{
 				salonId: salon._id,
 				number: tableNumber,
@@ -92,30 +83,36 @@ const TablesMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =
 				yRatio,
 			},
 			{
-				onSuccess: (response) => {
-					const savedTable: Table = {
-						_id: response.table._id,
-						salonId: response.table.salonId,
-						number: response.table.number,
-						x: response.table.x,
-						y: response.table.y,
-						status: response.table.status,
-						xRatio: response.table.xRatio,
-						yRatio: response.table.yRatio,
+				onSuccess: (res) => {
+					const newTable: Table = {
+						_id: res.table._id,
+						salonId: res.table.salonId,
+						number: res.table.number,
+						x: res.table.x,
+						y: res.table.y,
+						status: res.table.status,
+						xRatio: res.table.xRatio,
+						yRatio: res.table.yRatio,
 					};
-
-					setTables((prev) => [...prev, savedTable]);
+					setTables((prev) => [...prev, newTable]);
 					setTableNumber('');
 				},
 			},
 		);
 	};
 
-	// -----------------------------------------------------
-	// 3) Drag & Drop + Update Table Position in DB (WITH SNAP LOGIC)
-	// -----------------------------------------------------
+	const CLICK_THRESHOLD = 2; // px
 	const handleDragEnd = (event: DragEndEvent) => {
 		const { active, delta } = event;
+
+		const distanceMoved = Math.abs(delta.x) + Math.abs(delta.y);
+		if (distanceMoved < CLICK_THRESHOLD) {
+			const clickedTable = tables.find((t) => t._id === active.id);
+			if (clickedTable) {
+				setCurrentTable(clickedTable);
+			}
+			return;
+		}
 
 		setTables((prev) =>
 			prev.map((table) => {
@@ -123,13 +120,14 @@ const TablesMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =
 					let newX = table.x + delta.x;
 					let newY = table.y + delta.y;
 
-					// Clamp position
 					const { clampedX, clampedY } = clampPosition(newX, newY, mapWidth, MAP_HEIGHT);
 					newX = clampedX;
 					newY = clampedY;
 
-					// 🟢 Snap to closest table
-					const { table: closestTable } = prev.reduce<{ table: Table | null; minDistance: number }>(
+					const { table: closestTable } = prev.reduce<{
+						table: Table | null;
+						minDistance: number;
+					}>(
 						(closest, otherTable) => {
 							if (otherTable._id === table._id) return closest;
 							const distanceX = Math.abs(newX - otherTable.x);
@@ -159,7 +157,7 @@ const TablesMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =
 					const xRatio = newX / mapWidth;
 					const yRatio = newY / MAP_HEIGHT;
 
-					updateTable({
+					updateTableMutation({
 						id: table._id,
 						salonId: table.salonId,
 						number: table.number,
@@ -172,49 +170,43 @@ const TablesMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =
 
 					return { ...table, x: newX, y: newY, xRatio, yRatio };
 				}
-				setCurrentTable(table);
 				return table;
 			}),
 		);
 	};
 
-	// -----------------------------------------------------
-	// 4) Render Tables in UI
-	// -----------------------------------------------------
 	return (
-		<>
-			<div className="w-full flex flex-row">
+		<div className="w-full flex flex-row">
+			<article className="w-full px-6 py-8 border bg-white shadow-md rounded-tr-lg rounded-b-lg">
+				<SalonesName salon={salon} onDelete={onDelete} />
+				<div className="flex gap-2 mb-4">
+					<Input
+						placeholder="Número de mesa"
+						value={tableNumber}
+						type="text"
+						className="form-input-text"
+						onChange={(e) => setTableNumber(e.target.value)}
+					/>
+					<Button onClick={addTable}>Agregar Mesa</Button>
+				</div>
 				<DndContext onDragEnd={handleDragEnd}>
-					<article className="w-full px-6 py-8 border bg-white shadow-md rounded-tr-lg rounded-b-lg">
-						<SalonesName salon={salon} onDelete={onDelete} />
-						<div className="flex gap-2 mb-4">
-							<Input
-								placeholder="Número de mesa"
-								value={tableNumber}
-								type="text"
-								className="form-input-text"
-								onChange={(e) => setTableNumber(e.target.value)}
-							/>
-							<Button onClick={addTable}>Agregar Mesa</Button>
-						</div>
-						<div
-							ref={(node) => {
-								setNodeRef(node);
-								mapRef.current = node;
-							}}
-							className="relative w-full h-[650px] bg-gray-200 border rounded-lg overflow-hidden"
-						>
-							{tables.map((table) => (
-								<TableCard key={table._id} table={table} size={TABLE_SIZE} />
-							))}
-						</div>
-					</article>
+					<div
+						ref={(node) => {
+							setNodeRef(node);
+							mapRef.current = node;
+						}}
+						className="relative w-full h-[650px] bg-gray-200 border rounded-lg overflow-hidden"
+					>
+						{tables.map((table) => (
+							<TableCard key={table._id} table={table} size={TABLE_SIZE} />
+						))}
+					</div>
 				</DndContext>
-				<article className="w-[550px] bg-chart-1 rounded-lg flex flex-col gap-2 items-center justify-center">
-					<TablesInfo currentTable={currentTable}></TablesInfo>
-				</article>
-			</div>
-		</>
+			</article>
+			<article className="w-[550px] bg-chart-1 rounded-lg flex flex-col gap-2 items-center justify-center">
+				<TablesInfo currentTable={currentTable} />
+			</article>
+		</div>
 	);
 };
 
