@@ -1,6 +1,6 @@
-<h1 style="font-weight: bold; text-align:center;"> s21-03-m-webapp | placeholder</h1>
+<h1 style="font-weight: bold; text-align:center;"> s21-03-m-webapp | Mesa 360</h1>
 <div align="center">
-  <img src="./project-resources/images/logo-mesa-360.png" width="720">
+  <img src="./project-resources/images/logo-mesa-360.jpg" width="720">
 </div>
 <br/>
 
@@ -159,7 +159,7 @@ Este sistema está dirigido a restaurantes, cafeterías, bares y food trucks que
     <td><a href="https://github.com/AlanProgrammer93" target="_blank">AlanProgrammer93</a> </td>
     <td><img src="https://avatars.githubusercontent.com/u/76537764?v=4" width="32"> </td>
   </tr>
-
+  <!-- 
   <tr>
     <td>🎨 Front End</td>
     <td>Tomás Villegas</td>
@@ -171,6 +171,7 @@ Este sistema está dirigido a restaurantes, cafeterías, bares y food trucks que
     <td><a href="https://github.com/Tomas213-V" target="_blank">Tomas213-V</a> </td>
     <td><img src="https://avatars.githubusercontent.com/u/188509281?v=4" width="32"> </td>
   </tr>
+  -->
 </table>
 <br/>
 
@@ -193,7 +194,7 @@ La base de datos la administramos mediante el **ORM** que se usa en el proyecto 
 
 ### - 🛠️ Back End {#back}
 
-Este proyecto usa las tecnologías **nodejs**, **express** con los modulos de **Data**,  **Security** y **Cloud**; entre otros.
+Este proyecto usa las tecnologías **nodejs**, **express** con los modulos de **Data**, **Security** y **Cloud**; entre otros.
 
 <div style="text-align:left;">
   <img src="./project-resources/icons/svg/Express.svg" alt="icon-svg" width="22">
@@ -201,7 +202,9 @@ Este proyecto usa las tecnologías **nodejs**, **express** con los modulos de **
   <img src="./project-resources/icons/svg/Swagger.svg" alt="icon-svg" width="22">
 </div>
 
-`#express`,`#openApi`,`#nodejs`,
+`#express`,`#openApi`,`#nodejs`.
+
+**Intrucciones Deploy: ./server**
 
 ### - 🛠️ Front End {#front}
 
@@ -216,6 +219,8 @@ Las estrategias y herramientas que se usaron al momento de hacer las pruebas.
 </div>
 
 `#react`, `#nextjs`, `#typescript`
+
+**Intrucciones Deploy: ./client**
 
 <br/>
 
@@ -259,7 +264,7 @@ Pruevas para garantizar que los usuarios tengan una buena experiencia.
 
 Agradecimientos a [**No Country**](https://github.com/No-Country-simulation) por organizar este espacio para adquirir más experiencia laboral.
 
-<div style="text-align:left;">
+<div align="center">
   <img src="./project-resources/images/no-country-logo.png" width="120">
 </div>
 
