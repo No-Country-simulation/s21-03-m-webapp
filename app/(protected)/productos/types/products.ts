@@ -14,6 +14,9 @@ export interface CreateProductResponse {
 	msg: string;
 	product: Product;
 }
+export interface DeleteProductResponse {
+	msg: string;
+}
 export interface EditProductResponse {
 	msg: string;
 	product: Product;
@@ -23,6 +26,7 @@ export interface CreateProductRequest {
 	name: string;
 	description: string;
 	price: number;
+	target: 'kitchen' | 'bar';
 }
 
 export interface AllProductsResponse {

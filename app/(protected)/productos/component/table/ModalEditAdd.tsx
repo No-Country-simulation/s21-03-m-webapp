@@ -12,10 +12,10 @@ import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react'
 import { CreateProductRequest, CreateProductResponse, EditProductResponse, Product } from '../../types/products';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { customFetch } from '../../api/customFetch';
-import {  CREATE_PRODUCT, UPDATE_PRODUCT } from '../../../../../constants/app_constants';
+import { CREATE_PRODUCT, UPDATE_PRODUCT } from '../../../../../constants/app_constants';
 import { CInput } from '../form/input/CustomInput';
-import { RInput } from '../form/input/CustomRadioInput';
-import { Category} from '../../types/category';
+import { Category } from '../../types/category';
+import { ItemNav } from '../filter/ItemNav';
 
 interface Props {
 	product?: Product;
@@ -43,8 +43,10 @@ const editProduct = async (dataForm: CreateProductRequest, id: string) => {
 	});
 	return res;
 };
-export function ModalTable({ product, button, setProductsData, categories }: Props) {
-	console.log('product ID:', product?._id);
+
+export function ModalEditAdd({ product, button, setProductsData, categories }: Props) {
+	const [categorySelected, setCategorySelected] = useState<string>(product?.categoryId ?? categories[0]._id);
+
 	const {
 		control,
 		handleSubmit,
@@ -53,14 +55,13 @@ export function ModalTable({ product, button, setProductsData, categories }: Pro
 		defaultValues: {
 			name: product?.name ?? '',
 			description: product?.description ?? '',
-			// categoryId: product?.categoryId,
 			price: product?.price ?? 0,
 		},
 	});
 
 	const onSubmit: SubmitHandler<CreateProductRequest> = (dataForm) => {
-		console.log('product ID:', product?._id);
 		console.log('dataForm :', dataForm);
+		dataForm.categoryId = categorySelected;
 		if (!product?._id) {
 			createProduct(dataForm).then((res) => {
 				setProductsData((prev: Product[]) => {
@@ -70,11 +71,20 @@ export function ModalTable({ product, button, setProductsData, categories }: Pro
 		} else {
 			editProduct(dataForm, product._id).then((res) => {
 				setProductsData((prev: Product[]) => {
-					return prev.map((product: Product) => {
-						if (product._id === res.product._id) {
+					return prev.map((prod: Product) => {
+						// el endpoin de tolo no me regresa producto al editar producto
+						/* if (product._id === res.product._id) {
 							return res.product;
+						} */
+						// eliminar if caundo edit me regrese producito
+						if (prod._id === product._id) {
+							product.categoryId = dataForm.categoryId;
+							product.name = dataForm.name;
+							product.description = dataForm.description;
+							product.price = dataForm.price;
+							return product;
 						}
-						return product;
+						return prod;
 					});
 				});
 			});
@@ -97,14 +107,12 @@ export function ModalTable({ product, button, setProductsData, categories }: Pro
 					<h2 className="text-sm">Select Category:</h2>
 					<div className="flex">
 						{categories.map((category) => (
-							<RInput
+							<ItemNav
+								handleClick={setCategorySelected}
 								key={category._id}
-								name={'categoryId'}
-								control={control}
-								label={category.name}
-								error={errors.name}
-								defaultValue={category._id} /* se controla con reac hook form */
-							/>
+								category={category}
+								isSelected={categorySelected === category._id}
+							></ItemNav>
 						))}
 					</div>
 
@@ -116,3 +124,14 @@ export function ModalTable({ product, button, setProductsData, categories }: Pro
 		</Dialog>
 	);
 }
+/* {
+	<RInput
+		key={category._id}
+		name={'categoryId'}
+		control={control}
+		label={category.name}
+		error={errors.name}
+		defaultValue={category._id}
+		checked={category._id === product?.categoryId}
+	/>;
+} */

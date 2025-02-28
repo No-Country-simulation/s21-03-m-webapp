@@ -1,19 +1,14 @@
-import {
-	Table,
-	TableBody,
-	TableCaption,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from '@/components/ui/table';
-import { ModalTable } from './ModalTable';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ModalEditAdd } from './ModalEditAdd';
 import { AllProductsResponse, Product } from '../../types/products';
 import { useEffect, useState } from 'react';
 import { customFetch } from '../../api/customFetch';
 import { ALL_PRODUCTS } from '../../../../../constants/app_constants';
-import { Category} from '../../types/category';
-import { buttonAdd, buttonEdit } from '../button/Button';
+import { Category } from '../../types/category';
+import { buttonAdd, buttonDelete, buttonEdit } from '../button/Button';
+import { ModalDelete } from './ModalDelete';
+import { Drawer } from '../../../../../components/ui/drawer';
+import { DrawerOptions } from '../drawer/DrawerOptions';
 
 interface Props {
 	categories: Category[];
@@ -33,33 +28,39 @@ export function TableDemo({ categories }: Props) {
 	useEffect(() => {
 		getProducts().then((res) => setProductsData(res.products));
 	}, []);
-	
+
 	return (
 		<Table>
-			<TableCaption>Lista de productos</TableCaption>
+			<TableCaption>
+				<DrawerOptions></DrawerOptions>
+			</TableCaption>
 			<TableHeader>
 				<TableRow>
 					<TableHead>Nombre</TableHead>
 					<TableHead>Descripcion</TableHead>
+					<TableHead>Descripcion</TableHead>
 					<TableHead>Precio</TableHead>
 					<TableHead>
-						<ModalTable button={buttonAdd} setProductsData={setProductsData} categories={categories} />
+						<ModalEditAdd button={buttonAdd} setProductsData={setProductsData} categories={categories} />
 					</TableHead>
 				</TableRow>
 			</TableHeader>
 			<TableBody>
 				{productsData.map((productData: Product) => (
 					<TableRow key={productData._id}>
-						<TableCell className="font-medium">{productData.name}</TableCell>
+						<TableCell>{productData.name}</TableCell>
 						<TableCell>{productData.description}</TableCell>
 						<TableCell>{productData.price}</TableCell>
-						<TableCell>
-							<ModalTable
+						<TableCell>{productData.target}</TableCell>
+
+						<TableCell className="flex gap-3">
+							<ModalEditAdd
 								product={productData}
 								button={buttonEdit}
 								setProductsData={setProductsData}
 								categories={categories}
 							/>
+							<ModalDelete product={productData} button={buttonDelete} setProductsData={setProductsData} />
 						</TableCell>
 					</TableRow>
 				))}

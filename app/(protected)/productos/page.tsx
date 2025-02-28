@@ -17,15 +17,18 @@ const getCategories = async (): Promise<GetCategoriesResponse> => {
 };
 
 const ProductosPage = () => {
-	const [openEditModal, setOpenEditModal] = useState(false);
-	const [categories, setCategories] = useState<Category[]>([]);
+	const [categories, setCategories] = useState<Category[]>();
+
 	useEffect(() => {
 		getCategories().then((res) => setCategories(res.categories));
-	},[]);
+	}, []);
+
+	if (!categories) {
+		return <div>Loading...</div>;
+	}
 	// dataNavFilter = customFetch();
 	return (
-		<div>
-			
+		<div className="flex flex-col gap-6">
 			<NavFilter categories={categories}></NavFilter>
 			<TableDemo categories={categories}></TableDemo>
 		</div>

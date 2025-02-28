@@ -1,5 +1,5 @@
-import { cn } from '@/lib/utils';
-import { HTMLInputTypeAttribute } from 'react';
+/* import { cn } from '@/lib/utils';
+import React, { HTMLInputTypeAttribute } from 'react';
 import { Controller, FieldError, Control } from 'react-hook-form';
 import { CreateProductRequest } from '../../../types/products';
 import { Input } from '../../../../../../components/ui/input';
@@ -14,25 +14,28 @@ interface Props {
 	error?: FieldError;
 	defaultValue?: string;
 	checked?: boolean;
+	render?: () => React.ReactNode;
 }
 
-export const RInput = ({ name, control, label, error, defaultValue, checked }: Props) => {
+export const RInput = ({ name, control, label, error, defaultValue, checked, render }: Props) => {
 	return (
 		<div>
 			<Controller
 				name={name}
 				control={control}
-				render={({ field }) => (
+				render={({ field }) => {render ? (
+					render()
+				) : (
 					<input
 						defaultChecked={checked}
 						id={defaultValue}
 						{...field}
 						className={`peer hidden`}
-						defaultValue={defaultValue} /* el valor defaul se controla con el contoler de react hook form(ya viene en el field) */
+						value={defaultValue}
 						type="radio"
 						onChange={field.onChange}
 					></input>
-				)}
+				);}}
 			></Controller>
 			<Label
 				className={cn(`bg-slate-700 cursor-pointer 
@@ -45,3 +48,13 @@ export const RInput = ({ name, control, label, error, defaultValue, checked }: P
 		</div>
 	);
 };
+
+{<input
+						defaultChecked={checked}
+						id={defaultValue}
+						{...field}
+						className={`peer hidden`}
+						value={defaultValue}
+						type="radio"
+						onChange={field.onChange}
+					></input>} */

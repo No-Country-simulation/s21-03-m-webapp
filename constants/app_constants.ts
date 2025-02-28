@@ -12,11 +12,14 @@ export const CURRENT_USER = '/auth/current-user';
 // Products
 export const ALL_PRODUCTS = '/product';
 export const UPDATE_PRODUCT = '/product';
-export const DELETE_PRODUCT = '/product/:id';
+export const DELETE_PRODUCT = '/product';
 export const CREATE_PRODUCT = '/product';
 
 // Categories
 export const ALL_CATEGORIES = '/category';
+export const UPDATE_CATEGORY = '/category';
+export const DELETE_CATEGORY = '/category';
+export const CREATE_CATEGORY = '/category';
 
 // Salones
 export const SALONES_ALL = '/salones';

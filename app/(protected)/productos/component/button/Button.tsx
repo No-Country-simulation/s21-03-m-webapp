@@ -1,4 +1,4 @@
-import { PencilIcon, Plus } from 'lucide-react';
+import { PencilIcon, Plus, Trash2 } from 'lucide-react';
 import { Button } from '../../../../../components/ui/button';
 
 const StyleSquare = 'rounded-full aspect-square size-8';
@@ -22,5 +22,10 @@ export const buttonEditNav = (
 export const buttonAddNav = (
 	<Button className="rounded-full aspect-square size-8" variant={'secondary'}>
 		<Plus className="" />
+	</Button>
+);
+export const buttonDelete = (
+	<Button className={`bg-red-500 hover:bg-red-600 ${StyleSquare}`}>
+		<Trash2 />
 	</Button>
 );
