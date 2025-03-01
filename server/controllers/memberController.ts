@@ -7,10 +7,10 @@ export class MemberController {
 
     static deleteById = async (req: Request, res: Response) => {
 
-        const { id } = req.params
+        const { memberId } = req.params
         try {
 
-            const member = await Member.findOne({ id })
+            const member = await Member.findOne({ _id:memberId })
             if (!member) {
                 res.status(400).json({
                     msg: 'No existe ningún miembro con ese id.'
@@ -31,10 +31,12 @@ export class MemberController {
     }
     static updateById = async (req: Request, res: Response) => {
 
-        const { id } = req.params
+        const { memberId } = req.params
         try {
 
-            const member = await Member.findOneAndUpdate({ id }, req.body, { new: true, runValidators: true })
+            console.log(memberId ,req.body)
+
+            const member = await Member.findOneAndUpdate({ _id:memberId  }, req.body, { new: true, runValidators: true })
             if (!member) {
                 res.status(400).json({
                     msg: 'No existe ningún miembro con ese id.'
@@ -55,10 +57,10 @@ export class MemberController {
     }
     static getById = async (req: Request, res: Response) => {
 
-        const { id } = req.params
+        const { memberId } = req.params
         try {
 
-            const member = await Member.findOne({ id })
+            const member = await Member.findOne({ _id:memberId })
             if (!member) {
                 res.status(400).json({
                     msg: 'No existe ningún miembro con ese id.'
