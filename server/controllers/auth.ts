@@ -3,10 +3,11 @@ import Member from "../models/Member";
 import { comparePassword, hashPassword } from "../utils/hashedPassword";
 import { generateJWT } from "../utils/jwt";
 import Owner from "../models/Owner";
-import Profile from "../models/Profile";
+import Profile, { IProfile } from "../models/Profile";
 import { LoginSchema, RegisterSchema } from "../schemas/schemas";
 import Salon from "../models/Salon";
 import { Types } from "mongoose";
+import MemberDTO from "../dto/currentUserDto";
 
 
 export class Auth {
@@ -37,7 +38,7 @@ export class Auth {
             const [profile, salon] = await Promise.allSettled(
                 [
                     new Profile({ ownerId: owner._id }).save(),
-                    new Salon({ name: "Mi Primer Salón",ownerId:owner.id }).save()
+                    new Salon({ name: "Mi Primer Salón", ownerId: owner.id }).save()
                 ])
 
             if (profile.status === "rejected" || salon.status === "rejected") {
@@ -86,7 +87,11 @@ export class Auth {
             }
 
             if (req.type === "member") {
-                const user = await Member.findById(req.memberId)
+                const member = await Member.findById(req.memberId)
+                const owner = await Owner.findById(req.ownerId).populate("profile")
+
+                const user = new MemberDTO(member, owner.profile as IProfile)
+
                 res.status(200).json({
                     user
                 })
@@ -139,15 +144,14 @@ export class Auth {
                 res.status(200).json({
                     msg: "Logueado con éxito",
                     user: owner,
-                    ownerId:owner._id,
+                    ownerId: owner._id,
                     token
                 })
             }
 
             else if (member) {
-            
-                let ownerProfile = await Owner.findById(member.ownerId).populate("profile")
-             
+
+
                 const isValidPassword = await comparePassword(password, member.password)
                 if (!isValidPassword) {
                     res.status(400).json({
@@ -160,7 +164,6 @@ export class Auth {
                 res.status(200).json({
                     msg: "Logueado con éxito",
                     user: member,
-                    profile:ownerProfile.profile,
                     ownerId: member.ownerId,
                     token
                 })

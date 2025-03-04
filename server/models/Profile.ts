@@ -1,8 +1,19 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
+
+
+export interface IProfile{
+    ownerId:Types.ObjectId
+    name:string
+    address:string
+    logo:string
+    phone:string
+    email:string
+}
+
 
 const ProfileSchema = new Schema({
     ownerId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Types.ObjectId,
         ref: "Owner",
     },
     name: {
@@ -32,5 +43,5 @@ const ProfileSchema = new Schema({
     },
 });
 
-const Profile = mongoose.model('Profile', ProfileSchema);
+const Profile = mongoose.model<IProfile>('Profile', ProfileSchema);
 export default Profile;
