@@ -139,6 +139,7 @@ export class Auth {
                 res.status(200).json({
                     msg: "Logueado con éxito",
                     user: owner,
+                    ownerId:owner._id,
                     token
                 })
             }
@@ -157,6 +158,7 @@ export class Auth {
                 res.status(200).json({
                     msg: "Logueado con éxito",
                     user: member,
+                    ownerId: member.ownerId,
                     token
                 })
             }
