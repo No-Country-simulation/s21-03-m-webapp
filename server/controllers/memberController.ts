@@ -34,8 +34,6 @@ export class MemberController {
         const { memberId } = req.params
         try {
 
-   
-
             const member = await Member.findOneAndUpdate({ _id:memberId  }, req.body, { new: true, runValidators: true })
             if (!member) {
                 res.status(400).json({

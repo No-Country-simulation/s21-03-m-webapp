@@ -113,7 +113,7 @@ export class Auth {
             return
         }
         let owner = await Owner.findOne({ email }).populate("profile")
-        let member = await Member.findOne({ email }).populate("profile")
+        let member = await Member.findOne({ email })
 
 
         if (!owner && !member) {
