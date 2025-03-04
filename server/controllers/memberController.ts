@@ -34,7 +34,7 @@ export class MemberController {
         const { memberId } = req.params
         try {
 
-            console.log(memberId ,req.body)
+   
 
             const member = await Member.findOneAndUpdate({ _id:memberId  }, req.body, { new: true, runValidators: true })
             if (!member) {
@@ -128,7 +128,8 @@ export class MemberController {
 
             await newMember.save()
             res.status(201).json({
-                msg: 'Miembro agregado al staff'
+                msg: 'Miembro agregado al staff',
+                member:newMember
             });
 
         } catch (error) {
