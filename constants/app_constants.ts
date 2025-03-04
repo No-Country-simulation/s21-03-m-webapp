@@ -15,7 +15,7 @@ export const PROFILE_EDIT = '/profile/edit';
 
 // Members
 
-export const MEMBER="/members"
+export const MEMBER = '/members';
 
 // Salones
 export const SALONES = '/salones';

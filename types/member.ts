@@ -1,15 +1,14 @@
-
 export enum MemberRole {
-    Waiter = "Waiter",
-    Cashier = "Cashier"
+	Waiter = 'Waiter',
+	Cashier = 'Cashier',
 }
 
 export interface Member {
 	_id: string;
 	ownerId: string;
 	name: string;
-	rol:MemberRole
+	rol: MemberRole;
 	email: string;
-    password:string
+	password: string;
 	__v: number;
 }
