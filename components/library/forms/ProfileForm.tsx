@@ -95,7 +95,7 @@ const ProfileForm = ({ currentUser }: { currentUser: User | null }) => {
 													type="file"
 													className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
 													onChange={handleFileChange}
-													disabled={isPending}
+													disabled={isPending || currentUser?.role != 'Owner'}
 												/>
 											</div>
 										</div>
@@ -138,7 +138,7 @@ const ProfileForm = ({ currentUser }: { currentUser: User | null }) => {
 										placeholder="Mi Restaurante"
 										className={`form-input-text ${form.formState.errors.name && 'form-input-text-validation-error'}`}
 										autoComplete="off"
-										disabled={isPending}
+										disabled={isPending || currentUser?.role != 'Owner'}
 									/>
 								</FormControl>
 								<FormMessage className="form-message-validation-error" />
@@ -159,7 +159,7 @@ const ProfileForm = ({ currentUser }: { currentUser: User | null }) => {
 										placeholder="Av. Maipu 123"
 										className={`form-input-text ${form.formState.errors.address && 'form-input-text-validation-error'}`}
 										autoComplete="off"
-										disabled={isPending}
+										disabled={isPending || currentUser?.role != 'Owner'}
 									/>
 								</FormControl>
 								<FormMessage className="form-message-validation-error" />
@@ -180,7 +180,7 @@ const ProfileForm = ({ currentUser }: { currentUser: User | null }) => {
 										placeholder="+41 00 000 00 00"
 										className={`form-input-text ${form.formState.errors.phone && 'form-input-text-validation-error'}`}
 										autoComplete="off"
-										disabled={isPending}
+										disabled={isPending || currentUser?.role != 'Owner'}
 									/>
 								</FormControl>
 								<FormMessage className="form-message-validation-error" />
@@ -201,7 +201,7 @@ const ProfileForm = ({ currentUser }: { currentUser: User | null }) => {
 										placeholder="mi_restaurante@email.com"
 										className={`form-input-text ${form.formState.errors.email && 'form-input-text-validation-error'}`}
 										autoComplete="off"
-										disabled={isPending}
+										disabled={isPending || currentUser?.role != 'Owner'}
 									/>
 								</FormControl>
 								<FormMessage className="form-message-validation-error" />
@@ -214,7 +214,11 @@ const ProfileForm = ({ currentUser }: { currentUser: User | null }) => {
 						{form.formState.errors.root.message}
 					</FormMessage>
 				)}
-				<Button type="submit" className="gap-2 mt-6 chart-button-1">
+				<Button
+					type="submit"
+					className="gap-2 mt-6 chart-button-1"
+					disabled={isPending || currentUser?.role != 'Owner'}
+				>
 					<Save className="w-5 h-5" />
 					Guardar cambios
 				</Button>

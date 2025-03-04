@@ -4,7 +4,7 @@ import { AuthenticationResponse } from '@/types/authentication';
 
 export const useCurrentUserQuery = (token: string | null) => {
 	return useQuery<AuthenticationResponse>({
-		queryKey: ['currentUser'],
+		queryKey: ['currentUser', token],
 		queryFn: () => {
 			if (!token) throw new Error('No token available');
 			return currentUser();

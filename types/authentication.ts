@@ -15,6 +15,7 @@ export interface User {
 	email: string;
 	role: 'Owner' | 'Member' | 'Cashier' | 'Waiter';
 	profile: Profile;
+	ownerId: string;
 }
 
 export interface AuthenticationContextType {
