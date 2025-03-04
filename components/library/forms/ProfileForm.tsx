@@ -16,7 +16,6 @@ const ProfileForm = ({ currentUser }: { currentUser: User | null }) => {
 	const [isPending, startTransition] = useTransition();
 	const { mutate: update } = useUpdateProfile();
 	const [selectedImage, setSelectedImage] = useState<File | null>(null);
-   
 
 	// Datos User
 	const [userEmail] = useState(currentUser?.email || '');
