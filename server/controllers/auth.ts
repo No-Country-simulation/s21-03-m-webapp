@@ -146,6 +146,8 @@ export class Auth {
 
             else if (member) {
 
+                let ownerProfile = await Owner.findById(member._id).populate("profile")
+
                 const isValidPassword = await comparePassword(password, member.password)
                 if (!isValidPassword) {
                     res.status(400).json({
@@ -158,6 +160,7 @@ export class Auth {
                 res.status(200).json({
                     msg: "Logueado con éxito",
                     user: member,
+                    profile:ownerProfile.profile,
                     ownerId: member.ownerId,
                     token
                 })
