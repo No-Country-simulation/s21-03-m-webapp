@@ -40,7 +40,7 @@ export function MemberForm({ setOpen, member }: MemberFormProps) {
 				rol: member.rol || '',
 			});
 		}
-	}, [member]);
+	}, [form, member]);
 
 	function onSubmit(values: MemberFormData) {
 		if (member) {

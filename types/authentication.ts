@@ -14,7 +14,7 @@ export interface User {
 	id: string;
 	email: string;
 	role: 'Owner' | 'Member' | 'Cashier' | 'Waiter';
-	profile: Profile;
+	profile?: Profile;
 	ownerId: string;
 }
 

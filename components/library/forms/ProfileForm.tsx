@@ -16,6 +16,7 @@ const ProfileForm = ({ currentUser }: { currentUser: User | null }) => {
 	const [isPending, startTransition] = useTransition();
 	const { mutate: update } = useUpdateProfile();
 	const [selectedImage, setSelectedImage] = useState<File | null>(null);
+   
 
 	// Datos User
 	const [userEmail] = useState(currentUser?.email || '');
@@ -69,7 +70,7 @@ const ProfileForm = ({ currentUser }: { currentUser: User | null }) => {
 						name="image"
 						control={form.control}
 						render={({}) => {
-							const imageUrl = selectedImage ? URL.createObjectURL(selectedImage) : currentUser?.profile.logo;
+							const imageUrl = selectedImage ? URL.createObjectURL(selectedImage) : currentUser?.profile?.logo;
 							return (
 								<FormItem className="w-full h-full bg-gray-300 overflow-hidden rounded-full">
 									<FormControl>
