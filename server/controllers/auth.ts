@@ -145,9 +145,9 @@ export class Auth {
             }
 
             else if (member) {
-
-                let ownerProfile = await Owner.findById(member._id).populate("profile")
-
+            
+                let ownerProfile = await Owner.findById(member.ownerId).populate("profile")
+             
                 const isValidPassword = await comparePassword(password, member.password)
                 if (!isValidPassword) {
                     res.status(400).json({
