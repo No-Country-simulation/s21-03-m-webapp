@@ -19,10 +19,19 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 	}, []);
 
 	useEffect(() => {
+		let redirectTimer: ReturnType<typeof setTimeout>;
+
 		if (isMounted && authChecked && !loading && user === null) {
 			console.log('⏩ Protected Route: Redirecting to HOME...');
-			router.replace(WEBSITE_ROUTES.HOME);
+			// Introduce a short delay, so if 'user' is about to update, we don't redirect prematurely
+			redirectTimer = setTimeout(() => {
+				router.replace(WEBSITE_ROUTES.HOME);
+			}, 300);
 		}
+
+		return () => {
+			if (redirectTimer) clearTimeout(redirectTimer);
+		};
 	}, [isMounted, authChecked, loading, user, router]);
 
 	if (!isMounted) {

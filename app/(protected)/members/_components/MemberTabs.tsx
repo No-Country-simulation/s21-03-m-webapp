@@ -2,7 +2,6 @@ import { useDeleteMember } from '@/actions/hooks/members/useDeleteMember';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Member } from '@/types/member';
 import { X } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { MemberEditModal } from './MemberEditModal';
 
 type MemberRole = 'Waiter' | 'Cashier';
@@ -13,7 +12,6 @@ export const dictionaryRol: Record<MemberRole, string> = {
 };
 
 export function MemberTabs({ members }: { members: Member[] }) {
-	const router = useRouter();
 	const { mutate: deleteMember } = useDeleteMember();
 
 	return (
@@ -34,7 +32,6 @@ export function MemberTabs({ members }: { members: Member[] }) {
 							<TableCell>{dictionaryRol[member.rol]}</TableCell>
 							<TableCell className="flex gap-5">
 								<MemberEditModal member={member} />
-
 								<button
 									onClick={() => deleteMember(member._id)}
 									className="cursor-pointer transition hover:underline text-2xl font-bold flex items-center gap-2 hover:text-chart-1"

@@ -9,6 +9,8 @@ export const useCreateMembers = () => {
 		mutationFn: createMember,
 		onSuccess: (response) => {
 			queryClient.invalidateQueries({ queryKey: ['members'] });
+			queryClient.setQueryData(['member'], response.member._id);
+			queryClient.invalidateQueries({ queryKey: ['member'] });
 			toast({
 				description: response.msg,
 				duration: TOAST_DURATION,

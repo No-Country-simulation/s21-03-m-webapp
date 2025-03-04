@@ -17,8 +17,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SalonFormData, salonSchema } from '../../../../schemas/salonSchema';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../components/ui/form';
-import { toast } from '../../../../hooks/use-toast';
-import { TOAST_DURATION } from '../../../../constants/app_constants';
 
 const SalonesCreateButton = () => {
 	const [open, setOpen] = useState(false);
@@ -32,14 +30,6 @@ const SalonesCreateButton = () => {
 	});
 
 	function onSubmit(values: SalonRequest) {
-		if (values.name == ' ') {
-			toast({
-				description: 'No puedes crear un salón sin nombre.',
-				duration: TOAST_DURATION,
-				variant: 'destructive',
-			});
-			return;
-		}
 		startTransition(() => {
 			create(values, {
 				onError: (error) => {
@@ -59,7 +49,7 @@ const SalonesCreateButton = () => {
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
 				<button
-					className={`px-3 py-2 text-sm font-medium transition-all duration-200 rounded-t-xl border border-b-0'bg-white text-gray-600 hover:text-chart-1 }`}
+					className={`px-2 py-2 text-sm font-medium transition-all duration-200 rounded-t-xl border border-b-0'bg-white text-gray-600 hover:text-chart-1 }`}
 				>
 					<Plus></Plus>
 				</button>

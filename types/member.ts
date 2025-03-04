@@ -12,3 +12,8 @@ export interface Member {
 	password: string;
 	__v: number;
 }
+
+export interface MemberResponse {
+	msg: string;
+	member: Member;
+}

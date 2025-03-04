@@ -2,7 +2,7 @@ import { MEMBER, SERVER_ERROR } from '@/constants/app_constants';
 import protected_api from './api/protected_api';
 import { isAxiosError } from 'axios';
 import { MemberFormData } from '@/schemas/memberSchema';
-import { Member } from '@/types/member';
+import { Member, MemberResponse } from '@/types/member';
 
 export async function deleteMember(id: string) {
 	try {
@@ -40,7 +40,7 @@ export async function getMemberById(memberId: string): Promise<Member> {
 	}
 }
 
-export async function createMember(body: MemberFormData) {
+export async function createMember(body: MemberFormData): Promise<MemberResponse> {
 	try {
 		const response = await protected_api.post(MEMBER, body);
 		return response.data;
@@ -52,8 +52,7 @@ export async function createMember(body: MemberFormData) {
 	}
 }
 
-export async function updateMember({ body, id }: { body: MemberFormData; id: string }) {
-	console.log(body, id);
+export async function updateMember({ body, id }: { body: MemberFormData; id: string }): Promise<MemberResponse> {
 	try {
 		const response = await protected_api.put(`${MEMBER}/${id}`, body);
 		return response.data;

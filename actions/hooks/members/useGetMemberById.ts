@@ -1,5 +1,5 @@
 import { getMemberById } from '@/actions/member';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 export const useMember = (memberId: string) => {
 	return useQuery({

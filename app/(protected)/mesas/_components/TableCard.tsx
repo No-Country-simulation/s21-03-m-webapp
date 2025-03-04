@@ -3,7 +3,13 @@
 import { useDraggable } from '@dnd-kit/core';
 import { Table } from '@/types/tables';
 
-const TableCard = ({ table, size }: { table: Table; size: number }) => {
+interface TableCardProps {
+	table: Table;
+	size: number;
+	onClick?: () => void;
+}
+
+const TableCard = ({ table, size, onClick }: TableCardProps) => {
 	const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: table._id });
 
 	return (
@@ -11,6 +17,7 @@ const TableCard = ({ table, size }: { table: Table; size: number }) => {
 			ref={setNodeRef}
 			{...attributes}
 			{...listeners}
+			onClick={onClick}
 			style={{
 				transform: `translate(${table.x + (transform?.x || 0)}px, ${table.y + (transform?.y || 0)}px)`,
 				position: 'absolute',
