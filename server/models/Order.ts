@@ -42,6 +42,11 @@ const OrderSchema = new Schema({
     total: {
         type: Number,
     },
+    status: {
+        type: String,
+        enum: ["pending", "completed", "canceled", "paid"],
+        default: "pending"
+    }
 },{ timestamps: true });
 
 const Order = mongoose.model('Order', OrderSchema);
