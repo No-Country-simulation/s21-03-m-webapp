@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Member from "../models/Member";
 import { hashPassword } from "../utils/hashedPassword";
+import Owner from "../models/Owner";
 
 
 export class MemberController {
@@ -32,9 +33,23 @@ export class MemberController {
     static updateById = async (req: Request, res: Response) => {
 
         const { memberId } = req.params
+        const { name, email, password, role } = req.body
+        if (!name || !email || !password || !role ) {
+            res.status(400).json({
+                msg: 'Todos los campos son requeridos.'
+            });
+            return
+        }
+        const updatedData={
+            name,
+            email,
+            password:await hashPassword(password),
+            role
+        }
+
         try {
 
-            const member = await Member.findOneAndUpdate({ _id:memberId  }, req.body, { new: true, runValidators: true })
+            const member = await Member.findOneAndUpdate({ _id:memberId  }, updatedData, { new: true, runValidators: true })
             if (!member) {
                 res.status(400).json({
                     msg: 'No existe ningún miembro con ese id.'
@@ -108,11 +123,18 @@ export class MemberController {
                 });
                 return
             }
+            const owner= await Owner.findOne({email})
+            if (owner) {
+                res.status(400).json({
+                    msg: 'Ya existe un usuario con ese email.'
+                });
+                return
+            }
 
             const member = await Member.findOne({ email })
             if (member) {
                 res.status(400).json({
-                    msg: 'Ya existe un miembro con ese email.'
+                    msg: 'Ya existe un usuario con ese email.'
                 });
                 return
             }

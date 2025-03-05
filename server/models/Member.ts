@@ -24,12 +24,14 @@ const MemberSchema: Schema = new Schema({
     },
     name: {
         type: String,
-        required: true
+        required: true,
+        trim:true
     },
     email: {
         type: String,
         unique: true,
-        required: true
+        required: true,
+        trim:true
     },
     role: {
         type: String,
@@ -38,7 +40,8 @@ const MemberSchema: Schema = new Schema({
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        trim:true
     }
 
 })
