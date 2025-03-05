@@ -1,17 +1,21 @@
 import * as React from 'react';
 
-import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Category } from '../../types/category';
 import { ItemNav } from './ItemNav';
 import { cn } from '../../../../../lib/utils';
-import { ModalNavOptionsCategory } from './modal/ModalNavFilter';
-import { Button } from '../../../../../components/ui/button';
+import { ModalOptionsCustom } from '../modal/ModalOptionsCustom';
+import {  schemasModalCategory } from '../../schamas/category/schemasModalCategory';
+import { SchemaModal } from '../../types/schema';
+import { Product } from '../../types/products';
+import { ContextList } from '../../types/list';
+
 interface Props {
-	categories: Category[];
+	context: ContextList
+	schemaModal?: SchemaModal[];
 }
 
-export const NavFilter = ({ categories }: Props) => {
+export const NavFilter = ({ context }: Props) => {
 	const [selectedCategory, setSelectedCategory] = React.useState<string | null>();
 	return (
 		<div className="mx-auto">
@@ -24,11 +28,12 @@ export const NavFilter = ({ categories }: Props) => {
 				<CarouselPrevious className={cn('sticky aspect-square translate-0 top-auto')} />
 				<CarouselContent className="">
 					<CarouselItem className="basis-auto my-1">
-						<ItemNav handleClick={setSelectedCategory} isSelected={!selectedCategory}></ItemNav>
+						<ItemNav handleClick={setSelectedCategory} isSelected={!selectedCategory} context={context}></ItemNav>
 					</CarouselItem>
-					{categories.map((category) => (
+					{context.categories.map((category) => (
 						<CarouselItem key={category._id} className="basis-auto my-1">
 							<ItemNav
+								context={context}
 								category={category}
 								handleClick={setSelectedCategory}
 								isSelected={selectedCategory === category._id}
@@ -38,11 +43,19 @@ export const NavFilter = ({ categories }: Props) => {
 				</CarouselContent>
 				<CarouselNext className={cn('sticky aspect-square translate-0 top-auto ')} />
 			</Carousel>
-			<ModalNavOptionsCategory
-				category={categories.find((category) => category._id === selectedCategory)!}
-
-				/* button={<Button>asd</Button>} */
-			></ModalNavOptionsCategory>
+			<div className="flex justify-center gap-5">
+				{schemasModalCategory.map((schemasModal) => {
+					const category = context.categories.find((category) => category._id === selectedCategory)!;
+					return (
+						<ModalOptionsCustom
+							key={schemasModal(category).title}
+							schemaModal={schemasModal(category)}
+							item={category}
+						></ModalOptionsCustom>
+					);
+				})}
+			</div>
+			{/* <ModalOptionsCustom item={categories.find((category) => category._id === selectedCategory)!}></ModalOptionsCustom> */}
 		</div>
 	);
 };

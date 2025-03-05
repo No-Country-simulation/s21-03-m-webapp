@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+/* import { useEffect, useState } from 'react';
 import { Category, CreateCategoryResponse, GetCategoriesResponse } from '../../../types/category';
 import { customFetch } from '../../../api/customFetch';
 import { ALL_CATEGORIES } from '../../../../../../constants/app_constants';
@@ -26,3 +26,4 @@ export const ListCategories = () => {
 		</div>
 	);
 };
+ */

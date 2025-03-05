@@ -21,11 +21,11 @@ export interface GetCategoriesResponse {
 export interface DeleteCategoryResponse {
 	msg: string;
 }
-export interface updateCategoryResponse {
+export interface EditCategoryResponse {
 	msg: string;
 	category: Category;
 }
-export interface updateCategoryRequest {
+export interface EditCategoryRequest {
 	name: string;
 	description: string;
 }

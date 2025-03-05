@@ -1,0 +1,72 @@
+import { z } from 'zod';
+import { fetchDeleteProduct, fetchEditProduct } from '@/app/(protected)/productos/api/fetching';
+import { Product } from '../../types/products';
+import { schemaComponentForm } from '../../types/schema';
+
+const schemaZodEdit = z.object({
+	name: z.string().min(2, {
+		message: 'Nombre requerido',
+	}),
+	description: z.string().min(1, {
+		message: 'Descripcion requerida',
+	}),
+	price: z.number().min(1, {
+		message: 'Precio requerido',
+	}),
+	target: z.string().min(1, {
+		message: 'Objetivo requerido',
+	}),
+	categoryId: z.string().min(1, {
+		message: 'Categoria requerida',
+	}),
+});
+export const editProduct = (product: Product): schemaComponentForm => {
+	return {
+		type: 'A',
+		title: 'Crear producto',
+		campos: [
+			{
+				name: 'name',
+				label: 'Nombre',
+				type: 'text',
+			},
+			{
+				name: 'description',
+				label: 'Descripcion',
+				type: 'text',
+			},
+			{
+				name: 'price',
+				label: 'Precio',
+				type: 'number',
+			},
+			{
+				name: 'target',
+				label: 'Objetivo',
+				type: 'button',
+			},
+			{
+				name: 'categoryId',
+				label: 'Categoria',
+				type: 'text',
+			},
+		],
+		schema: schemaZodEdit,
+		request: fetchEditProduct,
+		defaultValues: {
+			name: product?.name,
+			description: product?.description,
+			categoryId: product?.categoryId,
+			target: product?.target,
+			price: product?.price,
+		},
+	};
+};
+export const deleteProduct = (product: Product): schemaComponentForm => {
+	return {
+		title: '',
+		schema: z.object({}),
+		campos: [],
+		request: fetchDeleteProduct,
+	};
+};

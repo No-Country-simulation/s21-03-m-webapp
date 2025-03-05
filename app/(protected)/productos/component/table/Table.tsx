@@ -1,34 +1,19 @@
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ModalEditAdd } from './ModalEditAdd';
+import { ModalProduct } from './ModalProduct';
 import { AllProductsResponse, Product } from '../../types/products';
 import { useEffect, useState } from 'react';
 import { customFetch } from '../../api/customFetch';
 import { ALL_PRODUCTS } from '../../../../../constants/app_constants';
 import { Category } from '../../types/category';
-import { buttonAdd, buttonDelete, buttonEdit } from '../button/Button';
-import { ModalDelete } from './ModalDelete';
-import { Drawer } from '../../../../../components/ui/drawer';
+import { buttonEdit } from '../button/Button';
 import { DrawerOptions } from '../drawer/DrawerOptions';
+import { ContextList } from '../../types/list';
 
 interface Props {
-	categories: Category[];
+	context: ContextList;
 }
 
-const getProducts = async (): Promise<AllProductsResponse> => {
-	return await customFetch<AllProductsResponse>({
-		url: ALL_PRODUCTS,
-		requestType: 'protected_api',
-		peticion: 'GET',
-	});
-};
-
-export function TableDemo({ categories }: Props) {
-	const [productsData, setProductsData] = useState<Product[]>([]);
-
-	useEffect(() => {
-		getProducts().then((res) => setProductsData(res.products));
-	}, []);
-
+export function TableDemo({ context }: Props) {
 	return (
 		<Table>
 			<TableCaption>
@@ -38,32 +23,34 @@ export function TableDemo({ categories }: Props) {
 				<TableRow>
 					<TableHead>Nombre</TableHead>
 					<TableHead>Descripcion</TableHead>
-					<TableHead>Descripcion</TableHead>
 					<TableHead>Precio</TableHead>
+					<TableHead>Objetivo</TableHead>
 					<TableHead>
-						<ModalEditAdd button={buttonAdd} setProductsData={setProductsData} categories={categories} />
+						{/* <ModalEditAdd button={buttonAdd} setProductsData={setProductsData} categories={categories} /> */}
 					</TableHead>
 				</TableRow>
 			</TableHeader>
 			<TableBody>
-				{productsData.map((productData: Product) => (
-					<TableRow key={productData._id}>
-						<TableCell>{productData.name}</TableCell>
-						<TableCell>{productData.description}</TableCell>
-						<TableCell>{productData.price}</TableCell>
-						<TableCell>{productData.target}</TableCell>
+				{context.products
+					&& context.products.map((product: Product) => (
+							<TableRow key={product._id}>
+								<TableCell>{product.name}</TableCell>
+								<TableCell>{product.description}</TableCell>
+								<TableCell>{product.price}</TableCell>
+								<TableCell>{product.target}</TableCell>
 
-						<TableCell className="flex gap-3">
-							<ModalEditAdd
-								product={productData}
-								button={buttonEdit}
-								setProductsData={setProductsData}
-								categories={categories}
-							/>
-							<ModalDelete product={productData} button={buttonDelete} setProductsData={setProductsData} />
-						</TableCell>
-					</TableRow>
-				))}
+								<TableCell className="flex gap-3">
+									<ModalProduct
+										product={product}
+										button={buttonEdit}
+										setProductsData={context.setProducts}
+										categories={context.categories}
+									/>
+									{/* <ModalDelete product={productData} button={buttonDelete} setProductsData={setProductsData} /> */}
+								</TableCell>
+							</TableRow>
+						))
+					}
 			</TableBody>
 		</Table>
 	);

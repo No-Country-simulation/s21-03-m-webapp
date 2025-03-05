@@ -10,10 +10,8 @@ import {
 	type CarouselApi,
 } from '@/components/ui/carousel';
 import { FormOptions } from '../../form/FormOptions';
-import { createCategory, createProduct, formSchemaData } from '../../form/schema/schema';
-import { List } from 'lucide-react';
-import { ListCategories } from '../categories/ListCategories';
-import { cn } from '../../../../../../lib/utils';
+import { formSchemaData } from '../../form/schema/schema';
+import { fetchCreateCategory } from '../../../api/fetching';
 
 export function CarouselOptions() {
 	const [api, setApi] = React.useState<CarouselApi>();
@@ -46,19 +44,17 @@ export function CarouselOptions() {
 						<CarouselItem key={key} className="self-center">
 							<Card>
 								<CardContent className="flex justify-center py-6">
-									<FormOptions formSchemaData={value}>{value.type === 'A' && <ListCategories />}</FormOptions>
+									<FormOptions formSchemaData={value}></FormOptions>
 								</CardContent>
 							</Card>
 						</CarouselItem>
 					))}
-					<CarouselItem className="self-center">
+					{/* <CarouselItem className="self-center">
 						<Card>
 							<CardContent className="flex justify-center py-6">asd</CardContent>
 						</Card>
-						<CarouselNext >
-							
-						</CarouselNext>
-					</CarouselItem>
+						<CarouselNext></CarouselNext>
+					</CarouselItem> */}
 				</CarouselContent>
 				<CarouselPrevious />
 				<CarouselNext disabled={current === 2} />

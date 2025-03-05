@@ -12,48 +12,27 @@ interface Props {
 	field: any;
 	handleClick?: (change: 'kitchen' | 'bar' | string) => void;
 	changeSelected?: 'kitchen' | 'bar' | string;
+	categories: Category[];
 }
 
-export const InputCustom = ({ field, campo, handleClick, changeSelected }: Props) => {
-	if (!(campo.name === 'target' || campo.name === 'categoryId')) return <Input className="!my-0 p-0" {...field} type={campo.type} />;
-	const [categories, setCategories] = useState<Category[]>();
+export const InputCustom = ({ field, campo, handleClick, changeSelected, categories }: Props) => {
 
-	useEffect(() => {
-		customFetch<Category[]>({
-			peticion: 'GET',
-			url: ALL_CATEGORIES,
-			requestType: 'protected_api',
-		}).then((res) => {
-			setCategories(res);
-		})
-	},[]);
+
+	if (campo.name === 'price') 
+		return <Input className="!my-0 p-0 h-8" {...field} type="number" required={false} />
+	if (!(campo.name === 'target' || campo.name === 'categoryId'))
+		return <Input className="!my-0 p-0 h-8" {...field} type={campo.type} required={false} />;
+	// console.log(categories);
 	return {
 		target: (
 			<div className="flex gap-2">
-				<ItemNav
-					classNameC="w-1/2"
-					classNameB="w-full"
-					target="kitchen"
-					isSelected={changeSelected === 'kitchen'}
-					handleClick={handleClick}
-				></ItemNav>
-				<ItemNav
-					classNameC="w-1/2"
-					classNameB="w-full"
-					target="bar"
-					isSelected={changeSelected === 'bar'}
-					handleClick={handleClick}
-				></ItemNav>
+				<Input className="!my-0 p-0 h-8" {...field} type="text" required={false} />
 			</div>
 		),
 		categoryId: (
-			<ItemNav
-				classNameC="w-1/2"
-				classNameB="w-full"
-				target="bar"
-				isSelected={changeSelected === 'bar'}
-				handleClick={handleClick}
-			></ItemNav>
+			<div className="flex gap-2 hidden">
+				<Input className="!my-0 p-0 h-8" {...field} type="text" required={false} />
+			</div>
 		),
 	}[campo.name];
 };

@@ -5,7 +5,7 @@ export interface Product {
 	description: string;
 	price: number;
 	image: string;
-	target: ['kitchen', 'bar'];
+	target: 'kitchen'|'bar';
 	_id: string;
 	__v: number;
 }
@@ -21,6 +21,13 @@ export interface EditProductResponse {
 	msg: string;
 	product: Product;
 }
+export interface EditProductRequest {
+	categoryId: string;
+	name: string;
+	description: string;
+	price: number;
+	target: 'kitchen' | 'bar';
+}
 export interface CreateProductRequest {
 	categoryId: string;
 	name: string;
@@ -30,5 +37,9 @@ export interface CreateProductRequest {
 }
 
 export interface AllProductsResponse {
+	products: Product[];
+}
+
+export interface ProductsByCategory {
 	products: Product[];
 }

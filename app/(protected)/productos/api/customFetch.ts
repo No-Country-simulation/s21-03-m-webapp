@@ -38,8 +38,6 @@ export async function customFetch<T>({ url, requestType, body, peticion }: Props
 	} catch (error) {
 		if (axios.isAxiosError(error) && error.response) {
 			return error.response.data;
-			/* console.log(error.response.data.msg);
-			throw new Error(error.response.data.msg); */
 		}
 		throw new Error(SERVER_ERROR);
 	}

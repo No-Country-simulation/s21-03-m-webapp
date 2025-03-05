@@ -6,29 +6,60 @@ import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { createCategory, createProduct, formSchemaData } from './schema/schema';
-import { CreateProductRequest } from '../../types/products';
+import { CreateProductRequest, Product } from '../../types/products';
 import { InputCustom } from './input/InputCustom';
-import { useState } from 'react';
-import { CarouselNext } from '../../../../../components/ui/carousel';
+import { useEffect, useState } from 'react';
+import { schemaComponentForm } from '../../types/schema';
+import {
+	fetchAllCategories,
+	fetchCreateCategory,
+	fetchCreateProduct,
+	fetchDeleteCategory,
+	fetchDeleteProduct,
+	fetchEditCategory,
+	fetchEditProduct,
+} from '../../api/fetching';
+import { Category, GetCategoriesResponse } from '../../types/category';
+import { ItemNav } from '../filter/ItemNav';
 
 // Define una interfaz genérica para formSchemaData
 
 interface Props {
-	formSchemaData: typeof createCategory | typeof createProduct;
+	formSchemaData: schemaComponentForm;
 	children?: React.ReactNode;
+	item?: Product | Category;
 }
-// z.infer<typeof formSchemaData.schema>;
-export function FormOptions({ formSchemaData, children }: Props) {
+export function FormOptions({ formSchemaData, children, item }: Props) {
 	const [categorySelected, setCategorySelected] = useState<string>('');
 	const [targetSelected, setTargetSelected] = useState<'kitchen' | 'bar' | string>('kitchen');
+	const [categories, setCategories] = useState<Category[]>([]);
+	/* a modificar */
+	useEffect(() => {
+		if (formSchemaData.request === fetchCreateProduct || formSchemaData.request === fetchEditProduct)
+			fetchAllCategories().then((res) => setCategories(res.categories));
+	}, []);
 
 	const form = useForm<z.infer<typeof formSchemaData.schema>>({
 		resolver: zodResolver(formSchemaData.schema),
+		defaultValues: formSchemaData.defaultValues,
 	});
-
 	const onSubmit: SubmitHandler<z.infer<typeof formSchemaData.schema>> = (data) => {
-		formSchemaData.request(data);
+		console.log('data', data);
+		/* refactorizar */
+		if (item) {
+			if (formSchemaData.request === fetchEditCategory) return formSchemaData.request(item?._id, data);
+			if (formSchemaData.request === fetchDeleteCategory) return formSchemaData.request(item?._id);
+			if (formSchemaData.request === fetchDeleteProduct) return formSchemaData.request(item?._id, data);
+			if (formSchemaData.request === fetchEditProduct) return formSchemaData.request(item?._id, data);
+		}
+
+		if (formSchemaData.request === fetchCreateCategory) return formSchemaData.request(data);
+
+		if (formSchemaData.request === fetchCreateProduct) {
+			console.log('categorySelected', categorySelected);
+			data.categoryId = categorySelected;
+			return formSchemaData.request(data);
+		}
 	};
 
 	return (
@@ -52,16 +83,31 @@ export function FormOptions({ formSchemaData, children }: Props) {
 											campo={campo}
 											handleClick={setTargetSelected}
 											changeSelected={targetSelected}
+											categories={categories}
 										></InputCustom>
 										{/* <Input className="!my-0  p-0" {...field} type={campo.type}/> */}
 									</FormControl>
-									<FormMessage className="text-xs" />
+									<FormMessage className="text-xs !my-0 " />
 								</FormItem>
 							)}
 						/>
 					);
 				})}
-				
+				{/* refactorizar */}
+				<div className="flex gap-2 overflow-x-auto">
+					{(formSchemaData.request === fetchCreateProduct ||
+						formSchemaData.request === fetchEditProduct) &&
+							categories.map((category) => (
+								<ItemNav
+									key={category._id}
+									category={category}
+									handleClick={setCategorySelected}
+									isSelected={categorySelected === category._id}
+								></ItemNav>
+							))}
+					{children}
+				</div>
+
 				<Button className="mt-3" type="submit">
 					Submit
 				</Button>

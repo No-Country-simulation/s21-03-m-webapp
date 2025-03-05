@@ -14,6 +14,7 @@ export const ALL_PRODUCTS = '/product';
 export const UPDATE_PRODUCT = '/product';
 export const DELETE_PRODUCT = '/product';
 export const CREATE_PRODUCT = '/product';
+export const PRODUCT_BY_CATEGORY = '/product';
 
 // Categories
 export const ALL_CATEGORIES = '/category';

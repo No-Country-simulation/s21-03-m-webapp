@@ -1,10 +1,10 @@
-import { z, ZodSchema } from 'zod';
-import { fetchCreateCategory, fetchCreateProduct } from './requestFromDrawer';
-import { request } from 'http';
+import { z } from 'zod';
 import { CreateCategoryRequest } from '../../../types/category';
 import { CreateProductRequest } from '../../../types/products';
 import { FieldPath } from 'react-hook-form';
 import { HTMLInputTypeAttribute } from 'react';
+import { schemaComponentForm } from '../../../types/schema';
+import { fetchAllCategories, fetchCreateCategory, fetchCreateProduct } from '../../../api/fetching';
 
 /* tipos que no se infieren facilmente */
 type typeForm = 'A' | 'B';
@@ -12,13 +12,6 @@ type requestForm = (data: CreateCategoryRequest | CreateProductRequest) => Promi
 type name = FieldPath<CreateProductRequest> | FieldPath<CreateCategoryRequest>;
 export type campos = { name: name; label: string; type: HTMLInputTypeAttribute };
 
-interface schemaCategory {
-	type: typeForm;
-	title: string;
-	campos: campos[];
-	schema: ZodSchema;
-	request: requestForm;
-}
 const schemaCategory = z.object({
 	name: z.string().min(1, {
 		message: 'Nombre requerido',
@@ -27,16 +20,21 @@ const schemaCategory = z.object({
 		message: 'Descripcion requerida',
 	}),
 });
+
 const schemaProduct = z.object({
-	name: z.string().min(1, {
+	name: z.string().min(2, {
 		message: 'Nombre requerido',
 	}),
 	description: z.string().min(1, {
 		message: 'Descripcion requerida',
 	}),
-	price: z.number().min(1, {
-		message: 'Precio requerido',
-	}),
+	price: z
+		.string()
+		.transform(Number)
+		.refine((value) => !isNaN(value), {
+			//validamos que sea un numero
+			message: 'Price must be a number',
+		}),
 	target: z.string().min(1, {
 		message: 'Objetivo requerido',
 	}),
@@ -44,7 +42,7 @@ const schemaProduct = z.object({
 		message: 'Categoria requerida',
 	}),
 });
-export const createProduct: schemaCategory = {
+export const createProduct: schemaComponentForm = {
 	type: 'A' as typeForm,
 	title: 'Crear producto',
 	campos: [
@@ -71,21 +69,21 @@ export const createProduct: schemaCategory = {
 		{
 			name: 'categoryId',
 			label: 'Categoria',
-			type: 'text',
+			type: 'button',
 		},
 	],
 	schema: schemaProduct,
-	/* 	defaultValues: {
+	defaultValues: {
 		name: '',
 		description: '',
 		price: 0,
-		categoryId: '',
-		target: '',
-	}, */
+		categoryId: '123',
+		target: 'bar',
+	},
 	request: fetchCreateProduct as requestForm,
 };
-export const createCategory: schemaCategory = {
-	type: 'B' as typeForm,
+export const createCategory: schemaComponentForm = {
+	type: 'B',
 	title: 'Crear categoria',
 	campos: [
 		{
@@ -100,10 +98,10 @@ export const createCategory: schemaCategory = {
 		},
 	],
 	schema: schemaCategory,
-	/* 	defaultValues: {
+	defaultValues: {
 		name: '',
 		description: '',
-	}, */
-	request: fetchCreateProduct as requestForm,
+	},
+	request: fetchCreateCategory as requestForm,
 };
-export const formSchemaData: schemaCategory[] = [createCategory, createProduct];
+export const formSchemaData: schemaComponentForm[] = [createCategory, createProduct];
