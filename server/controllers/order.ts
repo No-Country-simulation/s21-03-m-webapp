@@ -17,7 +17,7 @@ export const create = async (req: Request, res: Response) => {
 
     try {
         const orderExist = await Order.find({ tableNumber, status: 'pending' })
-        if (orderExist) {
+        if (!orderExist) {
             return res.status(400).json({ msg: `Existe una orden pendiente en la mesa ${tableNumber}.` });
         }
 
@@ -108,6 +108,7 @@ export const edit = async (req: Request, res: Response) => {
                 return res.status(404).json({ msg: `Producto con ID ${item.productId} no encontrado` });
             }
             subtotal += product.price * item.quantity;
+            item.price = product.price
         }
 
         const total = subtotal - (discount || 0);
@@ -126,6 +127,8 @@ export const edit = async (req: Request, res: Response) => {
             order
         });
     } catch (error) {
+        console.log(error);
+        
         return res.status(500).json({
             msg: 'Ocurrio un problema en el servidor.'
         });
