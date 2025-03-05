@@ -99,10 +99,10 @@ export class MemberController {
     static create = async (req: Request, res: Response) => {
 
         const ownerId = req.ownerId
-        const { name, email, password, rol } = req.body
+        const { name, email, password, role } = req.body
         try {
 
-            if (!name || !email || !password || !rol || !ownerId) {
+            if (!name || !email || !password || !role || !ownerId) {
                 res.status(400).json({
                     msg: 'Todos los campos son requeridos.'
                 });
@@ -120,7 +120,7 @@ export class MemberController {
             const newMember = new Member()
             newMember.password = await hashPassword(password)
             newMember.name = name
-            newMember.role = rol
+            newMember.role = role
             newMember.email = email
             newMember.ownerId = ownerId
 
