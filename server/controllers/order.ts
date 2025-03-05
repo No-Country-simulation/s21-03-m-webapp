@@ -173,9 +173,9 @@ export const updateStatus = async (req: Request, res: Response) => {
 
 export const getOrderByTable = async (req: Request, res: Response) => {
     try {
-        const { tableNumber } = req.params
+        const { tableId } = req.params
 
-        const order = await Order.findOne({ ownerId: req.ownerId, tableNumber: tableNumber, status: 'pending' })
+        const order = await Order.findOne({ ownerId: req.ownerId, tableNumber: tableId, status: 'pending' })
             .populate("items.productId", "name")
             .select("-__v -createdAt -updatedAt -ownerId -items._id ")
 

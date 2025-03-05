@@ -8,7 +8,7 @@ const router = express.Router();
 router.post('/', authCheck, create);
 router.get('/', authCheck, getAll);
 router.put('/update-status', authCheck, updateStatus);
-router.get('/get-order/:tableNumber', authCheck, getOrderByTable);
+router.get('/get-order/:tableId', authCheck, getOrderByTable);
 router.put("/:id", authCheck, edit)
 router.delete("/:id", authCheck, remove)
 
