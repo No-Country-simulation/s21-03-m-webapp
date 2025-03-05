@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const profileSchema = z.object({
+	image: z.any(),
 	name: z.string(),
 	address: z.string(),
 	phone: z.string(),

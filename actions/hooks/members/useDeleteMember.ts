@@ -1,17 +1,14 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createSalon } from '../../salones';
-import { toast } from '@/hooks/use-toast';
+import { deleteMember } from '@/actions/member';
 import { TOAST_DURATION } from '@/constants/app_constants';
+import { toast } from '@/hooks/use-toast';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-export function useCreateSalones() {
+export const useDeleteMember = () => {
 	const queryClient = useQueryClient();
-
 	return useMutation({
-		mutationFn: createSalon,
+		mutationFn: deleteMember,
 		onSuccess: (response) => {
-			queryClient.invalidateQueries({ queryKey: ['salones'] });
-			queryClient.setQueryData(['salon'], response.salon._id);
-			queryClient.invalidateQueries({ queryKey: ['salon'] });
+			queryClient.invalidateQueries({ queryKey: ['members'] });
 			toast({
 				description: response.msg,
 				duration: TOAST_DURATION,
@@ -26,4 +23,4 @@ export function useCreateSalones() {
 			});
 		},
 	});
-}
+};

@@ -1,7 +1,8 @@
 // ================================
 //  Api
 // ================================
-export const API_URL = 'https://mesa-360.onrender.com/api'; // NO SE USA
+//'https://mesa-360.onrender.com/api'
+export const API_URL = 'https://mesa-360-qx4s.onrender.com/api';
 export const SERVER_ERROR = 'Intente mas tarde.';
 
 // Authentication
@@ -23,7 +24,10 @@ export const DELETE_CATEGORY = '/category';
 export const CREATE_CATEGORY = '/category';
 
 // Salones
-export const SALONES_ALL = '/salones';
+export const SALONES = '/salones';
+
+// Tables
+export const TABLES = '/tables';
 
 // ================================
 //  APP Constants

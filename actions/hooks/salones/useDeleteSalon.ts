@@ -24,7 +24,7 @@ export function useDeleteSalon() {
 			toast({
 				description: response.msg,
 				duration: TOAST_DURATION,
-				className: 'bg-chart-2 text-white [&>button]:text-white [&>button]:hover:text-white',
+				variant: 'success',
 			});
 			queryClient.invalidateQueries({ queryKey: ['salones'] });
 		},
@@ -32,7 +32,7 @@ export function useDeleteSalon() {
 			toast({
 				description: error.message,
 				duration: TOAST_DURATION,
-				className: 'bg-destructive text-white [&>button]:text-white [&>button]:hover:text-white',
+				variant: 'destructive',
 			});
 			queryClient.setQueryData(['salones'], context?.previousSalones);
 		},

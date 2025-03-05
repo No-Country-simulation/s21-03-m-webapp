@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const [user, setUser] = useState<User | null>(null);
 	const [authChecked, setAuthChecked] = useState(false);
 
-	const { data, isLoading, isError, refetch } = useCurrentUserQuery(token);
+	const { data, isPending, isError, refetch } = useCurrentUserQuery(token);
 
 	useEffect(() => {
 		if (data?.token) {
@@ -23,10 +23,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 		if (data?.user) {
 			setUser(data.user);
 		}
-		if (!isLoading) {
+		if (!isPending) {
 			setAuthChecked(true);
 		}
-	}, [data, isLoading]);
+	}, [data, isPending]);
 
 	useEffect(() => {
 		if (isError && token) {
@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 			value={{
 				token,
 				user,
-				loading: isLoading,
+				loading: isPending,
 				authChecked,
 				updateToken,
 				logoutUser,

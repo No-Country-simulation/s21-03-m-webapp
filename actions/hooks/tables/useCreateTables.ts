@@ -1,17 +1,17 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createSalon } from '../../salones';
 import { toast } from '@/hooks/use-toast';
 import { TOAST_DURATION } from '@/constants/app_constants';
+import { createTable } from '../../tables';
 
-export function useCreateSalones() {
+export function useCreateTables() {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: createSalon,
+		mutationFn: createTable,
 		onSuccess: (response) => {
-			queryClient.invalidateQueries({ queryKey: ['salones'] });
-			queryClient.setQueryData(['salon'], response.salon._id);
-			queryClient.invalidateQueries({ queryKey: ['salon'] });
+			queryClient.setQueryData(['table'], response.table._id);
+			queryClient.invalidateQueries({ queryKey: ['tables'] });
+			queryClient.invalidateQueries({ queryKey: ['table'] });
 			toast({
 				description: response.msg,
 				duration: TOAST_DURATION,

@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react';
-import { Check, X } from 'lucide-react';
+import { Check, Pencil, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useUpdateSalon } from '@/actions/hooks/salones/useUpdateSalon';
-import { Salon } from '@/types/mesas';
+import { Salon } from '@/types/salones';
 import { ConfirmDialog } from '@/components/library/dialog';
 
 const SalonesName = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) => void }) => {
@@ -71,9 +71,10 @@ const SalonesName = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string)
 				) : (
 					<span
 						onClick={() => setIsEditing(true)}
-						className="cursor-pointer transition hover:underline text-2xl font-bold flex items-center gap-2"
+						className="cursor-pointer transition hover:underline text-2xl font-bold flex items-center gap-2 hover:text-chart-1"
 					>
 						{name}
+						<Pencil className="w-4 hover:text-chart-1" />
 					</span>
 				)}
 			</article>
