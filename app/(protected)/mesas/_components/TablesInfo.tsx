@@ -5,6 +5,10 @@ import { Table } from '@/types/tables';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
+import { useOrderByTableId } from '@/actions/hooks/orders/useOrderByTableId';
+import { useOrders } from '@/actions/hooks/orders/useOrders';
+import { useCreateOrder } from '@/actions/hooks/orders/useCreateOrder';
+import { OrderRequest } from '../../../../types/orders';
 
 type OrderItem = {
 	productId: string;
@@ -102,7 +106,7 @@ export const MOCK_PRODUCTS = [
 	},
 ];
 
-const TablesInfo = ({ currentTable }: { currentTable: Table | null }) => {
+const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const [people, setPeople] = useState(1);
 	const [selectedCategory, setSelectedCategory] = useState<{
 		id: string;
@@ -110,6 +114,12 @@ const TablesInfo = ({ currentTable }: { currentTable: Table | null }) => {
 		description: string;
 	} | null>(null);
 	const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+	const { data } = useOrderByTableId(currentTable._id);
+	const { data: myData } = useOrders();
+	const { mutate: createOrder } = useCreateOrder();
+
+	console.log(data);
+	console.log(myData);
 
 	// Filtrar productos según categoría seleccionada
 	const filteredProducts = selectedCategory
@@ -129,13 +139,25 @@ const TablesInfo = ({ currentTable }: { currentTable: Table | null }) => {
 		});
 	};
 
+	const handleCreateOrder = () => {
+		const order: OrderRequest = {
+			tableNumber: currentTable._id,
+			people: people,
+			items: [
+				{
+					productId: '67c86168a05f81aefefcbcb6',
+					quantity: 2,
+				},
+			],
+		};
+		console.log(order);
+		createOrder(order);
+	};
+
 	const removeFromOrder = (productId: string) => {
 		setOrderItems((prevItems) => prevItems.filter((item) => item.productId !== productId));
 	};
 
-	if (!currentTable) {
-		return <h2 className="text-white text-center">Selecciona una mesa para crear una orden!</h2>;
-	}
 	return (
 		<article className="w-full h-full">
 			<div className="w-[90%] m-auto py-4 text-white">
@@ -156,7 +178,6 @@ const TablesInfo = ({ currentTable }: { currentTable: Table | null }) => {
 							/>
 						</div>
 					</section>
-
 					{/* Sección 2: Categorías y Productos */}
 					<section className="flex flex-col gap-2">
 						<div className="flex flex-col">
@@ -238,7 +259,9 @@ const TablesInfo = ({ currentTable }: { currentTable: Table | null }) => {
 			</section>
 			{/* Sección 4: Botón para enviar orden */}
 			<div className="w-full">
-				<Button className="w-full bg-green-500 hover:bg-green-400">Agregar a la cuenta</Button>
+				<Button className="w-full bg-green-500 hover:bg-green-400" onClick={handleCreateOrder}>
+					Agregar a la cuenta
+				</Button>
 			</div>
 		</article>
 	);

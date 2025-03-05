@@ -14,7 +14,6 @@ export const CURRENT_USER = '/auth/current-user';
 export const PROFILE_EDIT = '/profile/edit';
 
 // Members
-
 export const MEMBER = '/members';
 
 // Salones
@@ -22,6 +21,9 @@ export const SALONES = '/salones';
 
 // Tables
 export const TABLES = '/tables';
+
+// Orders
+export const ORDERS = '/order';
 
 // ================================
 //  APP Constants
