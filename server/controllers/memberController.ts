@@ -120,7 +120,7 @@ export class MemberController {
             const newMember = new Member()
             newMember.password = await hashPassword(password)
             newMember.name = name
-            newMember.rol = rol
+            newMember.role = rol
             newMember.email = email
             newMember.ownerId = ownerId
 

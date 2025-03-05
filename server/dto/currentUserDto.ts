@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { IMember } from "../models/Member";
+import { IMember, UserRole } from "../models/Member";
 import { IProfile } from "../models/Profile";
 
 class MemberDTO {
@@ -8,13 +8,15 @@ class MemberDTO {
     email: string;
     ownerId: Types.ObjectId;
     profile: IProfile;
+    role:UserRole
 
     constructor(member: IMember, profile: IProfile) {
-        this._id = member.id;  // Corregido: member.id → member._id
+        this._id = member.id;  
         this.name = member.name;
         this.email = member.email;
         this.ownerId = member.ownerId;
-        this.profile = profile;  // Corregido: Se pasa profile directamente
+        this.role=member.role
+        this.profile = profile;  
     }
 }
 

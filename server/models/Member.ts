@@ -12,7 +12,7 @@ export interface IMember extends Document {
     name: string
     email: string
     password: string
-    rol: UserRole
+    role: UserRole
     ownerId: Types.ObjectId
 
 }
@@ -31,7 +31,7 @@ const MemberSchema: Schema = new Schema({
         unique: true,
         required: true
     },
-    rol: {
+    role: {
         type: String,
         required: true,
         enum: UserRole
