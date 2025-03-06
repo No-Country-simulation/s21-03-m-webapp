@@ -7,6 +7,7 @@ interface Props {
 	field: ControllerRenderProps;
 }
 const inputHidden = () => <input className="hidden" />;
+
 const inputBlock = (field: ControllerRenderProps, campo: campos) => (
 	<Input className="!my-0 p-0 h-8" {...field} type={campo.type} required={false} />
 );
