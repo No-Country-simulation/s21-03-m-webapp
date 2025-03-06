@@ -10,10 +10,9 @@ const schemaZodEdit = z.object({
 		message: 'Descripcion requerida',
 	}),
 	price: z
-		.string()
-		.transform(Number)
-		.refine((value) => !isNaN(value), {
-			message: 'Price must be a number',
+		.number()
+		.min(1, {
+			message: 'Precio requerido',
 		}),
 	target: z.string().min(1, {
 		message: 'Objetivo requerido',
@@ -41,7 +40,7 @@ export const createProductForm: schemaComponentForm = {
 		{
 			name: 'price',
 			label: 'Precio',
-			type: 'number',
+			type: 'text',
 		},
 		{
 			name: 'target',
