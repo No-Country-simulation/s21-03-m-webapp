@@ -13,11 +13,11 @@ export const create = async (req: Request, res: Response) => {
 
     try {
         const orderExist = await Order.find({ tableNumber, status: 'pending' })
-        
+
         if (orderExist.length) {
             return res.status(400).json({ msg: `Existe una orden pendiente en la mesa ${tableNumber}.` });
         }
-        
+
         let subtotal = 0;
         for (const item of items) {
             const product = await Product.findById(item.productId);
@@ -186,6 +186,9 @@ export const getOrderByTable = async (req: Request, res: Response) => {
             .select("-__v -ownerId -items._id ")
             .lean()
 
+        if (!order) {
+            return res.json({});
+        }
         const formattedOrder = {
             ...order,
             items: order.items.map((item) => ({
