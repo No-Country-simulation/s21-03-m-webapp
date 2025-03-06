@@ -10,8 +10,8 @@ import {
 	type CarouselApi,
 } from '@/components/ui/carousel';
 import { FormOptions } from '../../form/FormOptions';
-import { formSchemaData } from '../../form/schema/schema';
-import { fetchCreateCategory } from '../../../api/fetching';
+import { createProductForm } from '../../../schemas/product/schemaFromProduct';
+import { createCategoryFormSchema } from '../../../schemas/category/schemasFromCategory';
 
 export function CarouselOptions() {
 	const [api, setApi] = React.useState<CarouselApi>();
@@ -40,24 +40,23 @@ export function CarouselOptions() {
 			}
 			<Carousel setApi={setApi}>
 				<CarouselContent>
-					{Object.entries(formSchemaData).map(([key, value]) => (
-						<CarouselItem key={key} className="self-center">
-							<Card>
-								<CardContent className="flex justify-center py-6">
-									<FormOptions formSchemaData={value}></FormOptions>
-								</CardContent>
-							</Card>
-						</CarouselItem>
-					))}
-					{/* <CarouselItem className="self-center">
+					<CarouselItem className="self-center">
 						<Card>
-							<CardContent className="flex justify-center py-6">asd</CardContent>
+							<CardContent className="flex justify-center py-6">
+								<FormOptions formSchemaData={createProductForm}></FormOptions>
+							</CardContent>
 						</Card>
-						<CarouselNext></CarouselNext>
-					</CarouselItem> */}
+					</CarouselItem>
+					<CarouselItem className="self-center">
+						<Card>
+							<CardContent className="flex justify-center py-6">
+								<FormOptions formSchemaData={createCategoryFormSchema}></FormOptions>
+							</CardContent>
+						</Card>
+					</CarouselItem>
 				</CarouselContent>
 				<CarouselPrevious />
-				<CarouselNext disabled={current === 2} />
+				<CarouselNext disabled={current === count} />
 			</Carousel>
 		</div>
 	);

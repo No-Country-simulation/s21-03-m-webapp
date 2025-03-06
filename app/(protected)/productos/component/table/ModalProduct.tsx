@@ -1,23 +1,22 @@
 import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react';
-import { Product } from '../../types/products';
+import { Product } from '../../../../../types/products';
 
-import { Category } from '../../types/category';
+import { Category } from '../../../../../types/category';
 import { ModalOptionsCustom } from '../modal/ModalOptionsCustom';
-import { schemaModalProduct } from '../../schamas/product/schemaModalProduct';
+import { schemaModalProduct } from '../../schemas/product/schemaModalProduct';
 
 interface Props {
 	product: Product;
-	categories: Category[];
+	categories: Category[] | undefined;
 	button: ReactNode;
-	setProductsData: Dispatch<SetStateAction<Product[]>>;
 }
 
-export function ModalProduct({ product, button, setProductsData, categories }: Props) {
+export function ModalProduct({ product, button, categories }: Props) {
 	return (
 		<>
 			{schemaModalProduct.map((schema) => {
 				const schemaCustom = schema(product);
-				return <ModalOptionsCustom key={schemaCustom.title} schemaModal={schemaCustom} item={product} />;
+				return <ModalOptionsCustom key={schemaCustom.typeModal} schemaModal={schemaCustom} item={product} />;
 			})}
 		</>
 	);

@@ -1,52 +1,52 @@
 import { HTMLInputTypeAttribute } from 'react';
-import { CreateProductRequest, EditProductRequest, Product } from './products';
+import {
+	CreateProductRequest,
+	CreateProductResponse,
+	EditProductRequest,
+	EditProductResponse,
+	Product,
+} from '../../../../types/products';
 import { FieldPath } from 'react-hook-form';
 import { ZodSchema } from 'zod';
-import { Category, EditCategoryRequest } from './category';
+import { EditCategoryRequest } from '../../../../types/category';
 import {
 	fetchCreateCategory,
-	fetchCreateProduct,
 	fetchDeleteCategory,
 	fetchDeleteProduct,
 	fetchEditCategory,
 	fetchEditProduct,
 } from '../api/fetching';
+import { UseMutationResult } from '@tanstack/react-query';
 
-type typeForm = 'A' | 'B';
-type dataForm = EditProductRequest | CreateProductRequest;
-
-/* type requestEdit = (id: string, dataForm: dataForm) => Promise<any>;
-type requestCreate = (dataForm: dataForm) => Promise<any>;
-type requestDelete = (id: string) => Promise<any>; */
+type typeForm = 'category' | 'products';
 type requestFormTypes =
-	| typeof fetchEditCategory
-	| typeof fetchDeleteCategory
+	| (() => UseMutationResult<EditProductResponse, Error, EditProductRequest, unknown>)
+	| (() => UseMutationResult<CreateProductResponse, Error, CreateProductRequest, unknown>)
 	| typeof fetchCreateCategory
-	/* product */
-	| typeof fetchCreateProduct
-	| typeof fetchEditProduct
-	| typeof fetchDeleteProduct;
-
-/* type requestForm = requestFormTypes; */
+	| typeof fetchEditCategory
+	| typeof fetchDeleteCategory;
 
 type name = FieldPath<EditProductRequest>;
-export type campos = { name: name; label: string; type: HTMLInputTypeAttribute };
-
-/* type schemaFormProduct = (product: Product) => schemaComponentForm
-type schemaFormCategory = (category: Category) => schemaComponentForm
-type schemaForm = schemaFormProduct | schemaFormCategory */
+export type campos = {
+	name: 'id' | 'categoryId' | 'name' | 'description' | 'price' | 'target';
+	label: string;
+	type: HTMLInputTypeAttribute;
+};
 
 export interface schemaComponentForm {
+	
 	type?: typeForm;
-	title: string;
+	title?: string;
+	funtionForm: 'create' | 'update' | 'delete';
 	schema: ZodSchema;
 	campos: campos[];
-	request: requestFormTypes;
+	request?: requestFormTypes;
 	defaultValues?: EditProductRequest | CreateProductRequest | EditCategoryRequest;
 }
 export interface SchemaModal {
-	title: string;
-	description: React.ReactNode;
+	typeModal: 'create' | 'update' | 'delete';
+	title: string | React.ReactNode;
+	description: React.ReactNode | string;
 	buttonModal: React.ReactNode;
 	schemaForm?: schemaComponentForm;
 }

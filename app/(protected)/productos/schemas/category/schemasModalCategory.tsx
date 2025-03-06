@@ -1,9 +1,9 @@
-import { Category } from '../../types/category';
+import { Category } from '../../../../../types/category';
 import { Button } from '../../../../../components/ui/button';
 import { ReactNode } from 'react';
 import { cn } from '../../../../../lib/utils';
-import { deleteCategory, editCategory} from './schemaModalFromCategory';
-import {  SchemaModal } from '../../types/schema';
+import { deleteCategoryFormSchema, editCategoryFormSchema } from './schemasFromCategory';
+import { SchemaModal } from '../../types/schema';
 
 interface PropsButton {
 	category?: Category;
@@ -22,6 +22,7 @@ const ButtonOpenModal = ({ children, category, className }: PropsButton) => (
 
 const schemaModalDelete = (category: Category): SchemaModal => {
 	return {
+		typeModal: 'delete',
 		buttonModal: ButtonOpenModal({ category, children: 'Eliminar', className: 'bg-red-500 hover:bg-red-600' }),
 		title: 'Eliminar Categoria',
 		description: (
@@ -29,11 +30,12 @@ const schemaModalDelete = (category: Category): SchemaModal => {
 				¿Esta seguro que desea eliminar la categoria <b className="text-red-500">{category?.name}</b>?
 			</>
 		),
-		schemaForm: deleteCategory(category),
+		schemaForm: deleteCategoryFormSchema(),
 	};
 };
 const schemaModalEdit = (category: Category): SchemaModal => {
 	return {
+		typeModal: 'update',
 		buttonModal: ButtonOpenModal({ category, children: 'Editar', className: 'bg-blue-500 hover:bg-blue-600' }),
 		title: 'Editar Categoria',
 		description: (
@@ -41,7 +43,7 @@ const schemaModalEdit = (category: Category): SchemaModal => {
 				<b className="text-blue-500">{category?.name}</b>
 			</>
 		),
-		schemaForm: editCategory(category),
+		schemaForm: editCategoryFormSchema(category),
 	};
 };
 

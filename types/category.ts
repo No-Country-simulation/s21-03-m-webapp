@@ -14,7 +14,7 @@ export interface CreateCategoryResponse {
 	msg: string;
 	category: Category;
 }
-export interface GetCategoriesResponse {
+export interface AllCategoriesResponse {
 	msg: string;
 	categories: Category[];
 }
@@ -26,6 +26,7 @@ export interface EditCategoryResponse {
 	category: Category;
 }
 export interface EditCategoryRequest {
+	id: string;
 	name: string;
 	description: string;
 }

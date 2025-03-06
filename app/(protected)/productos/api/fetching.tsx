@@ -17,8 +17,14 @@ import {
 	EditCategoryResponse,
 	CreateCategoryRequest,
 	CreateCategoryResponse,
-} from '../types/category';
-import { AllProductsResponse, CreateProductRequest, CreateProductResponse, DeleteProductResponse, EditProductResponse } from '../types/products';
+} from '../../../../types/category';
+import {
+	AllProductsResponse,
+	CreateProductRequest,
+	CreateProductResponse,
+	DeleteProductResponse,
+	EditProductResponse,
+} from '../../../../types/products';
 
 export const fetchAllCategories = async () => {
 	const res = await customFetch<GetCategoriesResponse>({
@@ -83,7 +89,7 @@ export const fetchDeleteProduct = async (id: string) => {
 		peticion: 'DELETE',
 	});
 	return res;
-}
+};
 
 export const fetchAllProducts = async () => {
 	const res = await customFetch<AllProductsResponse>({
@@ -92,13 +98,12 @@ export const fetchAllProducts = async () => {
 		peticion: 'GET',
 	});
 	return res;
-}
- export const fetchProductByCategory = async (idCategory: string) => {
+};
+export const fetchProductByCategory = async (idCategory: string) => {
 	const res = await customFetch<AllProductsResponse>({
 		url: `${PRODUCT_BY_CATEGORY}/${idCategory}`,
 		requestType: 'protected_api',
 		peticion: 'GET',
 	});
 	return res;
-}
-
+};

@@ -1,25 +1,17 @@
-import { useEffect, useState } from 'react';
 import { Input } from '../../../../../../components/ui/input';
-import { ItemNav } from '../../filter/ItemNav';
-import { NavFilter } from '../../filter/NavFilter';
-import { campos } from '../schema/schema';
-import { Category } from '../../../types/category';
-import { customFetch } from '../../../api/customFetch';
-import { ALL_CATEGORIES } from '../../../../../../constants/app_constants';
+import { campos } from '../../../types/schema';
+import { Category } from '../../../../../../types/category';
 
 interface Props {
 	campo: campos;
 	field: any;
-	handleClick?: (change: 'kitchen' | 'bar' | string) => void;
+	handleClick?: (change: 'kitchen' | 'bar') => void;
 	changeSelected?: 'kitchen' | 'bar' | string;
-	categories: Category[];
 }
 
-export const InputCustom = ({ field, campo, handleClick, changeSelected, categories }: Props) => {
-
-
-	if (campo.name === 'price') 
-		return <Input className="!my-0 p-0 h-8" {...field} type="number" required={false} />
+export const InputCustom = ({ field, campo, handleClick, changeSelected }: Props) => {
+	if (campo.name === 'id') return <input className="hidden" {...field} type="text" required={false} />;
+	if (campo.name === 'price') return <Input className="!my-0 p-0 h-8" {...field} type="number" required={false} />;
 	if (!(campo.name === 'target' || campo.name === 'categoryId'))
 		return <Input className="!my-0 p-0 h-8" {...field} type={campo.type} required={false} />;
 	// console.log(categories);

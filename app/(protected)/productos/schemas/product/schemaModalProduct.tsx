@@ -2,9 +2,9 @@ import { Button } from '../../../../../components/ui/button';
 import { ReactNode } from 'react';
 import { cn } from '../../../../../lib/utils';
 
-import { Product } from '../../types/products';
+import { Product } from '../../../../../types/products';
 import { Pencil, Trash2 } from 'lucide-react';
-import { deleteProduct, editProduct } from './schemaModalFromProduct';
+import { deleteProduct, editProduct } from './schemaFromProduct';
 import { SchemaModal } from '../../types/schema';
 
 interface PropsButton {
@@ -13,13 +13,19 @@ interface PropsButton {
 	className?: string;
 }
 const ButtonOpenModal = ({ children, product, className }: PropsButton) => (
-	<Button className={cn('rounded-full aspect-square w-8 h-auto text-white hover:text-white', className)} variant={'outline'} disabled={!product}>
+	<Button
+		className={cn('rounded-full aspect-square w-8 h-auto text-white hover:text-white', className)}
+		variant={'outline'}
+		disabled={!product}
+	>
 		{children}
 	</Button>
 );
 
 const schemaModalDelete = (product: Product): SchemaModal => {
+	
 	return {
+		typeModal: 'delete',
 		buttonModal: ButtonOpenModal({ product, children: <Trash2 />, className: 'bg-red-500 hover:bg-red-600' }),
 		title: 'Eliminar Producto',
 		description: (
@@ -27,18 +33,19 @@ const schemaModalDelete = (product: Product): SchemaModal => {
 				¿Esta seguro que desea eliminar el producto <b className="text-red-500">{product?.name}</b>?
 			</>
 		),
-		schemaForm: deleteProduct(product),
+		schemaForm: deleteProduct(),
 	};
 };
 export const schemaModalEdit = (product: Product): SchemaModal => {
 	return {
+		typeModal: 'update',
 		buttonModal: ButtonOpenModal({ product, children: <Pencil />, className: 'bg-blue-500 hover:bg-blue-600' }),
-		title: 'Editar Categoria',
-		description: (
+		title: (
 			<>
-				<b className="text-blue-500">{product?.name}</b>
+				Editar Producto <b className="text-blue-500">{product?.name}</b>{' '}
 			</>
 		),
+		description: `${product?.description}`,
 		schemaForm: editProduct(product),
 	};
 };
