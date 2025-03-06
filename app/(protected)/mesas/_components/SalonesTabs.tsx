@@ -6,11 +6,9 @@ import { useSalones } from '@/actions/hooks/salones/useSalones';
 import { ApiLoader } from '@/components/library/loading';
 import { Salon } from '@/types/salones';
 import { useDeleteSalon } from '@/actions/hooks/salones/useDeleteSalon';
-import { useAuth } from '../../../../context/AuthenticationContext';
 
 const SalonTabs = () => {
 	const { data: salones = [], isPending, isError } = useSalones();
-	const { user } = useAuth();
 	const { mutate: deleteSalon } = useDeleteSalon();
 	const [activeTab, setActiveTab] = useState<string | null>(null);
 	const [activeSalon, setActiveSalon] = useState<Salon | null>(null);
@@ -80,7 +78,7 @@ const SalonTabs = () => {
 					</button>
 				))}
 			</div>
-			<TablesMap salon={activeSalon} key={user?.ownerId} onDelete={handleDeleteSalon} />
+			<TablesMap salon={activeSalon} onDelete={handleDeleteSalon} key={activeSalon._id} />
 		</div>
 	);
 };

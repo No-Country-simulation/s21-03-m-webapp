@@ -12,6 +12,7 @@ import { updateOrder } from '../../../../actions/orders';
 import { useProducts } from '../../../../actions/hooks/products/useProducts';
 import { useCategories } from '../../../../actions/hooks/categories/useCategories';
 import { Category } from '../../../../types/category';
+import { useUpdateTables } from '../../../../actions/hooks/tables/useUpdateTables';
 
 type OrderItem = {
 	productId: string;
@@ -25,6 +26,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const { mutate: createOrder } = useCreateOrder();
 	const { data: products } = useProducts();
 	const { data: categories } = useCategories();
+	const { mutate: updateTableStatus } = useUpdateTables();
 
 	const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 	const [people, setPeople] = useState(1);
@@ -74,20 +76,15 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 		const order: OrderRequest = {
 			tableNumber: currentTable._id,
 			people: people,
-			// items: orderItems.map((i) => {
-			// 	return {
-			// 		productId: i.productId,
-			// 		quantity: i.quantity,
-			// 	};
-			// }),
-			items: [
-				{
-					productId: '67c86168a05f81aefefcbcb6',
-					quantity: 2,
-				},
-			],
+			items: orderItems.map((i) => {
+				return {
+					productId: i.productId,
+					quantity: i.quantity,
+				};
+			}),
 		};
 		createOrder(order);
+		updateTableStatus({ ...currentTable, id: currentTable._id, status: 'Occupied' });
 	};
 
 	const handleUpdateOrder = () => {
@@ -95,18 +92,12 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 			id: tableOrder?._id,
 			tableNumber: currentTable._id,
 			people: people,
-			// items: orderItems.map((i) => {
-			// 	return {
-			// 		productId: i.productId,
-			// 		quantity: i.quantity,
-			// 	};
-			// }),
-			items: [
-				{
-					productId: '67c86168a05f81aefefcbcb6',
-					quantity: 8,
-				},
-			],
+			items: orderItems.map((i) => {
+				return {
+					productId: i.productId,
+					quantity: i.quantity,
+				};
+			}),
 		};
 		updateOrder(order);
 	};
