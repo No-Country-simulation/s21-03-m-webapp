@@ -1,7 +1,8 @@
 'use server';
 
 import { Metadata } from 'next';
-import MembersPageClient from './_components/MemberPageCient';
+import { MembersPageClient } from './_components/MemberPageClient';
+
 
 export async function generateMetadata(): Promise<Metadata> {
 	return {

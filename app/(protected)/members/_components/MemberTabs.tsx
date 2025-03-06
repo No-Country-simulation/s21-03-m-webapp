@@ -29,7 +29,7 @@ export function MemberTabs({ members }: { members: Member[] }) {
 					{members.map((member) => (
 						<TableRow key={member._id}>
 							<TableCell className="font-medium">{member.name}</TableCell>
-							<TableCell>{dictionaryRol[member.rol]}</TableCell>
+							<TableCell>{dictionaryRol[member.role]}</TableCell>
 							<TableCell className="flex gap-5">
 								<MemberEditModal member={member} />
 								<button
