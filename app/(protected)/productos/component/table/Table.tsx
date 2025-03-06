@@ -1,10 +1,6 @@
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ModalProduct } from './ModalProduct';
-import { AllProductsResponse, Product } from '../../../../../types/products';
-import { useEffect, useState } from 'react';
-import { customFetch } from '../../api/customFetch';
-import { ALL_PRODUCTS } from '../../../../../constants/app_constants';
-import { Category } from '../../../../../types/category';
+import { Product } from '../../../../../types/products';
 import { buttonEdit } from '../button/Button';
 import { DrawerOptions } from '../drawer/DrawerOptions';
 import { ContextList } from '../../types/list';

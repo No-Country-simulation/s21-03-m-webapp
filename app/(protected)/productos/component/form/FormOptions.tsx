@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Product } from '../../../../../types/products';
 import { InputCustom } from './input/InputCustom';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { schemaComponentForm } from '../../types/schema';
 import { Category } from '../../../../../types/category';
 import { useCreateProduct } from '../../../../../actions/hooks/products/useCreateProduct';
@@ -20,16 +20,20 @@ import { useUpdateCategory } from '../../../../../actions/hooks/categories/useUp
 import { useDeleteCategory } from '../../../../../actions/hooks/categories/useDeleteProduct';
 import { useCategories } from '../../../../../actions/hooks/categories/useCategories';
 import { ItemNav } from '../filter/ItemNav';
+import { CarouselApi, CarouselNext } from '../../../../../components/ui/carousel';
 // Define una interfaz genérica para formSchemaData
 
 interface Props {
 	formSchemaData: schemaComponentForm;
 	children?: React.ReactNode;
 	item?: Product | Category;
+	buttonsCarousel?: ((jump?: boolean) => void) | undefined;
 }
-export function FormOptions({ formSchemaData, children, item }: Props) {
-	const target = ['kitchen', 'bar'];
-	const [targetSelected, setTargetSelected] = useState<'kitchen' | 'bar'>('kitchen');
+export function FormOptions({ formSchemaData, children, item, buttonsCarousel }: Props) {
+	const target: Array<'bar' | 'kitchen' | undefined> = ['kitchen', 'bar'];
+	const [targetSelected, setTargetSelected] = useState<'kitchen' | 'bar' | undefined>(
+		item && 'target' in item ? item.target : undefined,
+	);
 	const { mutate: createProduct } = useCreateProduct();
 	const { mutate: updateProduct } = useUpdateProduct();
 	const { mutate: deleteProduct } = useDeleteProduct();
@@ -51,6 +55,9 @@ export function FormOptions({ formSchemaData, children, item }: Props) {
 		console.log('formSchemaData', formSchemaData);
 		/* refactorizar */
 		// CATEGORIES
+		if (targetSelected) {
+			data.target = targetSelected;
+		}
 		if (formSchemaData.type === 'category') {
 			if (formSchemaData.funtionForm === 'delete') deleteCategory(item!._id);
 
@@ -81,13 +88,12 @@ export function FormOptions({ formSchemaData, children, item }: Props) {
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="w-3/4 ">
+			<form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex flex-col items-center">
 				{formSchemaData.title && (
 					<h2>
 						<b>{formSchemaData.title}</b>
 					</h2>
 				)}
-
 				{formSchemaData.campos.map((campo) => {
 					return (
 						<FormField
@@ -95,15 +101,12 @@ export function FormOptions({ formSchemaData, children, item }: Props) {
 							control={form.control}
 							name={campo.name}
 							render={({ field }) => (
-								<FormItem>
-									<FormLabel className={cn(campo.label === 'Id' && 'hidden')}>{campo.label}</FormLabel>
+								<FormItem className="w-4/5">
+									<FormLabel className={cn({ Id: 'hidden', Categoria: 'hidden', Objetivo: 'hidden' }[campo.label])}>
+										{campo.label}
+									</FormLabel>
 									<FormControl>
-										<InputCustom
-											field={field}
-											campo={campo}
-											handleClick={setTargetSelected}
-											changeSelected={targetSelected}
-										></InputCustom>
+										<InputCustom field={field} campo={campo}></InputCustom>
 									</FormControl>
 									<FormMessage className="text-xs !my-0 " />
 								</FormItem>
@@ -111,17 +114,40 @@ export function FormOptions({ formSchemaData, children, item }: Props) {
 						/>
 					);
 				})}
+				{formSchemaData.type !== 'category' && (
+					<FormItem className="w-4/5 space-y-0 text-center">
+						<FormLabel className="m-0 p-0 ">Objetivo</FormLabel>
+						<div className="flex gap-2 ">
+							{formSchemaData.funtionForm != 'delete' &&
+								target.map((t) => (
+									<span className="w-[50%]" key={t} onClick={() => setTargetSelected(t)}>
+										<FormControl>
+											<ItemNav isSelected={targetSelected === t}>{t}</ItemNav>
+										</FormControl>
+									</span>
+								))}
+						</div>
+					</FormItem>
+				)}
 
-				{/* refactorizar */}
-				<div className="flex gap-2 overflow-x-auto">
-					{(formSchemaData.funtionForm === 'create' || formSchemaData.funtionForm === 'update') &&
-						formSchemaData.type === 'products' &&
-						categories?.map((category) => (
-							<div key={category._id} onClick={() => setCategorySelected(category._id)}>
-								<ItemNav category={category} isSelected={categorySelected === category._id}></ItemNav>
+				{formSchemaData.type !== 'category' && (
+					<FormItem className="w-4/5">
+						<FormLabel className="m-0 p-0">
+							<div onClick={() => buttonsCarousel?.()}><ItemNav>Categorias</ItemNav></div>
+						</FormLabel>
+						<FormControl>
+							<div className="flex gap-2 overflow-x-auto w-3/4">
+								{(formSchemaData.funtionForm === 'create' || formSchemaData.funtionForm === 'update') &&
+									categories?.map((category) => (
+										<div key={category._id} onClick={() => setCategorySelected(category._id)}>
+											<ItemNav category={category} isSelected={categorySelected === category._id}></ItemNav>
+										</div>
+									))}
 							</div>
-						))}
-				</div>
+						</FormControl>
+					</FormItem>
+				)}
+
 				{children}
 				<Button className="mt-3" type="submit">
 					Submit
