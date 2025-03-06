@@ -27,9 +27,6 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<head>
-				<script src="https://unpkg.com/react-scan/dist/auto.global.js" />
-			</head>
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
 				<Providers>{children}</Providers>
 			</body>
