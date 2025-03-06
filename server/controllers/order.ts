@@ -104,11 +104,6 @@ export const edit = async (req: Request, res: Response) => {
                 msg: 'Los campos numero de mesa y cantidad de personas son obligatorios.'
             });
         }
-
-        if (!items || items.length === 0) {
-            return res.status(400).json({ msg: "La orden debe contener al menos un producto." });
-        }
-
         let subtotal = 0;
         for (const item of items) {
             const product = await Product.findById(item.productId);
