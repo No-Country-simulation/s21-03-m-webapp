@@ -178,8 +178,11 @@ export const updateStatus = async (req: Request, res: Response) => {
 } */
 
 export const getOrderByTable = async (req: Request, res: Response) => {
+   
+
     try {
         const { tableId } = req.params
+        console.log(tableId)
         // -createdAt -updatedAt
         const order = await Order.findOne({ ownerId: req.ownerId, tableNumber: tableId, status: 'pending' })
             .populate("items.productId", "name")
@@ -187,7 +190,12 @@ export const getOrderByTable = async (req: Request, res: Response) => {
             .lean()
 
         if (!order) {
-            return res.json({});
+           const order={
+                tableNumber:tableId,
+                items:[],
+                status:"Free"
+            }
+            return res.json(order);
         }
         const formattedOrder = {
             ...order,
