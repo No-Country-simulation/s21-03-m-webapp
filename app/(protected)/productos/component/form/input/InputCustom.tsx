@@ -1,9 +1,10 @@
+import { ControllerRenderProps } from 'react-hook-form';
 import { Input } from '../../../../../../components/ui/input';
 import { campos } from '../../../types/schema';
 
 interface Props {
 	campo: campos;
-	field: any;
+	field: ControllerRenderProps;
 	handleClick?: (change: 'kitchen' | 'bar') => void;
 	changeSelected?: 'kitchen' | 'bar' | string;
 }
@@ -21,7 +22,7 @@ export const InputCustom = ({ field, campo }: Props) => {
 			</div>
 		),
 		categoryId: (
-			<div className="flex gap-2 hidden">
+			<div className="flex gap-2">
 				<Input className="!my-0 p-0 h-8" {...field} type="text" required={false} />
 			</div>
 		),
