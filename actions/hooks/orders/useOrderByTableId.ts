@@ -3,7 +3,7 @@ import { Order } from '../../../types/orders';
 import { getOrderByTableId } from '../../orders';
 
 export const useOrderByTableId = (tableId: string) => {
-	return useQuery<Array<Order>>({
+	return useQuery<Order>({
 		queryKey: ['order', tableId],
 		queryFn: () => getOrderByTableId(tableId),
 		retry: 1,

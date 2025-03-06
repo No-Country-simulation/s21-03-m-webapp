@@ -14,13 +14,16 @@ export interface Order {
 }
 
 export interface Item {
-	productId: string;
+	productId: {
+		_id: string;
+		name: string;
+	};
 	price: number;
 	quantity: number;
-	_id: string;
 }
 
 export interface OrderRequest {
+	id?: string;
 	tableNumber: string;
 	people: number;
 	items: Array<OrderRequestItem>;

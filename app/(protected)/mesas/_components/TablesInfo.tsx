@@ -1,14 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Table } from '@/types/tables';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { useOrderByTableId } from '@/actions/hooks/orders/useOrderByTableId';
-import { useOrders } from '@/actions/hooks/orders/useOrders';
 import { useCreateOrder } from '@/actions/hooks/orders/useCreateOrder';
 import { OrderRequest } from '../../../../types/orders';
+import { updateOrder } from '../../../../actions/orders';
 
 type OrderItem = {
 	productId: string;
@@ -16,6 +16,7 @@ type OrderItem = {
 	price: number;
 	quantity: number;
 };
+
 export const MOCK_CATEGORIES = [
 	{
 		id: '1',
@@ -107,21 +108,38 @@ export const MOCK_PRODUCTS = [
 ];
 
 const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
-	const [people, setPeople] = useState(1);
+	const { data: tableOrder, isPending } = useOrderByTableId(currentTable._id);
+	const { mutate: createOrder } = useCreateOrder();
+
+	// TODO - Replace con type Category
 	const [selectedCategory, setSelectedCategory] = useState<{
 		id: string;
 		name: string;
 		description: string;
 	} | null>(null);
+
+	const [people, setPeople] = useState(1);
+
+	// TODO - Replace con new Response Type de Order
 	const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
-	const { data } = useOrderByTableId(currentTable._id);
-	const { data: myData } = useOrders();
-	const { mutate: createOrder } = useCreateOrder();
 
-	console.log(data);
-	console.log(myData);
+	useEffect(() => {
+		if (!isPending && tableOrder) {
+			setPeople(tableOrder.people);
+			setOrderItems((prev) =>
+				prev.length === 0 && tableOrder.items
+					? tableOrder.items.map((i) => ({
+							productId: i.productId._id,
+							name: i.productId.name,
+							price: i.price,
+							quantity: i.quantity,
+						}))
+					: prev,
+			);
+		}
+	}, [tableOrder, isPending]);
 
-	// Filtrar productos según categoría seleccionada
+	// TODO - Filter actual prducts
 	const filteredProducts = selectedCategory
 		? MOCK_PRODUCTS.filter((product) => product.categoryId === selectedCategory.id)
 		: [];
@@ -139,10 +157,20 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 		});
 	};
 
+	const removeFromOrder = (productId: string) => {
+		setOrderItems((prevItems) => prevItems.filter((item) => item.productId !== productId));
+	};
+
 	const handleCreateOrder = () => {
 		const order: OrderRequest = {
 			tableNumber: currentTable._id,
 			people: people,
+			// items: orderItems.map((i) => {
+			// 	return {
+			// 		productId: i.productId,
+			// 		quantity: i.quantity,
+			// 	};
+			// }),
 			items: [
 				{
 					productId: '67c86168a05f81aefefcbcb6',
@@ -150,16 +178,40 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 				},
 			],
 		};
-		console.log(order);
 		createOrder(order);
 	};
 
-	const removeFromOrder = (productId: string) => {
-		setOrderItems((prevItems) => prevItems.filter((item) => item.productId !== productId));
+	const handleUpdateOrder = () => {
+		const order: OrderRequest = {
+			id: tableOrder?._id,
+			tableNumber: currentTable._id,
+			people: people,
+			// items: orderItems.map((i) => {
+			// 	return {
+			// 		productId: i.productId,
+			// 		quantity: i.quantity,
+			// 	};
+			// }),
+			items: [
+				{
+					productId: '67c86168a05f81aefefcbcb6',
+					quantity: 8,
+				},
+			],
+		};
+		updateOrder(order);
 	};
 
+	if (isPending) {
+		return (
+			<article className="w-full h-full relative">
+				<h2>Loading</h2>
+			</article>
+		);
+	}
+
 	return (
-		<article className="w-full h-full">
+		<article className="w-full h-full relative">
 			<div className="w-[90%] m-auto py-4 text-white">
 				<h2 className="text-lg font-bold text-center mb-4">Mesa {currentTable.number}</h2>
 				<div className="flex flex-col gap-8">
@@ -259,8 +311,11 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 			</section>
 			{/* Sección 4: Botón para enviar orden */}
 			<div className="w-full">
-				<Button className="w-full bg-green-500 hover:bg-green-400" onClick={handleCreateOrder}>
-					Agregar a la cuenta
+				<Button
+					className="w-full bg-green-500 hover:bg-green-400"
+					onClick={tableOrder ? handleUpdateOrder : handleCreateOrder}
+				>
+					{tableOrder ? 'Actualizar Orden' : 'Agregar a la cuenta'}
 				</Button>
 			</div>
 		</article>
