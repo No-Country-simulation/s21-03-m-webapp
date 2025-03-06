@@ -11,16 +11,12 @@ export const create = async (req: Request, res: Response) => {
         });
     }
 
-    if (!items || items.length === 0) {
-        return res.status(400).json({ msg: "La orden debe contener al menos un producto." });
-    }
-
     try {
         const orderExist = await Order.find({ tableNumber, status: 'pending' })
         if (!orderExist) {
             return res.status(400).json({ msg: `Existe una orden pendiente en la mesa ${tableNumber}.` });
         }
-
+        
         let subtotal = 0;
         for (const item of items) {
             const product = await Product.findById(item.productId);
