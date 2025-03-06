@@ -23,7 +23,6 @@ const ButtonOpenModal = ({ children, product, className }: PropsButton) => (
 );
 
 const schemaModalDelete = (product: Product): SchemaModal => {
-	
 	return {
 		typeModal: 'delete',
 		buttonModal: ButtonOpenModal({ product, children: <Trash2 />, className: 'bg-red-500 hover:bg-red-600' }),

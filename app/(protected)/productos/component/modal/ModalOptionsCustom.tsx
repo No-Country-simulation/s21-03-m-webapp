@@ -19,7 +19,7 @@ interface Props {
 
 export function ModalOptionsCustom({ schemaModal, item }: Props) {
 	return (
-		<Dialog key={schemaModal.title}>
+		<Dialog>
 			<DialogTrigger className="" asChild>
 				{schemaModal.buttonModal}
 			</DialogTrigger>

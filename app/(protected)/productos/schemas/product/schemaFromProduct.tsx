@@ -1,9 +1,6 @@
 import { z } from 'zod';
-import { fetchDeleteProduct, fetchEditProduct } from '@/app/(protected)/productos/api/fetching';
 import { Product } from '../../../../../types/products';
 import { schemaComponentForm } from '../../types/schema';
-import { useUpdateProduct } from '../../../../../actions/hooks/products/useUpdateProduct';
-import { useCreateProduct } from '../../../../../actions/hooks/products/useCreateProduct';
 
 const schemaZodEdit = z.object({
 	name: z.string().min(2, {
@@ -114,7 +111,7 @@ export const editProduct = (product: Product): schemaComponentForm => {
 };
 export const deleteProduct = (): schemaComponentForm => {
 	return {
-		type:"products",
+		type: 'products',
 		funtionForm: 'delete',
 		schema: z.object({}),
 		campos: [],

@@ -1,11 +1,7 @@
 import { Button } from '../../../../../components/ui/button';
-import { Card, CardContent } from '../../../../../components/ui/card';
-import { CarouselItem } from '../../../../../components/ui/carousel';
+import { Card } from '../../../../../components/ui/card';
 import { cn } from '../../../../../lib/utils';
-import { fetchProductByCategory } from '../../api/fetching';
 import { Category } from '../../../../../types/category';
-import { ContextList } from '../../types/list';
-import { useProductsByCategory } from '../../../../../actions/hooks/products/useProductsByCategory';
 
 interface Props {
 	category?: Category;
