@@ -26,7 +26,7 @@ export function MemberForm({ setOpen, member }: MemberFormProps) {
 		defaultValues: {
 			name: member?.name || '',
 			email: member?.email || '',
-			password:  "",
+			password: '',
 			role: member?.role || '',
 		},
 	});
@@ -36,11 +36,10 @@ export function MemberForm({ setOpen, member }: MemberFormProps) {
 			form.reset({
 				name: member.name || '',
 				email: member.email || '',
-				password:  "",
+				password: '',
 				role: member.role || '',
 			});
 		}
-		
 	}, [form, member]);
 
 	function onSubmit(values: MemberFormData) {
@@ -116,7 +115,7 @@ export function MemberForm({ setOpen, member }: MemberFormProps) {
 						<FormItem>
 							<FormLabel>Contraseña</FormLabel>
 							<FormControl>
-								<Input type='password' disabled={isPending} placeholder="********" {...field} />
+								<Input type="password" disabled={isPending} placeholder="********" {...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>

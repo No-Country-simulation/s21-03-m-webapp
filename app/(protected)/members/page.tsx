@@ -3,7 +3,6 @@
 import { Metadata } from 'next';
 import { MembersPageClient } from './_components/MemberPageClient';
 
-
 export async function generateMetadata(): Promise<Metadata> {
 	return {
 		title: 'Mesa 360 - Miembros',

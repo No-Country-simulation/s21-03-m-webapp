@@ -51,7 +51,7 @@ export const NavFilter = ({ context }: Props) => {
 					if (!category) return null;
 					return (
 						<ModalOptionsCustom
-							key={schemasModal(category).title}
+							key={schemasModal(category).typeModal}
 							schemaModal={schemasModal(category)}
 							item={category}
 						></ModalOptionsCustom>

@@ -18,7 +18,7 @@ export const InputCustom = ({ field, campo, handleClick, changeSelected }: Props
 	return {
 		target: (
 			<div className="flex gap-2">
-				<Input className="!my-0 p-0 h-8" {...field} type="text" required={false} />
+				<Input className="!my-0 p-0 h-8" {...field} type="" required={false} />
 			</div>
 		),
 		categoryId: (

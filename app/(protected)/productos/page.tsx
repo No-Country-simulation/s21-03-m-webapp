@@ -2,13 +2,10 @@
 
 import { TableDemo } from './component/table/Table';
 import { NavFilter } from './component/filter/NavFilter';
-import { useEffect, useState } from 'react';
-import { Category } from '../../../types/category';
-import { fetchAllCategories, fetchAllProducts } from './api/fetching';
-import { Product } from '../../../types/products';
-import { ContextList } from './types/list';
+
 import { useProducts } from '../../../actions/hooks/products/useProducts';
 import { useCategories } from '../../../actions/hooks/categories/useCategories';
+import { useState } from 'react';
 
 const ProductosPage = () => {
 	const { data: products } = useProducts();
