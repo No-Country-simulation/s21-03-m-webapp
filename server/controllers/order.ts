@@ -178,7 +178,6 @@ export const updateStatus = async (req: Request, res: Response) => {
 } */
 
 export const getOrderByTable = async (req: Request, res: Response) => {
-   
 
     try {
         const { tableId } = req.params
@@ -193,7 +192,7 @@ export const getOrderByTable = async (req: Request, res: Response) => {
            const order={
                 tableNumber:tableId,
                 items:[],
-                status:"Free"
+                status:"pending"
             }
             return res.json(order);
         }
