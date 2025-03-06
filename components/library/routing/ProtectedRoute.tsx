@@ -46,7 +46,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 		);
 	}
 
-	return user ? <>{children}</> : null;
+	return user ? <div key={user.id}>{children}</div> : null;
 };
 
 export default ProtectedRoute;

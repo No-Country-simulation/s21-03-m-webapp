@@ -205,7 +205,7 @@ const TablesMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =
 			</article>
 			<article className="w-[550px] bg-chart-1 rounded-lg flex flex-col gap-2 items-center justify-center">
 				{currentTable ? (
-					<TablesInfo currentTable={currentTable} />
+					<TablesInfo currentTable={currentTable} key={currentTable._id} />
 				) : (
 					<h2 className="text-white text-center">Selecciona una mesa para crear una orden!</h2>
 				)}

@@ -9,6 +9,9 @@ import { useOrderByTableId } from '@/actions/hooks/orders/useOrderByTableId';
 import { useCreateOrder } from '@/actions/hooks/orders/useCreateOrder';
 import { OrderRequest } from '../../../../types/orders';
 import { updateOrder } from '../../../../actions/orders';
+import { useProducts } from '../../../../actions/hooks/products/useProducts';
+import { useCategories } from '../../../../actions/hooks/categories/useCategories';
+import { Category } from '../../../../types/category';
 
 type OrderItem = {
 	productId: string;
@@ -17,107 +20,13 @@ type OrderItem = {
 	quantity: number;
 };
 
-export const MOCK_CATEGORIES = [
-	{
-		id: '1',
-		name: 'Entradas',
-		description: 'Platos frios',
-	},
-	{
-		id: '2',
-		name: 'Platos',
-		description: 'Platos principales',
-	},
-	{
-		id: '3',
-		name: 'Postres',
-		description: 'Desserts',
-	},
-	{
-		id: '4',
-		name: 'Bebidas',
-		description: 'Bebidas de todo',
-	},
-];
-
-export const MOCK_PRODUCTS = [
-	{
-		id: 'a',
-		categoryId: '1',
-		name: 'Ensalada verde',
-		description: 'Lechuga y tomate.',
-		price: 1500,
-		target: 'Kitchen',
-	},
-	{
-		id: 'b',
-		categoryId: '1',
-		name: 'Ensalada rusa',
-		description: 'La mejor',
-		price: 2200,
-		target: 'Kitchen',
-	},
-	{
-		id: 'c',
-		categoryId: '2',
-		name: 'Pizza con jamon',
-		description: 'Pizza con jamon cocido.',
-		price: 5000,
-		target: 'Kitchen',
-	},
-	{
-		id: 'd',
-		categoryId: '2',
-		name: 'Milanga',
-		description: 'La mejor',
-		price: 7500,
-		target: 'Kitchen',
-	},
-	{
-		id: 'e',
-		categoryId: '4',
-		name: 'Birra',
-		description: 'La mejor',
-		price: 2500,
-		target: 'Kitchen',
-	},
-	{
-		id: 'f',
-		categoryId: '4',
-		name: 'Coquita',
-		description: 'La mejor',
-		price: 2500,
-		target: 'Kitchen',
-	},
-	{
-		id: 'g',
-		categoryId: '3',
-		name: 'Tiramisu',
-		description: 'La mejor',
-		price: 2500,
-		target: 'Kitchen',
-	},
-	{
-		id: 'h',
-		categoryId: '3',
-		name: 'Helado',
-		description: 'La mejor',
-		price: 2500,
-		target: 'Kitchen',
-	},
-];
-
 const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const { data: tableOrder, isPending } = useOrderByTableId(currentTable._id);
 	const { mutate: createOrder } = useCreateOrder();
+	const { data: products } = useProducts();
+	const { data: categories } = useCategories();
 
-	// TODO - Replace con type Category
-	const [selectedCategory, setSelectedCategory] = useState<{
-		id: string;
-		name: string;
-		description: string;
-	} | null>(null);
-
+	const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 	const [people, setPeople] = useState(1);
 
 	// TODO - Replace con new Response Type de Order
@@ -141,7 +50,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 
 	// TODO - Filter actual prducts
 	const filteredProducts = selectedCategory
-		? MOCK_PRODUCTS.filter((product) => product.categoryId === selectedCategory.id)
+		? products?.filter((product) => product.categoryId === selectedCategory._id)
 		: [];
 
 	const addToOrder = (productId: string, name: string, price: number) => {
@@ -241,16 +150,16 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 								{selectedCategory && (
 									<>
 										<span>/</span>
-										<span>{MOCK_CATEGORIES.find((c) => c.id === selectedCategory.id)?.name}</span>
+										<span>{categories?.find((c) => c._id === selectedCategory._id)?.name}</span>
 									</>
 								)}
 							</div>
 						</div>
 						{!selectedCategory ? (
 							<div className="flex flex-wrap gap-1">
-								{MOCK_CATEGORIES.map((category) => (
+								{categories?.map((category) => (
 									<Button
-										key={category.id}
+										key={category._id}
 										variant={'outline'}
 										className="text-black"
 										onClick={() => setSelectedCategory(category)}
@@ -261,12 +170,12 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 							</div>
 						) : (
 							<div className="flex flex-wrap gap-1">
-								{filteredProducts.map((product) => (
+								{filteredProducts?.map((product) => (
 									<Button
-										key={product.id}
+										key={product._id}
 										variant={'outline'}
 										className="text-black"
-										onClick={() => addToOrder(product.id, product.name, product.price)}
+										onClick={() => addToOrder(product._id, product.name, product.price)}
 									>
 										{product.name}
 									</Button>
