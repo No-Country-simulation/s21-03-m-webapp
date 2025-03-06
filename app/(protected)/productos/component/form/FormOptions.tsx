@@ -28,7 +28,6 @@ interface Props {
 	item?: Product | Category;
 }
 export function FormOptions({ formSchemaData, children, item }: Props) {
-	const target = ['kitchen', 'bar'];
 	const [targetSelected, setTargetSelected] = useState<'kitchen' | 'bar'>('kitchen');
 	const { mutate: createProduct } = useCreateProduct();
 	const { mutate: updateProduct } = useUpdateProduct();

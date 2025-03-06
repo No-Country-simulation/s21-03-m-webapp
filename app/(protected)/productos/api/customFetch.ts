@@ -4,7 +4,6 @@ import axios from 'axios';
 import { SERVER_ERROR } from '../../../../constants/app_constants';
 
 type peticion = 'GET' | 'POST' | 'PUT' | 'DELETE';
-type Data<T> = T | null;
 
 interface Props {
 	url: string;

@@ -1,6 +1,5 @@
 import { Input } from '../../../../../../components/ui/input';
 import { campos } from '../../../types/schema';
-import { Category } from '../../../../../../types/category';
 
 interface Props {
 	campo: campos;
@@ -9,7 +8,7 @@ interface Props {
 	changeSelected?: 'kitchen' | 'bar' | string;
 }
 
-export const InputCustom = ({ field, campo, handleClick, changeSelected }: Props) => {
+export const InputCustom = ({ field, campo }: Props) => {
 	if (campo.name === 'id') return <input className="hidden" {...field} type="text" required={false} />;
 	if (campo.name === 'price') return <Input className="!my-0 p-0 h-8" {...field} type="number" required={false} />;
 	if (!(campo.name === 'target' || campo.name === 'categoryId'))

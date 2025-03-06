@@ -1,15 +1,7 @@
 import { HTMLInputTypeAttribute } from 'react';
-import {
-	CreateProductRequest,
-	CreateProductResponse,
-	EditProductRequest,
-	EditProductResponse,
-	Product,
-} from '../../../../types/products';
-import { FieldPath } from 'react-hook-form';
+import { CreateProductRequest, EditProductRequest } from '../../../../types/products';
 import { ZodSchema } from 'zod';
 import { EditCategoryRequest } from '../../../../types/category';
-import { UseMutationResult } from '@tanstack/react-query';
 
 type typeForm = 'category' | 'products';
 export type campos = {

@@ -1,7 +1,5 @@
-import { FieldPath } from 'react-hook-form';
-import { Category, EditCategoryRequest } from '@/types/category';
-import { HTMLInputTypeAttribute } from 'react';
-import { z, ZodSchema } from 'zod';
+import { Category } from '@/types/category';
+import { z } from 'zod';
 import { schemaComponentForm } from '../../types/schema';
 
 const schemaZodCategory = z.object({

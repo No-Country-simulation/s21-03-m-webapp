@@ -6,7 +6,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog';
-import React, { Dispatch, ReactNode, SetStateAction } from 'react';
+import React from 'react';
 import { Product } from '../../../../../types/products';
 import { Category } from '../../../../../types/category';
 import { FormOptions } from '../form/FormOptions';
