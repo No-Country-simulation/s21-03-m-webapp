@@ -1,16 +1,16 @@
 import { z } from 'zod';
 
 export const FormSchema = z.object({
-	name: z.string().min(2, {
+	name: z.string().trim().min(2, {
 		message: 'Debes ingresar un nombre.',
 	}),
-	email: z.string().email({
+	email: z.string().trim().email({
 		message: 'Email inválido.',
 	}),
-	password: z.string().min(6, {
+	password: z.string().trim().min(6, {
 		message: 'La contraseña debe tener al menos 6 caracteres.',
 	}),
-	rol: z.string({
+	role: z.string({
 		message: 'Debes ingresar un rol.',
 	}),
 });

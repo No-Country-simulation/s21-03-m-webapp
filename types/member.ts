@@ -7,7 +7,7 @@ export interface Member {
 	_id: string;
 	ownerId: string;
 	name: string;
-	rol: MemberRole;
+	role: MemberRole;
 	email: string;
 	password: string;
 	__v: number;

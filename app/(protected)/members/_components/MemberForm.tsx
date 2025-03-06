@@ -24,10 +24,10 @@ export function MemberForm({ setOpen, member }: MemberFormProps) {
 	const form = useForm<MemberFormData>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
-			name: '',
-			email: '',
-			password: '',
-			rol: '',
+			name: member?.name || '',
+			email: member?.email || '',
+			password:  "",
+			role: member?.role || '',
 		},
 	});
 
@@ -36,10 +36,11 @@ export function MemberForm({ setOpen, member }: MemberFormProps) {
 			form.reset({
 				name: member.name || '',
 				email: member.email || '',
-				password: '',
-				rol: member.rol || '',
+				password:  "",
+				role: member.role || '',
 			});
 		}
+		
 	}, [form, member]);
 
 	function onSubmit(values: MemberFormData) {
@@ -115,7 +116,7 @@ export function MemberForm({ setOpen, member }: MemberFormProps) {
 						<FormItem>
 							<FormLabel>Contraseña</FormLabel>
 							<FormControl>
-								<Input disabled={isPending} placeholder="********" {...field} />
+								<Input type='password' disabled={isPending} placeholder="********" {...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -123,7 +124,7 @@ export function MemberForm({ setOpen, member }: MemberFormProps) {
 				/>
 				<FormField
 					control={form.control}
-					name="rol"
+					name="role"
 					render={({ field }) => (
 						<FormItem>
 							<FormLabel>Rol</FormLabel>
