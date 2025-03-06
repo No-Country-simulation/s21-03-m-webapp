@@ -9,11 +9,9 @@ const schemaZodEdit = z.object({
 	description: z.string().min(1, {
 		message: 'Descripcion requerida',
 	}),
-	price: z
-		.number()
-		.min(1, {
-			message: 'Precio requerido',
-		}),
+	price: z.number().min(1, {
+		message: 'Precio requerido',
+	}),
 	target: z.string().min(1, {
 		message: 'Objetivo requerido',
 	}),
