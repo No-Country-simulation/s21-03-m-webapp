@@ -131,7 +131,9 @@ export function FormOptions({ formSchemaData, children, item, buttonsCarousel }:
 				{formSchemaData.type !== 'category' && (
 					<FormItem className="w-4/5">
 						<FormLabel className="m-0 p-0">
-							<div onClick={() => buttonsCarousel?.()}><ItemNav>Categorias</ItemNav></div>
+							<div onClick={() => buttonsCarousel?.()}>
+								<ItemNav>Categorias</ItemNav>
+							</div>
 						</FormLabel>
 						<FormControl>
 							<div className="flex gap-2 overflow-x-auto w-3/4">

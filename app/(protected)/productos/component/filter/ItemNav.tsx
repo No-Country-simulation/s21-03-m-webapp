@@ -10,8 +10,7 @@ interface Props {
 	children?: React.ReactNode;
 }
 
-export const ItemNav = ({ category, isSelected,  classNameB,children }: Props) => {
-
+export const ItemNav = ({ category, isSelected, classNameB, children }: Props) => {
 	return (
 		<Card className={cn('rounded-full ', category && 'inline-block', classNameB)}>
 			<Button
