@@ -1,0 +1,122 @@
+import { z } from 'zod';
+import { fetchDeleteProduct, fetchEditProduct } from '@/app/(protected)/productos/api/fetching';
+import { Product } from '../../../../../types/products';
+import { schemaComponentForm } from '../../types/schema';
+import { useUpdateProduct } from '../../../../../actions/hooks/products/useUpdateProduct';
+import { useCreateProduct } from '../../../../../actions/hooks/products/useCreateProduct';
+
+const schemaZodEdit = z.object({
+	name: z.string().min(2, {
+		message: 'Nombre requerido',
+	}),
+	description: z.string().min(1, {
+		message: 'Descripcion requerida',
+	}),
+	price: z
+		.string()
+		.transform(Number)
+		.refine((value) => !isNaN(value), {
+			message: 'Price must be a number',
+		}),
+	target: z.string().min(1, {
+		message: 'Objetivo requerido',
+	}),
+	categoryId: z.string().min(1, {
+		message: 'Categoria requerida',
+	}),
+});
+
+export const createProductForm: schemaComponentForm = {
+	funtionForm: 'create',
+	type: 'products',
+	title: 'Crear producto',
+	campos: [
+		{
+			name: 'name',
+			label: 'Nombre',
+			type: 'text',
+		},
+		{
+			name: 'description',
+			label: 'Descripcion',
+			type: 'text',
+		},
+		{
+			name: 'price',
+			label: 'Precio',
+			type: 'number',
+		},
+		{
+			name: 'target',
+			label: 'Objetivo',
+			type: 'button',
+		},
+		{
+			name: 'categoryId',
+			label: 'Categoria',
+			type: 'button',
+		},
+	],
+	schema: schemaZodEdit,
+	defaultValues: {
+		name: '',
+		description: '',
+		price: 0,
+		categoryId: '123',
+		target: 'bar',
+	},
+};
+export const editProduct = (product: Product): schemaComponentForm => {
+	return {
+		funtionForm: 'update',
+		type: 'products',
+		campos: [
+			{
+				name: 'id',
+				label: 'Id',
+				type: 'text',
+			},
+			{
+				name: 'name',
+				label: 'Nombre',
+				type: 'text',
+			},
+			{
+				name: 'description',
+				label: 'Descripcion',
+				type: 'text',
+			},
+			{
+				name: 'price',
+				label: 'Precio',
+				type: 'number',
+			},
+			{
+				name: 'target',
+				label: 'Objetivo',
+				type: 'button',
+			},
+			{
+				name: 'categoryId',
+				label: 'Categoria',
+				type: 'text',
+			},
+		],
+		schema: schemaZodEdit,
+		defaultValues: {
+			name: product?.name,
+			description: product?.description,
+			categoryId: product?.categoryId,
+			target: product?.target,
+			price: product?.price,
+		},
+	};
+};
+export const deleteProduct = (): schemaComponentForm => {
+	return {
+		type:"products",
+		funtionForm: 'delete',
+		schema: z.object({}),
+		campos: [],
+	};
+};
