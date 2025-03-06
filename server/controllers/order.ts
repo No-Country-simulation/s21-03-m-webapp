@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import Order from "../models/Order";
 import Product from "../models/Product";
-import mongoose from "mongoose";
 
 export const create = async (req: Request, res: Response) => {
     const { tableNumber, people, items, discount, discountPercentage } = req.body;
@@ -18,7 +17,8 @@ export const create = async (req: Request, res: Response) => {
 
     try {
         const orderExist = await Order.find({ tableNumber, status: 'pending' })
-        if (!orderExist) {
+        
+        if (orderExist.length) {
             return res.status(400).json({ msg: `Existe una orden pendiente en la mesa ${tableNumber}.` });
         }
 
