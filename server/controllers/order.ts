@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Order from "../models/Order";
 import Product from "../models/Product";
+import mongoose from "mongoose";
 
 export const create = async (req: Request, res: Response) => {
     const { tableNumber, people, items, discount, discountPercentage } = req.body;
@@ -62,9 +63,20 @@ export const getAll = async (req: Request, res: Response) => {
         const orders = await Order.find({ ownerId: req.ownerId })
             .populate("items.productId", "name")
             .select("-__v -createdAt -updatedAt -ownerId -items._id ")
+            .lean()
+
+        const formattedOrder = orders.map(order => ({
+            ...order,
+            items: order.items.map((item) => ({
+                productId: item.productId["_id"],
+                name: item.productId["name"],
+                price: item.price,
+                quantity: item.quantity,
+            })),
+        }))
 
         return res.status(200).json({
-            orders: orders
+            orders: formattedOrder
         });
     } catch (error) {
         return res.status(500).json({
@@ -128,7 +140,7 @@ export const edit = async (req: Request, res: Response) => {
         });
     } catch (error) {
         console.log(error);
-        
+
         return res.status(500).json({
             msg: 'Ocurrio un problema en el servidor.'
         });
@@ -177,13 +189,24 @@ export const updateStatus = async (req: Request, res: Response) => {
 export const getOrderByTable = async (req: Request, res: Response) => {
     try {
         const { tableId } = req.params
-
+        // -createdAt -updatedAt
         const order = await Order.findOne({ ownerId: req.ownerId, tableNumber: tableId, status: 'pending' })
             .populate("items.productId", "name")
-            .select("-__v -createdAt -updatedAt -ownerId -items._id ")
+            .select("-__v -ownerId -items._id ")
+            .lean()
+
+        const formattedOrder = {
+            ...order,
+            items: order.items.map((item) => ({
+                productId: item.productId["_id"],
+                name: item.productId["name"],
+                price: item.price,
+                quantity: item.quantity,
+            })),
+        };
 
         return res.status(200).json({
-            order: order
+            order: formattedOrder
         });
     } catch (error) {
         return res.status(500).json({
