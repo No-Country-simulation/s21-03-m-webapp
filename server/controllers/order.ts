@@ -11,9 +11,9 @@ export const create = async (req: Request, res: Response) => {
         });
     }
 
-    if (!items || items.length === 0) {
+    /* if (!items || items.length === 0) {
         return res.status(400).json({ msg: "La orden debe contener al menos un producto." });
-    }
+    } */
 
     try {
         const orderExist = await Order.find({ tableNumber, status: 'pending' })
