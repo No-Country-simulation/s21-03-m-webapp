@@ -9,7 +9,7 @@ const schemaZodEdit = z.object({
 	description: z.string().min(1, {
 		message: 'Descripcion requerida',
 	}),
-	price: z.number().min(1, {
+	price: z.coerce.number().min(1, {
 		message: 'Precio requerido',
 	}),
 	target: z.string().min(1, {
@@ -38,7 +38,7 @@ export const createProductForm: schemaComponentForm = {
 		{
 			name: 'price',
 			label: 'Precio',
-			type: 'text',
+			type: 'number',
 		},
 		{
 			name: 'target',
@@ -56,7 +56,7 @@ export const createProductForm: schemaComponentForm = {
 		name: '',
 		description: '',
 		price: 0,
-		categoryId: '123',
+		categoryId: '123',/* es ensesario que no este vacio */
 		target: 'bar',
 	},
 };

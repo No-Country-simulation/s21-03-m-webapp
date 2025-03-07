@@ -3,7 +3,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
-
+/* revisar que las flechas no te cambien de posicion en el carrousel del drawer */
+/* branch de tomas 48 */
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Product } from '../../../../../types/products';
@@ -18,9 +19,7 @@ import { useDeleteProduct } from '../../../../../actions/hooks/products/useDelet
 import { useCreateCategory } from '../../../../../actions/hooks/categories/useCreateProduct';
 import { useUpdateCategory } from '../../../../../actions/hooks/categories/useUpdateProduct';
 import { useDeleteCategory } from '../../../../../actions/hooks/categories/useDeleteProduct';
-import { useCategories } from '../../../../../actions/hooks/categories/useCategories';
 import { ItemNav } from '../filter/ItemNav';
-import { CarouselApi, CarouselNext } from '../../../../../components/ui/carousel';
 // Define una interfaz genérica para formSchemaData
 
 interface Props {
@@ -28,8 +27,9 @@ interface Props {
 	children?: React.ReactNode;
 	item?: Product | Category;
 	buttonsCarousel?: ((jump?: boolean) => void) | undefined;
+	categorySelected?: string;
 }
-export function FormOptions({ formSchemaData, children, item, buttonsCarousel }: Props) {
+export function FormOptions({ formSchemaData, children, item, buttonsCarousel, categorySelected}: Props) {
 	const target: Array<'bar' | 'kitchen' | undefined> = ['kitchen', 'bar'];
 	const [targetSelected, setTargetSelected] = useState<'kitchen' | 'bar' | undefined>(
 		item && 'target' in item ? item.target : undefined,
@@ -38,14 +38,11 @@ export function FormOptions({ formSchemaData, children, item, buttonsCarousel }:
 	const { mutate: updateProduct } = useUpdateProduct();
 	const { mutate: deleteProduct } = useDeleteProduct();
 
-	const { data: categories } = useCategories();
 	const { mutate: createCategory } = useCreateCategory();
 	const { mutate: updateCategory } = useUpdateCategory();
 	const { mutate: deleteCategory } = useDeleteCategory();
-
-	const [categorySelected, setCategorySelected] = useState<string>(item && 'categoryId' in item ? item.categoryId : '');
 	/* a modificar */
-
+	console.log('catselect', categorySelected);
 	const form = useForm<z.infer<typeof formSchemaData.schema>>({
 		resolver: zodResolver(formSchemaData.schema),
 		defaultValues: formSchemaData.defaultValues,
@@ -108,46 +105,37 @@ export function FormOptions({ formSchemaData, children, item, buttonsCarousel }:
 									<FormControl>
 										<InputCustom field={field} campo={campo}></InputCustom>
 									</FormControl>
-									<FormMessage className="text-xs !my-0 " />
+									<FormMessage className={cn('text-xs !my-0 ')} />
 								</FormItem>
 							)}
 						/>
 					);
 				})}
-				{formSchemaData.type !== 'category' && (
+				{formSchemaData.type !== 'category' && formSchemaData.funtionForm !== 'delete' && (
 					<FormItem className="w-4/5 space-y-0 text-center">
 						<FormLabel className="m-0 p-0 ">Objetivo</FormLabel>
 						<div className="flex gap-2 ">
-							{formSchemaData.funtionForm != 'delete' &&
-								target.map((t) => (
-									<span className="w-[50%]" key={t} onClick={() => setTargetSelected(t)}>
-										<FormControl>
-											<ItemNav isSelected={targetSelected === t}>{t}</ItemNav>
-										</FormControl>
-									</span>
-								))}
+							{target.map((t) => (
+								<span className="w-[50%]" key={t} onClick={() => setTargetSelected(t)}>
+									<FormControl>
+										<ItemNav isSelected={targetSelected === t}>{t}</ItemNav>
+									</FormControl>
+								</span>
+							))}
 						</div>
 					</FormItem>
 				)}
 
-				{formSchemaData.type !== 'category' && (
-					<FormItem className="w-4/5">
-						<FormLabel className="m-0 p-0">
-							<div onClick={() => buttonsCarousel?.()}>
-								<ItemNav>Categorias</ItemNav>
-							</div>
-						</FormLabel>
-						<FormControl>
-							<div className="flex gap-2 overflow-x-auto w-3/4">
-								{(formSchemaData.funtionForm === 'create' || formSchemaData.funtionForm === 'update') &&
-									categories?.map((category) => (
-										<div key={category._id} onClick={() => setCategorySelected(category._id)}>
-											<ItemNav category={category} isSelected={categorySelected === category._id}></ItemNav>
-										</div>
-									))}
-							</div>
-						</FormControl>
-					</FormItem>
+				{formSchemaData.type !== 'category' && formSchemaData.funtionForm !== 'delete' && (
+					<>
+						<FormItem className="w-4/5 mt-3">
+							<FormLabel className="">
+								<div onClick={() => buttonsCarousel?.()}>
+									<ItemNav isSelected={!!categorySelected}>Seleccionar Categoria </ItemNav>
+								</div>
+							</FormLabel>
+						</FormItem>
+					</>
 				)}
 
 				{children}
