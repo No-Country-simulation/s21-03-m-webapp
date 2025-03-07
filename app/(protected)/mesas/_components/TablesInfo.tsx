@@ -19,7 +19,6 @@ import {
 	SelectContent,
 	SelectGroup,
 	SelectItem,
-	SelectLabel,
 	SelectTrigger,
 	SelectValue,
 } from '../../../../components/ui/select';
@@ -233,9 +232,9 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 			<div className="w-full">
 				<Button
 					className="w-full bg-green-500 hover:bg-green-400"
-					onClick={tableOrder ? handleUpdateOrder : handleCreateOrder}
+					onClick={tableOrder?._id ? handleUpdateOrder : handleCreateOrder}
 				>
-					{tableOrder ? 'Actualizar Orden' : 'Agregar a la cuenta'}
+					{tableOrder?._id ? 'Actualizar Orden' : 'Agregar a la cuenta'}
 				</Button>
 			</div>
 		</article>
