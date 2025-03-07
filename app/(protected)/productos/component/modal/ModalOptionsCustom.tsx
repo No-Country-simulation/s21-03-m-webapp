@@ -74,7 +74,7 @@ export function ModalOptionsCustom({ schemaModal, item }: Props) {
 									<div className="relative mb-4">
 										<CarouselPrevious className="translate-0 static " />
 									</div>
-									<div className="flex gap-2">
+									<div className="flex gap-2 flex-wrap">
 										{categories?.map((category) => (
 											<div
 												key={category._id}

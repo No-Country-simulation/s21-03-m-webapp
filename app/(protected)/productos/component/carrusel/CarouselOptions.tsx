@@ -7,12 +7,12 @@ import {
 	CarouselPrevious,
 	type CarouselApi,
 } from '@/components/ui/carousel';
-import { FormOptions } from '../../form/FormOptions';
-import { createProductForm } from '../../../schemas/product/schemaFromProduct';
-import { createCategoryFormSchema } from '../../../schemas/category/schemasFromCategory';
-import { useCategories } from '../../../../../../actions/hooks/categories/useCategories';
-import { ItemNav } from '../../filter/ItemNav';
-import { cn } from '../../../../../../lib/utils';
+import { FormOptions } from '../form/FormOptions';
+import { createProductForm } from '../../schemas/product/schemaFromProduct';
+import { createCategoryFormSchema } from '../../schemas/category/schemasFromCategory';
+import { useCategories } from '../../../../../actions/hooks/categories/useCategories';
+import { ItemNav } from '../filter/ItemNav';
+import { cn } from '../../../../../lib/utils';
 import { useEffect, useState } from 'react';
 
 export function CarouselOptions() {
