@@ -19,17 +19,20 @@ export const create = async (req: Request, res: Response) => {
         }
 
         let subtotal = 0;
-        for (const item of items) {
-            const product = await Product.findById(item.productId);
-            if (!product) {
-                return res.status(404).json({ msg: `Producto con ID ${item.productId} no encontrado` });
+        let total = 0
+        if (items) {
+            for (const item of items) {
+                const product = await Product.findById(item.productId);
+                if (!product) {
+                    return res.status(404).json({ msg: `Producto con ID ${item.productId} no encontrado` });
+                }
+                subtotal += product.price * item.quantity;
+                item.price = product.price
             }
-            subtotal += product.price * item.quantity;
-            item.price = product.price
-        }
 
-        const discountPer = discountPercentage ? (subtotal * discountPercentage) / 100 : 0;
-        const total = subtotal - (discount || 0) - discountPer;
+            const discountPer = discountPercentage ? (subtotal * discountPercentage) / 100 : 0;
+            total = subtotal - (discount || 0) - discountPer;
+        }
 
         const newOrder = new Order({
             ownerId: req.ownerId,
@@ -55,30 +58,39 @@ export const create = async (req: Request, res: Response) => {
 }
 
 export const getAll = async (req: Request, res: Response) => {
-    try {
-        const orders = await Order.find({ ownerId: req.ownerId })
-            .populate("items.productId", "name")
-            .select("-__v -createdAt -updatedAt -ownerId -items._id ")
-            .lean()
 
-        const formattedOrder = orders.map(order => ({
-            ...order,
-            items: order.items.map((item) => ({
-                productId: item.productId["_id"],
-                name: item.productId["name"],
-                price: item.price,
-                quantity: item.quantity,
-            })),
-        }))
+    const querys=req.query
+    
+   const filters={
+    ...querys,
+        ownerId:req.ownerId
+   }
 
-        return res.status(200).json({
-            orders: formattedOrder
-        });
-    } catch (error) {
-        return res.status(500).json({
-            msg: 'Ocurrio un problema en el servidor.'
-        });
-    }
+try {
+
+    const orders = await Order.find(filters)
+        .populate("items.productId", "name")
+        .select("-__v -ownerId -items._id ")
+        .lean()
+
+    const formattedOrder = orders.map(order => ({
+        ...order,
+        items: order.items.map((item) => ({
+            productId: item.productId["_id"],
+            name: item.productId["name"],
+            price: item.price,
+            quantity: item.quantity,
+        })),
+    }))
+
+    return res.status(200).json({
+        orders: formattedOrder
+    });
+} catch (error) {
+    return res.status(500).json({
+        msg: 'Ocurrio un problema en el servidor.'
+    });
+}
 }
 
 export const edit = async (req: Request, res: Response) => {
@@ -152,6 +164,7 @@ export const updateStatus = async (req: Request, res: Response) => {
         await order.save();
 
         return res.status(200).json({
+            order,
             msg: 'Estado Actualizado Correctamente.'
         });
     } catch (error) {
@@ -189,12 +202,12 @@ export const getOrderByTable = async (req: Request, res: Response) => {
             .lean()
 
         if (!order) {
-           const order={
-                tableNumber:tableId,
-                items:[],
-                status:"pending"
+            const order = {
+                tableNumber: tableId,
+                items: [],
+                status: "pending"
             }
-            return res.json(order);
+            return res.json({msg:"No se encontro la orden",order});
         }
         const formattedOrder = {
             ...order,
