@@ -31,6 +31,11 @@ export function ModalOptionsCustom({ schemaModal, item }: Props) {
 	const { data: categories } = useCategories();
 	const [categorySelected, setCategorySelected] = useState<string>(item && 'categoryId' in item ? item.categoryId : '');
 
+	const handledClickCategory = (category: Category): void => {
+		setCategorySelected(category._id);
+		api?.scrollPrev();
+	};
+
 	const [api, setApi] = useState<CarouselApi>();
 	return (
 		<Dialog>
@@ -64,7 +69,7 @@ export function ModalOptionsCustom({ schemaModal, item }: Props) {
 											<div
 												key={category._id}
 												onClick={() => {
-													setCategorySelected(category._id), api?.scrollPrev();
+													handledClickCategory(category);
 												}}
 											>
 												<ItemNav category={category} isSelected={category._id === categorySelected}></ItemNav>

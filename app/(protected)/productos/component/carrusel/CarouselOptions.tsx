@@ -45,9 +45,10 @@ export function CarouselOptions() {
 		</div>
 	);
 
-	const handledClickCategory = (category: Category) => {
-		setCategorySelected(category._id), api?.scrollPrev();
-	}
+	const handledClickCategory = (category: Category): void => {
+		setCategorySelected(category._id);
+		api?.scrollPrev();
+	};
 	return (
 		<div className="mx-auto max-w-lg">
 			{
@@ -85,10 +86,7 @@ export function CarouselOptions() {
 								</div>
 								<div className="flex gap-2 flex-wrap">
 									{categories?.map((category) => (
-										<div
-											key={category._id}
-											onClick={() => handledClickCategory(category)}
-										>
+										<div key={category._id} onClick={() => handledClickCategory(category)}>
 											<ItemNav category={category} isSelected={category._id === categorySelected}></ItemNav>
 										</div>
 									))}
