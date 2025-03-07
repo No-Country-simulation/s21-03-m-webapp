@@ -33,7 +33,7 @@ export async function updateTable(body: TableRequest): Promise<TableResponse> {
 		return response.data;
 	} catch (error) {
 		if (axios.isAxiosError(error) && error.response) {
-			throw new Error(error.response.data.msj);
+			throw new Error(error.response.data.msg);
 		}
 		throw new Error(SERVER_ERROR);
 	}

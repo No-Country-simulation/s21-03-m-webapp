@@ -15,6 +15,7 @@ export function useRegisterUser() {
 			updateToken(response.token);
 			queryClient.setQueryData(['currentUser'], response.token);
 			queryClient.invalidateQueries({ queryKey: ['currentUser'] });
+			queryClient.invalidateQueries({ queryKey: ['salones'] });
 			router.push(DASHBOARD_ROUTES.MESAS);
 		},
 		onError: (error: Error) => {

@@ -1,4 +1,4 @@
-import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react';
+import { ReactNode } from 'react';
 import { Product } from '../../../../../types/products';
 
 import { Category } from '../../../../../types/category';
@@ -11,7 +11,7 @@ interface Props {
 	button: ReactNode;
 }
 
-export function ModalProduct({ product, button, categories }: Props) {
+export function ModalProduct({ product }: Props) {
 	return (
 		<>
 			{schemaModalProduct.map((schema) => {

@@ -20,7 +20,6 @@ import { useCreateCategory } from '../../../../../actions/hooks/categories/useCr
 import { useUpdateCategory } from '../../../../../actions/hooks/categories/useUpdateProduct';
 import { useDeleteCategory } from '../../../../../actions/hooks/categories/useDeleteProduct';
 import { ItemNav } from '../filter/ItemNav';
-// Define una interfaz genérica para formSchemaData
 
 interface Props {
 	formSchemaData: schemaComponentForm;
@@ -49,7 +48,6 @@ export function FormOptions({ formSchemaData, children, item, buttonsCarousel, c
 	});
 
 	const onSubmit: SubmitHandler<z.infer<typeof formSchemaData.schema>> = (data) => {
-		console.log('formSchemaData', formSchemaData);
 		/* refactorizar */
 		// CATEGORIES
 		if (targetSelected) {

@@ -60,6 +60,7 @@ export const createProductForm: schemaComponentForm = {
 		target: 'bar',
 	},
 };
+
 export const editProduct = (product: Product): schemaComponentForm => {
 	return {
 		funtionForm: 'update',

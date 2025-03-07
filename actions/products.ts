@@ -8,7 +8,6 @@ import {
 	EditProductRequest,
 	EditProductResponse,
 	Product,
-	ProductsByCategory,
 } from '../types/products';
 import protected_api from './api/protected_api';
 

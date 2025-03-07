@@ -1,13 +1,11 @@
 import * as React from 'react';
 
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { Category } from '../../../../../types/category';
 import { ItemNav } from './ItemNav';
 import { cn } from '../../../../../lib/utils';
 import { ModalOptionsCustom } from '../modal/ModalOptionsCustom';
 import { schemasModalCategory } from '../../schemas/category/schemasModalCategory';
 import { SchemaModal } from '../../types/schema';
-import { Product } from '../../../../../types/products';
 import { ContextList } from '../../types/list';
 
 interface Props {

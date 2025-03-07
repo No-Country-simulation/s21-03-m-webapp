@@ -12,6 +12,16 @@ interface TableCardProps {
 const TableCard = ({ table, size, onClick }: TableCardProps) => {
 	const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: table._id });
 
+	const handleBgColor = (status: string) => {
+		if (status == 'Occupied') {
+			return 'bg-chart-2';
+		}
+		if (status == 'Billing') {
+			return 'bg-chart-4';
+		}
+		return 'bg-white';
+	};
+
 	return (
 		<article
 			ref={setNodeRef}
@@ -25,9 +35,11 @@ const TableCard = ({ table, size, onClick }: TableCardProps) => {
 				width: `${size}px`,
 				height: `${size}px`,
 			}}
-			className="bg-white flex items-center justify-center shadow-lg border rounded-lg"
+			className={`${handleBgColor(table.status)} flex items-center justify-center shadow-lg border rounded-lg`}
 		>
-			<span className="flex items-center justify-center text-xl font-bold">{table.number}</span>
+			<span className={`flex items-center justify-center text-xl font-bold ${table.status != 'Free' && 'text-white'}`}>
+				{table.number}
+			</span>
 		</article>
 	);
 };

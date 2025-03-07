@@ -78,7 +78,7 @@ const SalonTabs = () => {
 					</button>
 				))}
 			</div>
-			<TablesMap salon={activeSalon} key={activeSalon._id} onDelete={handleDeleteSalon} />
+			<TablesMap salon={activeSalon} onDelete={handleDeleteSalon} key={activeSalon._id} />
 		</div>
 	);
 };

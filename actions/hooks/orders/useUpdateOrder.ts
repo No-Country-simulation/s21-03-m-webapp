@@ -1,17 +1,19 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
 import { TOAST_DURATION } from '@/constants/app_constants';
-import { TableRequest } from '@/types/tables';
-import { updateTable } from '../../tables';
+import { OrderRequest } from '../../../types/orders';
+import { updateOrder } from '../../orders';
 
-export function useUpdateTables() {
+export function useUpdateOrder() {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (table: TableRequest) => updateTable(table),
+		mutationFn: (order: OrderRequest) => updateOrder(order),
 		onSuccess: (response) => {
-			queryClient.setQueryData(['table'], response.table._id);
-			queryClient.invalidateQueries({ queryKey: ['tables'] });
+			queryClient.invalidateQueries({ queryKey: ['orders'] });
+			queryClient.setQueryData(['order'], response.order._id);
+			queryClient.invalidateQueries({ queryKey: ['order'] });
+			console.log(response);
 			toast({
 				description: response.msg,
 				duration: TOAST_DURATION,
