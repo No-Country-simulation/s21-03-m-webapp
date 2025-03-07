@@ -22,6 +22,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '../../../../components/ui/select';
+import { ComponentLoader } from '../../../../components/library/loading';
 
 const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const { data: tableOrder, isPending } = useOrderByTableId(currentTable._id);
@@ -100,20 +101,15 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 		return `${weekday[date.getUTCDay()]} ${date.getDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()}`;
 	};
 
-	if (isPending) {
-		return (
-			<div className="flex w-full items-center justify-center">
-				<div className="animate-spin w-14 h-14 border-[3px] border-t-transparent rounded-full border-white"></div>
-			</div>
-		);
-	}
+	if (isPending) return <ComponentLoader></ComponentLoader>;
+
 	return (
 		<article className="w-full h-full relative">
-			<div className="w-[90%] m-auto py-4 text-white">
-				<h2 className="text-lg font-bold text-center mb-4">Mesa {currentTable.number}</h2>
-				<div className="flex flex-col gap-8">
+			<div className="w-[90%] m-auto py-3 text-white">
+				<h2 className="text-lg font-bold text-center mb-3">Mesa {currentTable.number}</h2>
+				<div className="flex flex-col gap-2">
 					{/* Sección 1: Fecha, People y Members */}
-					<section className="flex flex-col gap-2 text-sm font-thin">
+					<section className="flex flex-col gap-1 text-sm font-thin">
 						<div className="flex flex-row gap-2 items-center">
 							<h2 className="w-[90px]">Fecha:</h2>
 							<span className="font-bold">{handleDate()}</span>
@@ -122,7 +118,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 							<h2 className="w-[90px]">Personas: </h2>
 							<Input
 								type="text"
-								className="bg-white text-black border-none outline-none"
+								className="h-7 bg-white text-black border-none outline-none"
 								value={people}
 								onChange={(e) => setPeople(Number(e.target.value))}
 							/>
@@ -130,7 +126,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 						<div className="flex flex-row gap-2 items-center">
 							<h2 className="w-[90px]">Atiende: </h2>
 							<Select>
-								<SelectTrigger className="bg-white text-foreground">
+								<SelectTrigger className="bg-white text-foreground h-7">
 									<SelectValue placeholder="Quien esta atendiendo?" />
 								</SelectTrigger>
 								<SelectContent>
@@ -170,7 +166,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 									<Button
 										key={category._id}
 										variant={'outline'}
-										className="text-black"
+										className="h-9 text-black"
 										onClick={() => setSelectedCategory(category)}
 									>
 										{category.name}
@@ -196,10 +192,10 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 				</div>
 			</div>
 			{/* Sección 3: Orden */}
-			<section className="flex flex-col w-full px-4">
-				<h2 className="text-xl font-bold mb-2 text-white">Orden</h2>
-				<Card className="flex flex-col bg-white h-full flex-grow">
-					<CardContent className="p-3">
+			<section className="flex flex-col w-full px-4 relatuve">
+				<h2 className="text-xl font-bold text-white">Orden</h2>
+				<div className="flex flex-col bg-white">
+					<CardContent className="p-3 min-h-[528px]">
 						{orderItems.length === 0 ? (
 							<div className="flex flex-col items-center justify-center text-black">No hay elementos en la orden.</div>
 						) : (
@@ -226,16 +222,17 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 							</div>
 						)}
 					</CardContent>
-				</Card>
+				</div>
 			</section>
 			{/* Sección 4: Botón para enviar orden */}
-			<div className="w-full">
+			<div className="w-full flex flex-row items-center absolute bottom-0 left-0">
 				<Button
-					className="w-full bg-green-500 hover:bg-green-400"
+					className="w-full py-5 font-normal text-md bg-green-500 hover:bg-green-400"
 					onClick={tableOrder?._id ? handleUpdateOrder : handleCreateOrder}
 				>
 					{tableOrder?._id ? 'Actualizar Orden' : 'Agregar a la cuenta'}
 				</Button>
+				<Button className="py-5 font-bold text-md bg-yellow-500 hover:bg-yellow-400">+</Button>
 			</div>
 		</article>
 	);
