@@ -7,50 +7,32 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { useOrderByTableId } from '@/actions/hooks/orders/useOrderByTableId';
 import { useCreateOrder } from '@/actions/hooks/orders/useCreateOrder';
-import { OrderRequest } from '../../../../types/orders';
-import { updateOrder } from '../../../../actions/orders';
+import { Item, OrderRequest } from '../../../../types/orders';
 import { useProducts } from '../../../../actions/hooks/products/useProducts';
 import { useCategories } from '../../../../actions/hooks/categories/useCategories';
 import { Category } from '../../../../types/category';
 import { useUpdateTables } from '../../../../actions/hooks/tables/useUpdateTables';
-
-type OrderItem = {
-	productId: string;
-	name: string;
-	price: number;
-	quantity: number;
-};
+import { useUpdateOrder } from '../../../../actions/hooks/orders/useUpdateOrder';
 
 const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const { data: tableOrder, isPending } = useOrderByTableId(currentTable._id);
-	const { mutate: createOrder } = useCreateOrder();
 	const { data: products } = useProducts();
 	const { data: categories } = useCategories();
+	const { mutate: createOrder } = useCreateOrder();
+	const { mutate: updateOrder } = useUpdateOrder();
 	const { mutate: updateTableStatus } = useUpdateTables();
 
-	const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 	const [people, setPeople] = useState(1);
-
-	// TODO - Replace con new Response Type de Order
-	const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+	const [orderItems, setOrderItems] = useState<Item[]>([]);
+	const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
 	useEffect(() => {
 		if (!isPending && tableOrder) {
 			setPeople(tableOrder.people);
-			setOrderItems((prev) =>
-				prev.length === 0 && tableOrder.items
-					? tableOrder.items.map((i) => ({
-							productId: i.productId._id,
-							name: i.productId.name,
-							price: i.price,
-							quantity: i.quantity,
-						}))
-					: prev,
-			);
+			setOrderItems(tableOrder.items);
 		}
 	}, [tableOrder, isPending]);
 
-	// TODO - Filter actual prducts
 	const filteredProducts = selectedCategory
 		? products?.filter((product) => product.categoryId === selectedCategory._id)
 		: [];
@@ -104,9 +86,9 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 
 	if (isPending) {
 		return (
-			<article className="w-full h-full relative">
-				<h2>Loading</h2>
-			</article>
+			<div className="flex w-full items-center justify-center">
+				<div className="animate-spin w-14 h-14 border-[3px] border-t-transparent rounded-full border-white"></div>
+			</div>
 		);
 	}
 
@@ -161,6 +143,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 							</div>
 						) : (
 							<div className="flex flex-wrap gap-1">
+								{filteredProducts?.length == 0 && <h2>Para comenzar elige una categoria</h2>}
 								{filteredProducts?.map((product) => (
 									<Button
 										key={product._id}

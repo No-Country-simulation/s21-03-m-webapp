@@ -8,7 +8,7 @@ export function useUpdateTables() {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (salon: TableRequest) => updateTable(salon),
+		mutationFn: (table: TableRequest) => updateTable(table),
 		onSuccess: (response) => {
 			queryClient.setQueryData(['table'], response.table._id);
 			queryClient.invalidateQueries({ queryKey: ['tables'] });

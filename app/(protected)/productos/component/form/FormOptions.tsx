@@ -50,7 +50,6 @@ export function FormOptions({ formSchemaData, children, item, buttonsCarousel }:
 	});
 
 	const onSubmit: SubmitHandler<z.infer<typeof formSchemaData.schema>> = (data) => {
-		console.log('formSchemaData', formSchemaData);
 		/* refactorizar */
 		// CATEGORIES
 		if (targetSelected) {
