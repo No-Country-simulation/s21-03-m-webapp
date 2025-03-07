@@ -1,11 +1,7 @@
 import { HTMLInputTypeAttribute } from 'react';
-import {
-	CreateProductRequest,
-	EditProductRequest,
-} from '../../../../types/products';
+import { CreateProductRequest, EditProductRequest } from '../../../../types/products';
 import { ZodSchema } from 'zod';
 import { EditCategoryRequest } from '../../../../types/category';
-
 
 type typeForm = 'category' | 'products';
 export type campos = {

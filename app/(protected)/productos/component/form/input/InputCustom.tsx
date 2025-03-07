@@ -1,6 +1,5 @@
 import { Input } from '../../../../../../components/ui/input';
 import { campos } from '../../../types/schema';
-import { Category } from '../../../../../../types/category';
 import { ControllerRenderProps } from 'react-hook-form';
 
 interface Props {

@@ -6,7 +6,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Product } from '../../../../../types/products';
 import { Category } from '../../../../../types/category';
 import { FormOptions } from '../form/FormOptions';
@@ -18,7 +18,7 @@ import {
 	CarouselItem,
 	CarouselPrevious,
 } from '../../../../../components/ui/carousel';
-import { Card, CardContent } from '../../../../../components/ui/card';
+import { CardContent } from '../../../../../components/ui/card';
 import { useCategories } from '../../../../../actions/hooks/categories/useCategories';
 import { ItemNav } from '../filter/ItemNav';
 
@@ -32,21 +32,6 @@ export function ModalOptionsCustom({ schemaModal, item }: Props) {
 	const [categorySelected, setCategorySelected] = useState<string>(item && 'categoryId' in item ? item.categoryId : '');
 
 	const [api, setApi] = useState<CarouselApi>();
-	const [current, setCurrent] = useState(0);
-	const [count, setCount] = useState(0);
-
-	useEffect(() => {
-		if (!api) {
-			return;
-		}
-
-		setCount(api.scrollSnapList().length);
-		setCurrent(api.selectedScrollSnap() + 1);
-
-		api.on('select', () => {
-			setCurrent(api.selectedScrollSnap() + 1);
-		});
-	}, [api]);
 	return (
 		<Dialog>
 			<DialogTrigger className="" asChild>

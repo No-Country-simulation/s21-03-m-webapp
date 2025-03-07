@@ -28,7 +28,7 @@ interface Props {
 	buttonsCarousel?: ((jump?: boolean) => void) | undefined;
 	categorySelected?: string;
 }
-export function FormOptions({ formSchemaData, children, item, buttonsCarousel, categorySelected}: Props) {
+export function FormOptions({ formSchemaData, children, item, buttonsCarousel, categorySelected }: Props) {
 	const target: Array<'bar' | 'kitchen' | undefined> = ['kitchen', 'bar'];
 	const [targetSelected, setTargetSelected] = useState<'kitchen' | 'bar' | undefined>(
 		item && 'target' in item ? item.target : undefined,

@@ -14,6 +14,7 @@ import { useCategories } from '../../../../../actions/hooks/categories/useCatego
 import { ItemNav } from '../filter/ItemNav';
 import { cn } from '../../../../../lib/utils';
 import { useEffect, useState } from 'react';
+import { Category } from '../../../../../types/category';
 
 export function CarouselOptions() {
 	const { data: categories } = useCategories();
@@ -43,6 +44,10 @@ export function CarouselOptions() {
 			<hr className={cn('border-chart-1 border-[1.5px]', current != currentP && 'hidden')} />
 		</div>
 	);
+
+	const handledClickCategory = (category: Category) => {
+		setCategorySelected(category._id), api?.scrollPrev();
+	}
 	return (
 		<div className="mx-auto max-w-lg">
 			{
@@ -78,13 +83,11 @@ export function CarouselOptions() {
 								<div className="relative mb-4">
 									<CarouselPrevious className="translate-0 static " />
 								</div>
-								<div className="flex gap-2">
+								<div className="flex gap-2 flex-wrap">
 									{categories?.map((category) => (
 										<div
 											key={category._id}
-											onClick={() => {
-												setCategorySelected(category._id), api?.scrollPrev();
-											}}
+											onClick={() => handledClickCategory(category)}
 										>
 											<ItemNav category={category} isSelected={category._id === categorySelected}></ItemNav>
 										</div>
