@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { Table } from '@/types/tables';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
 import { useOrderByTableId } from '@/actions/hooks/orders/useOrderByTableId';
 import { useCreateOrder } from '@/actions/hooks/orders/useCreateOrder';
 import { Item, OrderRequest } from '../../../../types/orders';
@@ -23,6 +22,16 @@ import {
 	SelectValue,
 } from '../../../../components/ui/select';
 import { ComponentLoader } from '../../../../components/library/loading';
+import { Pencil } from 'lucide-react';
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from '../../../../components/ui/dialog';
+import { Label } from '../../../../components/ui/label';
 
 const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const { data: tableOrder, isPending } = useOrderByTableId(currentTable._id);
@@ -37,6 +46,8 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const [people, setPeople] = useState(1);
 	const [orderItems, setOrderItems] = useState<Item[]>([]);
 	const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+	const [productEditOpen, setProductEditOpen] = useState(false);
+	const [editProduct, setEditProduct] = useState<Item | null>(null);
 
 	useEffect(() => {
 		if (!isPending && tableOrder) {
@@ -195,35 +206,84 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 			<section className="flex flex-col w-full px-4 relatuve">
 				<h2 className="text-xl font-bold text-white">Orden</h2>
 				<div className="flex flex-col bg-white">
-					<CardContent className="p-3 min-h-[528px]">
+					<article className="p-3 py-5 min-h-[528px]">
 						{orderItems.length === 0 ? (
 							<div className="flex flex-col items-center justify-center text-black">No hay elementos en la orden.</div>
 						) : (
-							<div className="flex flex-col">
+							<div className="flex flex-col gap-3">
 								{orderItems.map((item) => (
-									<Card key={item.productId} className="text-black bg-white">
-										<CardContent className="px-4 py-2">
+									<article key={item.productId} className="px-1 text-black bg-white">
+										<div className="px-3 border-l-chart-1 border-l-2">
 											<div className="w-full h-full flex flex-row items-center justify-between">
-												<div className="flex flex-col">
-													<p className="font-medium text-sm">{item.name}</p>
-													<p className="text-xs text-gray-600">
-														{item.quantity} x ${item.price} = ${item.quantity * item.price}
-													</p>
+												<div className="flex flex-row gap-2 items-center">
+													<p className="text-xs text-gray-600">{item.quantity} x</p>
+													<p className="font-normal text-sm">{item.name}</p>
 												</div>
-												<div className="flex flex-row gap-1">
-													<Button size="sm" variant="destructive" onClick={() => removeFromOrder(item.productId)}>
-														✕
-													</Button>
-												</div>
+												<Pencil
+													size={'18px'}
+													className=" text-chart-2 cursor-pointer hover:text-green-600 transition-all"
+													onClick={() => {
+														setProductEditOpen(true);
+														setEditProduct(item);
+													}}
+												></Pencil>
 											</div>
-										</CardContent>
-									</Card>
+										</div>
+									</article>
 								))}
 							</div>
 						)}
-					</CardContent>
+					</article>
 				</div>
 			</section>
+			{editProduct && (
+				<Dialog open={productEditOpen} onOpenChange={setProductEditOpen}>
+					<DialogContent className="sm:max-w-[425px]">
+						<DialogHeader>
+							<DialogTitle>{editProduct.name}</DialogTitle>
+							<DialogDescription>
+								Editando <span className="font-bold">{editProduct.name} </span> de la
+								<span className="font-bold"> mesa {currentTable.number} </span>
+							</DialogDescription>
+						</DialogHeader>
+						<div className="grid gap-4 py-4">
+							<div className="grid grid-cols-4 items-center gap-4">
+								<Label htmlFor="name" className="text-right">
+									Cantidad
+								</Label>
+								<Input
+									id="name"
+									type="number"
+									defaultValue={editProduct.quantity}
+									className="col-span-3"
+									onChange={(e) => (editProduct.quantity = Number(e.target.value))}
+								/>
+							</div>
+						</div>
+						<DialogFooter className="items-center">
+							<Button
+								type="submit"
+								variant={'destructive'}
+								onClick={() => {
+									removeFromOrder(editProduct.productId);
+									setProductEditOpen(false);
+								}}
+							>
+								Remover
+							</Button>
+							<Button
+								type="submit"
+								onClick={() => {
+									addToOrder(editProduct.productId, editProduct.name, editProduct.quantity);
+									setProductEditOpen(false);
+								}}
+							>
+								Guardar cambios
+							</Button>
+						</DialogFooter>
+					</DialogContent>
+				</Dialog>
+			)}
 			{/* Sección 4: Botón para enviar orden */}
 			<div className="w-full flex flex-row items-center absolute bottom-0 left-0">
 				<Button
