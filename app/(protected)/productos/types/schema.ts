@@ -23,5 +23,5 @@ export interface SchemaModal {
 	title: string | React.ReactNode;
 	description: React.ReactNode | string;
 	buttonModal: React.ReactNode;
-	schemaForm?: schemaComponentForm;
+	schemaForm: schemaComponentForm;
 }
