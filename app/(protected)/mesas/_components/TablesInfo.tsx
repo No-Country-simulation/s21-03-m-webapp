@@ -13,22 +13,35 @@ import { useCategories } from '../../../../actions/hooks/categories/useCategorie
 import { Category } from '../../../../types/category';
 import { useUpdateTables } from '../../../../actions/hooks/tables/useUpdateTables';
 import { useUpdateOrder } from '../../../../actions/hooks/orders/useUpdateOrder';
+import { useMembers } from '../../../../actions/hooks/members/useMembers';
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectTrigger,
+	SelectValue,
+} from '../../../../components/ui/select';
 
 const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const { data: tableOrder, isPending } = useOrderByTableId(currentTable._id);
 	const { data: products } = useProducts();
 	const { data: categories } = useCategories();
+	const { data: members } = useMembers();
 	const { mutate: createOrder } = useCreateOrder();
 	const { mutate: updateOrder } = useUpdateOrder();
 	const { mutate: updateTableStatus } = useUpdateTables();
 
+	const [date, setDate] = useState(new Date());
 	const [people, setPeople] = useState(1);
 	const [orderItems, setOrderItems] = useState<Item[]>([]);
 	const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
 	useEffect(() => {
 		if (!isPending && tableOrder) {
-			setPeople(tableOrder.people);
+			setDate(tableOrder.createdAt ? new Date(Date.parse(tableOrder.createdAt)) : new Date());
+			setPeople(tableOrder.people ? tableOrder.people : 1);
 			setOrderItems(tableOrder.items);
 		}
 	}, [tableOrder, isPending]);
@@ -38,7 +51,6 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 		: [];
 
 	const addToOrder = (productId: string, name: string, price: number) => {
-		setSelectedCategory(null);
 		setOrderItems((prevItems) => {
 			const existingItem = prevItems.find((item) => item.productId === productId);
 			if (existingItem) {
@@ -84,6 +96,11 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 		updateOrder(order);
 	};
 
+	const handleDate = () => {
+		const weekday = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
+		return `${weekday[date.getUTCDay()]} ${date.getDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()}`;
+	};
+
 	if (isPending) {
 		return (
 			<div className="flex w-full items-center justify-center">
@@ -91,25 +108,45 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 			</div>
 		);
 	}
-
 	return (
 		<article className="w-full h-full relative">
 			<div className="w-[90%] m-auto py-4 text-white">
 				<h2 className="text-lg font-bold text-center mb-4">Mesa {currentTable.number}</h2>
 				<div className="flex flex-col gap-8">
-					{/* Sección 1: Table Number y People */}
+					{/* Sección 1: Fecha, People y Members */}
 					<section className="flex flex-col gap-2 text-sm font-thin">
-						<div className="flex flex-row gap-2">
-							<p>Fecha: {'10/10/2020'}</p>
+						<div className="flex flex-row gap-2 items-center">
+							<h2 className="w-[90px]">Fecha:</h2>
+							<span className="font-bold">{handleDate()}</span>
 						</div>
 						<div className="flex flex-row gap-2 items-center">
-							<h2>Personas</h2>
+							<h2 className="w-[90px]">Personas: </h2>
 							<Input
 								type="text"
 								className="bg-white text-black border-none outline-none"
 								value={people}
 								onChange={(e) => setPeople(Number(e.target.value))}
 							/>
+						</div>
+						<div className="flex flex-row gap-2 items-center">
+							<h2 className="w-[90px]">Atiende: </h2>
+							<Select>
+								<SelectTrigger className="bg-white text-foreground">
+									<SelectValue placeholder="Quien esta atendiendo?" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectGroup>
+										<SelectItem value={'Encargado'}>Encargado</SelectItem>
+										{members?.map((i) => {
+											return (
+												<SelectItem key={i._id} value={i.name}>
+													{i.name}
+												</SelectItem>
+											);
+										})}
+									</SelectGroup>
+								</SelectContent>
+							</Select>
 						</div>
 					</section>
 					{/* Sección 2: Categorías y Productos */}
