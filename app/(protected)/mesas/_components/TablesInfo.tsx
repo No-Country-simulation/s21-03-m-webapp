@@ -1,119 +1,40 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Table } from '@/types/tables';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
+import { useOrderByTableId } from '@/actions/hooks/orders/useOrderByTableId';
+import { useCreateOrder } from '@/actions/hooks/orders/useCreateOrder';
+import { Item, OrderRequest } from '../../../../types/orders';
+import { useProducts } from '../../../../actions/hooks/products/useProducts';
+import { useCategories } from '../../../../actions/hooks/categories/useCategories';
+import { Category } from '../../../../types/category';
+import { useUpdateTables } from '../../../../actions/hooks/tables/useUpdateTables';
+import { useUpdateOrder } from '../../../../actions/hooks/orders/useUpdateOrder';
 
-type OrderItem = {
-	productId: string;
-	name: string;
-	price: number;
-	quantity: number;
-};
-export const MOCK_CATEGORIES = [
-	{
-		id: '1',
-		name: 'Entradas',
-		description: 'Platos frios',
-	},
-	{
-		id: '2',
-		name: 'Platos',
-		description: 'Platos principales',
-	},
-	{
-		id: '3',
-		name: 'Postres',
-		description: 'Desserts',
-	},
-	{
-		id: '4',
-		name: 'Bebidas',
-		description: 'Bebidas de todo',
-	},
-];
+const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
+	const { data: tableOrder, isPending } = useOrderByTableId(currentTable._id);
+	const { data: products } = useProducts();
+	const { data: categories } = useCategories();
+	const { mutate: createOrder } = useCreateOrder();
+	const { mutate: updateOrder } = useUpdateOrder();
+	const { mutate: updateTableStatus } = useUpdateTables();
 
-export const MOCK_PRODUCTS = [
-	{
-		id: 'a',
-		categoryId: '1',
-		name: 'Ensalada verde',
-		description: 'Lechuga y tomate.',
-		price: 1500,
-		target: 'Kitchen',
-	},
-	{
-		id: 'b',
-		categoryId: '1',
-		name: 'Ensalada rusa',
-		description: 'La mejor',
-		price: 2200,
-		target: 'Kitchen',
-	},
-	{
-		id: 'c',
-		categoryId: '2',
-		name: 'Pizza con jamon',
-		description: 'Pizza con jamon cocido.',
-		price: 5000,
-		target: 'Kitchen',
-	},
-	{
-		id: 'd',
-		categoryId: '2',
-		name: 'Milanga',
-		description: 'La mejor',
-		price: 7500,
-		target: 'Kitchen',
-	},
-	{
-		id: 'e',
-		categoryId: '4',
-		name: 'Birra',
-		description: 'La mejor',
-		price: 2500,
-		target: 'Kitchen',
-	},
-	{
-		id: 'f',
-		categoryId: '4',
-		name: 'Coquita',
-		description: 'La mejor',
-		price: 2500,
-		target: 'Kitchen',
-	},
-	{
-		id: 'g',
-		categoryId: '3',
-		name: 'Tiramisu',
-		description: 'La mejor',
-		price: 2500,
-		target: 'Kitchen',
-	},
-	{
-		id: 'h',
-		categoryId: '3',
-		name: 'Helado',
-		description: 'La mejor',
-		price: 2500,
-		target: 'Kitchen',
-	},
-];
-
-const TablesInfo = ({ currentTable }: { currentTable: Table | null }) => {
 	const [people, setPeople] = useState(1);
-	const [selectedCategory, setSelectedCategory] = useState<{
-		id: string;
-		name: string;
-		description: string;
-	} | null>(null);
-	const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+	const [orderItems, setOrderItems] = useState<Item[]>([]);
+	const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
-	// Filtrar productos según categoría seleccionada
+	useEffect(() => {
+		if (!isPending && tableOrder) {
+			setPeople(tableOrder.people);
+			setOrderItems(tableOrder.items);
+		}
+	}, [tableOrder, isPending]);
+
 	const filteredProducts = selectedCategory
-		? MOCK_PRODUCTS.filter((product) => product.categoryId === selectedCategory.id)
+		? products?.filter((product) => product.categoryId === selectedCategory._id)
 		: [];
 
 	const addToOrder = (productId: string, name: string, price: number) => {
@@ -133,11 +54,46 @@ const TablesInfo = ({ currentTable }: { currentTable: Table | null }) => {
 		setOrderItems((prevItems) => prevItems.filter((item) => item.productId !== productId));
 	};
 
-	if (!currentTable) {
-		return <h2 className="text-white text-center">Selecciona una mesa para crear una orden!</h2>;
+	const handleCreateOrder = () => {
+		const order: OrderRequest = {
+			tableNumber: currentTable._id,
+			people: people,
+			items: orderItems.map((i) => {
+				return {
+					productId: i.productId,
+					quantity: i.quantity,
+				};
+			}),
+		};
+		createOrder(order);
+		updateTableStatus({ ...currentTable, id: currentTable._id, status: 'Occupied' });
+	};
+
+	const handleUpdateOrder = () => {
+		const order: OrderRequest = {
+			id: tableOrder?._id,
+			tableNumber: currentTable._id,
+			people: people,
+			items: orderItems.map((i) => {
+				return {
+					productId: i.productId,
+					quantity: i.quantity,
+				};
+			}),
+		};
+		updateOrder(order);
+	};
+
+	if (isPending) {
+		return (
+			<div className="flex w-full items-center justify-center">
+				<div className="animate-spin w-14 h-14 border-[3px] border-t-transparent rounded-full border-white"></div>
+			</div>
+		);
 	}
+
 	return (
-		<article className="w-full h-full">
+		<article className="w-full h-full relative">
 			<div className="w-[90%] m-auto py-4 text-white">
 				<h2 className="text-lg font-bold text-center mb-4">Mesa {currentTable.number}</h2>
 				<div className="flex flex-col gap-8">
@@ -156,7 +112,6 @@ const TablesInfo = ({ currentTable }: { currentTable: Table | null }) => {
 							/>
 						</div>
 					</section>
-
 					{/* Sección 2: Categorías y Productos */}
 					<section className="flex flex-col gap-2">
 						<div className="flex flex-col">
@@ -168,16 +123,16 @@ const TablesInfo = ({ currentTable }: { currentTable: Table | null }) => {
 								{selectedCategory && (
 									<>
 										<span>/</span>
-										<span>{MOCK_CATEGORIES.find((c) => c.id === selectedCategory.id)?.name}</span>
+										<span>{categories?.find((c) => c._id === selectedCategory._id)?.name}</span>
 									</>
 								)}
 							</div>
 						</div>
 						{!selectedCategory ? (
 							<div className="flex flex-wrap gap-1">
-								{MOCK_CATEGORIES.map((category) => (
+								{categories?.map((category) => (
 									<Button
-										key={category.id}
+										key={category._id}
 										variant={'outline'}
 										className="text-black"
 										onClick={() => setSelectedCategory(category)}
@@ -188,12 +143,13 @@ const TablesInfo = ({ currentTable }: { currentTable: Table | null }) => {
 							</div>
 						) : (
 							<div className="flex flex-wrap gap-1">
-								{filteredProducts.map((product) => (
+								{filteredProducts?.length == 0 && <h2>Para comenzar elige una categoria</h2>}
+								{filteredProducts?.map((product) => (
 									<Button
-										key={product.id}
+										key={product._id}
 										variant={'outline'}
 										className="text-black"
-										onClick={() => addToOrder(product.id, product.name, product.price)}
+										onClick={() => addToOrder(product._id, product.name, product.price)}
 									>
 										{product.name}
 									</Button>
@@ -238,7 +194,12 @@ const TablesInfo = ({ currentTable }: { currentTable: Table | null }) => {
 			</section>
 			{/* Sección 4: Botón para enviar orden */}
 			<div className="w-full">
-				<Button className="w-full bg-green-500 hover:bg-green-400">Agregar a la cuenta</Button>
+				<Button
+					className="w-full bg-green-500 hover:bg-green-400"
+					onClick={tableOrder ? handleUpdateOrder : handleCreateOrder}
+				>
+					{tableOrder ? 'Actualizar Orden' : 'Agregar a la cuenta'}
+				</Button>
 			</div>
 		</article>
 	);
