@@ -22,7 +22,7 @@ import {
 	SelectValue,
 } from '../../../../components/ui/select';
 import { ComponentLoader } from '../../../../components/library/loading';
-import { Pencil } from 'lucide-react';
+import { CircleCheckBig, CirclePercent, CircleX, Pencil, PrinterCheck } from 'lucide-react';
 import {
 	Dialog,
 	DialogContent,
@@ -32,6 +32,15 @@ import {
 	DialogTitle,
 } from '../../../../components/ui/dialog';
 import { Label } from '../../../../components/ui/label';
+import {
+	DropdownMenu,
+	DropdownMenuCheckboxItem,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '../../../../components/ui/dropdown-menu';
 
 const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const { data: tableOrder, isPending } = useOrderByTableId(currentTable._id);
@@ -317,7 +326,31 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 				>
 					{tableOrder?._id ? 'Actualizar Orden' : 'Agregar a la cuenta'}
 				</Button>
-				<Button className="rounded-none py-6 font-extrabold text-md bg-yellow-400 hover:bg-yellow-300">+</Button>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button className="rounded-none py-6 font-extrabold text-md bg-yellow-400 hover:bg-yellow-300">+</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent className="w-44">
+						<DropdownMenuLabel>Opciones</DropdownMenuLabel>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem className="cursor-pointer">
+							<PrinterCheck className="text-chart-1" />
+							Imprimir Ticket
+						</DropdownMenuItem>
+						<DropdownMenuItem className="cursor-pointer">
+							<CirclePercent className="text-chart-1" />
+							Descuento
+						</DropdownMenuItem>
+						<DropdownMenuItem className="cursor-pointer">
+							<CircleCheckBig className="text-chart-2" />
+							Mesa Cobrada
+						</DropdownMenuItem>
+						<DropdownMenuItem className="cursor-pointer">
+							<CircleX className="text-destructive" />
+							Cancelar Orden
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
 			</div>
 		</article>
 	);
