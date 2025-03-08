@@ -46,6 +46,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const [people, setPeople] = useState(1);
 	const [orderItems, setOrderItems] = useState<Item[]>([]);
 	const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+	const [initialItems, setInitialItems] = useState<Item[]>([]);
 	const [productEditOpen, setProductEditOpen] = useState(false);
 	const [editProduct, setEditProduct] = useState<Item | null>(null);
 
@@ -54,6 +55,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 			setDate(tableOrder.createdAt ? new Date(Date.parse(tableOrder.createdAt)) : new Date());
 			setPeople(tableOrder.people ? tableOrder.people : 1);
 			setOrderItems(tableOrder.items);
+			setInitialItems(tableOrder.items);
 		}
 	}, [tableOrder, isPending]);
 
@@ -61,20 +63,26 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 		? products?.filter((product) => product.categoryId === selectedCategory._id)
 		: [];
 
-	const addToOrder = (productId: string, name: string, price: number) => {
+	const addToOrder = (productId: string, name: string, price: number, newQuantity?: number) => {
 		setOrderItems((prevItems) => {
 			const existingItem = prevItems.find((item) => item.productId === productId);
 			if (existingItem) {
 				return prevItems.map((item) =>
-					item.productId === productId ? { ...item, quantity: item.quantity + 1 } : item,
+					item.productId === productId ? { ...item, quantity: newQuantity ?? item.quantity + 1 } : item,
 				);
 			}
-			return [...prevItems, { productId, name, price, quantity: 1 }];
+			return [...prevItems, { productId, name, price, quantity: newQuantity ?? 1 }];
 		});
 	};
 
 	const removeFromOrder = (productId: string) => {
 		setOrderItems((prevItems) => prevItems.filter((item) => item.productId !== productId));
+	};
+
+	const itemOrderChanged = (item: Item) => {
+		const original = initialItems.find((orig) => orig.productId === item.productId);
+		if (!original) return true;
+		return original.quantity !== item.quantity;
 	};
 
 	const handleCreateOrder = () => {
@@ -210,27 +218,35 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 						{orderItems.length === 0 ? (
 							<div className="flex flex-col items-center justify-center text-black">No hay elementos en la orden.</div>
 						) : (
-							<div className="flex flex-col gap-3">
-								{orderItems.map((item) => (
-									<article key={item.productId} className="px-1 text-black bg-white">
-										<div className="px-3 border-l-chart-1 border-l-2">
-											<div className="w-full h-full flex flex-row items-center justify-between">
-												<div className="flex flex-row gap-2 items-center">
-													<p className="text-xs text-gray-600">{item.quantity} x</p>
-													<p className="font-normal text-sm">{item.name}</p>
+							<div className="flex flex-col">
+								{orderItems.map((item) => {
+									const changed = itemOrderChanged(item);
+									return (
+										<article
+											key={item.productId}
+											className={`px-1 py-2 cursor-pointer ${
+												changed ? 'bg-green-100 font-semibold' : 'bg-white font-normal'
+											} hover:bg-gray-100`}
+											onClick={() => {
+												setProductEditOpen(true);
+												setEditProduct(item);
+											}}
+										>
+											<div className="px-4 border-l-chart-1 border-l-2">
+												<div className="w-full h-full flex flex-row items-center justify-between">
+													<div className="flex flex-row gap-2 items-center">
+														<p className="text-xs text-gray-600">{item.quantity} x</p>
+														<p className="font-normal text-sm">{item.name}</p>
+													</div>
+													<Pencil
+														size={'15px'}
+														className=" text-chart-2 cursor-pointer hover:text-green-600 transition-all"
+													></Pencil>
 												</div>
-												<Pencil
-													size={'18px'}
-													className=" text-chart-2 cursor-pointer hover:text-green-600 transition-all"
-													onClick={() => {
-														setProductEditOpen(true);
-														setEditProduct(item);
-													}}
-												></Pencil>
 											</div>
-										</div>
-									</article>
-								))}
+										</article>
+									);
+								})}
 							</div>
 						)}
 					</article>
@@ -254,9 +270,13 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 								<Input
 									id="name"
 									type="number"
+									min={1}
 									defaultValue={editProduct.quantity}
 									className="col-span-3"
-									onChange={(e) => (editProduct.quantity = Number(e.target.value))}
+									onChange={(e) => {
+										const newQuantity = Number(e.target.value);
+										setEditProduct((prev) => (prev ? { ...prev, quantity: newQuantity } : null));
+									}}
 								/>
 							</div>
 						</div>
@@ -266,6 +286,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 								variant={'destructive'}
 								onClick={() => {
 									removeFromOrder(editProduct.productId);
+									setEditProduct(null);
 									setProductEditOpen(false);
 								}}
 							>
@@ -274,7 +295,11 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 							<Button
 								type="submit"
 								onClick={() => {
-									addToOrder(editProduct.productId, editProduct.name, editProduct.quantity);
+									setOrderItems((prevItems) =>
+										prevItems.map((item) =>
+											item.productId === editProduct.productId ? { ...item, quantity: editProduct.quantity } : item,
+										),
+									);
 									setProductEditOpen(false);
 								}}
 							>
@@ -287,12 +312,12 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 			{/* Sección 4: Botón para enviar orden */}
 			<div className="w-full flex flex-row items-center absolute bottom-0 left-0">
 				<Button
-					className="w-full py-5 font-normal text-md bg-green-500 hover:bg-green-400"
+					className="rounded-none w-full py-6 font-bold text-md bg-green-500 hover:bg-green-400"
 					onClick={tableOrder?._id ? handleUpdateOrder : handleCreateOrder}
 				>
 					{tableOrder?._id ? 'Actualizar Orden' : 'Agregar a la cuenta'}
 				</Button>
-				<Button className="py-5 font-bold text-md bg-yellow-500 hover:bg-yellow-400">+</Button>
+				<Button className="rounded-none py-6 font-extrabold text-md bg-yellow-400 hover:bg-yellow-300">+</Button>
 			</div>
 		</article>
 	);
