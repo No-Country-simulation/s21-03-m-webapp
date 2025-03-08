@@ -34,7 +34,6 @@ import {
 import { Label } from '../../../../components/ui/label';
 import {
 	DropdownMenu,
-	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuLabel,
