@@ -11,6 +11,8 @@ import { useCreateTables } from '@/actions/hooks/tables/useCreateTables';
 import { useUpdateTables } from '../../../../actions/hooks/tables/useUpdateTables';
 import { Table } from '@/types/tables';
 import TablesInfo from './TablesInfo';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 
 const MAP_HEIGHT = 650;
 const TABLE_SIZE = 70;
@@ -31,8 +33,9 @@ const TablesMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =
 	const [currentTable, setCurrentTable] = useState<Table | null>(null);
 	const [tableNumber, setTableNumber] = useState('');
 	const [mapWidth, setMapWidth] = useState(0);
-	const mapRef = useRef<HTMLDivElement | null>(null);
+	const [dragEnabled, setDragEnabled] = useState(false);
 
+	const mapRef = useRef<HTMLDivElement | null>(null);
 	const { setNodeRef } = useDroppable({ id: 'map-area' });
 
 	useEffect(() => {
@@ -114,6 +117,10 @@ const TablesMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =
 			return;
 		}
 
+		if (!dragEnabled) {
+			return;
+		}
+
 		setTables((prev) =>
 			prev.map((table) => {
 				if (table._id === active.id) {
@@ -191,6 +198,20 @@ const TablesMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =
 				</div>
 				<DndContext onDragEnd={handleDragEnd}>
 					<div
+						className="flex items-center gap-4 pl-2 mt-10 mb-3 cursor-pointer"
+						onClick={() => setDragEnabled(!dragEnabled)}
+					>
+						<Switch id="map-block" className="data-[state=checked]:bg-chart-2 data-[state=unchecked]:bg-destructive" />
+						<Label htmlFor="map-block">
+							Edición de mapa:{' '}
+							{dragEnabled ? (
+								<span className="text-chart-2 font-semibold">Habilitado</span>
+							) : (
+								<span className="text-destructive font-semibold">Deshabilitado</span>
+							)}
+						</Label>
+					</div>
+					<div
 						ref={(node) => {
 							setNodeRef(node);
 							mapRef.current = node;
@@ -200,10 +221,16 @@ const TablesMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =
 						{tables.map((table) => (
 							<TableCard key={table._id} table={table} size={TABLE_SIZE} />
 						))}
+						{/* When dragging is disabled, show a light overlay (but allow clicks to pass through) */}
+						{!dragEnabled && (
+							<div className="pointer-events-none absolute inset-0 bg-slate-300 bg-opacity-20 flex items-center justify-center">
+								<p className="text-base font-semibold text-gray-800 bottom-3 absolute">Arrastre Deshabilitado</p>
+							</div>
+						)}
 					</div>
 				</DndContext>
 			</article>
-			<article className="w-[550px] bg-chart-1 rounded-lg flex flex-col gap-2 items-center justify-center">
+			<article className="w-[600px] h-[900px] bg-chart-1 rounded-lg flex flex-col gap-2 items-center justify-center">
 				{currentTable ? (
 					<TablesInfo currentTable={currentTable} key={currentTable._id} />
 				) : (

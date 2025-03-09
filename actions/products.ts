@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ALL_PRODUCTS, CREATE_PRODUCT, PRODUCT_BY_CATEGORY, SALONES, SERVER_ERROR } from '../constants/app_constants';
+import { ALL_PRODUCTS, CREATE_PRODUCT, PRODUCT_BY_CATEGORY, SERVER_ERROR } from '../constants/app_constants';
 import {
 	AllProductsResponse,
 	CreateProductRequest,

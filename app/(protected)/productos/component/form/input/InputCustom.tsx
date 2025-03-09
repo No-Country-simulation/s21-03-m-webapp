@@ -1,13 +1,12 @@
-import { ControllerRenderProps } from 'react-hook-form';
 import { Input } from '../../../../../../components/ui/input';
 import { campos } from '../../../types/schema';
+import { ControllerRenderProps } from 'react-hook-form';
 
 interface Props {
 	campo: campos;
 	field: ControllerRenderProps;
 }
 const inputHidden = () => <input className="hidden" />;
-
 const inputBlock = (field: ControllerRenderProps, campo: campos) => (
 	<Input className="!my-0 p-0 h-8" {...field} type={campo.type} required={false} />
 );

@@ -56,7 +56,7 @@ export const createProductForm: schemaComponentForm = {
 		name: '',
 		description: '',
 		price: 0,
-		categoryId: '123',
+		categoryId: '123' /* es ensesario que no este vacio */,
 		target: 'bar',
 	},
 };
