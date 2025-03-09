@@ -24,15 +24,6 @@ import {
 import { ComponentLoader } from '../../../../components/library/loading';
 import { CircleCheckBig, CirclePercent, CircleX, Pencil, PrinterCheck } from 'lucide-react';
 import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from '../../../../components/ui/dialog';
-import { Label } from '../../../../components/ui/label';
-import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
@@ -40,6 +31,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '../../../../components/ui/dropdown-menu';
+import { CancelOrderDialog, EditProductDialog } from './dialogs';
 
 const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const { data: tableOrder, isPending } = useOrderByTableId(currentTable._id);
@@ -55,8 +47,10 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const [orderItems, setOrderItems] = useState<Item[]>([]);
 	const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 	const [initialItems, setInitialItems] = useState<Item[]>([]);
-	const [productEditOpen, setProductEditOpen] = useState(false);
+
 	const [editProduct, setEditProduct] = useState<Item | null>(null);
+	const [editProductDialogOpen, setEditProductDialogOpen] = useState(false);
+	const [cancelOrderDialogOpen, setCancelOrderDialogOpen] = useState(false);
 
 	useEffect(() => {
 		if (!isPending && tableOrder) {
@@ -236,7 +230,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 												changed ? 'bg-green-100 font-semibold' : 'bg-white font-normal'
 											} hover:bg-gray-100`}
 											onClick={() => {
-												setProductEditOpen(true);
+												setEditProductDialogOpen(true);
 												setEditProduct(item);
 											}}
 										>
@@ -260,62 +254,25 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 					</article>
 				</div>
 			</section>
+			{/* === Dialogs === */}
 			{editProduct && (
-				<Dialog open={productEditOpen} onOpenChange={setProductEditOpen}>
-					<DialogContent className="sm:max-w-[425px]">
-						<DialogHeader>
-							<DialogTitle>{editProduct.name}</DialogTitle>
-							<DialogDescription>
-								Editando <span className="font-bold">{editProduct.name} </span> de la
-								<span className="font-bold"> mesa {currentTable.number} </span>
-							</DialogDescription>
-						</DialogHeader>
-						<div className="grid gap-4 py-4">
-							<div className="grid grid-cols-4 items-center gap-4">
-								<Label htmlFor="name" className="text-right">
-									Cantidad
-								</Label>
-								<Input
-									id="name"
-									type="number"
-									min={1}
-									defaultValue={editProduct.quantity}
-									className="col-span-3"
-									onChange={(e) => {
-										const newQuantity = Number(e.target.value);
-										setEditProduct((prev) => (prev ? { ...prev, quantity: newQuantity } : null));
-									}}
-								/>
-							</div>
-						</div>
-						<DialogFooter className="items-center">
-							<Button
-								type="submit"
-								variant={'destructive'}
-								onClick={() => {
-									removeFromOrder(editProduct.productId);
-									setEditProduct(null);
-									setProductEditOpen(false);
-								}}
-							>
-								Remover
-							</Button>
-							<Button
-								type="submit"
-								onClick={() => {
-									setOrderItems((prevItems) =>
-										prevItems.map((item) =>
-											item.productId === editProduct.productId ? { ...item, quantity: editProduct.quantity } : item,
-										),
-									);
-									setProductEditOpen(false);
-								}}
-							>
-								Guardar cambios
-							</Button>
-						</DialogFooter>
-					</DialogContent>
-				</Dialog>
+				<EditProductDialog
+					isOpen={editProductDialogOpen}
+					onOpenChange={setEditProductDialogOpen}
+					editProduct={editProduct}
+					setEditProduct={setEditProduct}
+					removeFromOrder={removeFromOrder}
+					setOrderItems={setOrderItems}
+					currentTableNumber={currentTable.number}
+				></EditProductDialog>
+			)}
+			{cancelOrderDialogOpen && (
+				<CancelOrderDialog
+					isOpen={cancelOrderDialogOpen}
+					onOpenChange={setCancelOrderDialogOpen}
+					currentTable={currentTable}
+					currentOrder={tableOrder}
+				></CancelOrderDialog>
 			)}
 			{/* Sección 4: Botón para enviar orden */}
 			<div className="w-full flex flex-row items-center absolute bottom-0 left-0">
@@ -344,7 +301,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 							<CircleCheckBig className="text-chart-2" />
 							Mesa Cobrada
 						</DropdownMenuItem>
-						<DropdownMenuItem className="cursor-pointer">
+						<DropdownMenuItem className="cursor-pointer" onClick={() => setCancelOrderDialogOpen(true)}>
 							<CircleX className="text-destructive" />
 							Cancelar Orden
 						</DropdownMenuItem>

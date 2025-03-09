@@ -50,3 +50,15 @@ export async function updateOrder(body: OrderRequest): Promise<OrderResponse> {
 		throw new Error(SERVER_ERROR);
 	}
 }
+
+export async function deleteOrder(orderId: string): Promise<OrderResponse> {
+	try {
+		const response = await protected_api.delete<OrderResponse>(`${ORDERS}/${orderId}`);
+		return response.data;
+	} catch (error) {
+		if (axios.isAxiosError(error) && error.response) {
+			throw new Error(error.response.data.msg);
+		}
+		throw new Error(SERVER_ERROR);
+	}
+}
