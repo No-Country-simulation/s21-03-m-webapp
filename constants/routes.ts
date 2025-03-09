@@ -32,15 +32,15 @@ export const dashboard_links = [
 	},
 	{
 		id: 3,
-		name: 'Productos',
-		icon: Carrot,
-		url: DASHBOARD_ROUTES.PRODUCTOS,
-	},
-	{
-		id: 4,
 		name: 'Ventas',
 		icon: BadgeDollarSign,
 		url: DASHBOARD_ROUTES.VENTAS,
+	},
+	{
+		id: 4,
+		name: 'Productos',
+		icon: Carrot,
+		url: DASHBOARD_ROUTES.PRODUCTOS,
 	},
 	{
 		id: 5,

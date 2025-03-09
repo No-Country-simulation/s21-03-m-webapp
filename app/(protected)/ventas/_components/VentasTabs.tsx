@@ -11,7 +11,7 @@ import { useVentas } from "@/hooks/useVentas"
 import { formatDate } from "@/lib/utils"
 
 import { OrderCompleteResponse } from "@/types/orders"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 
 type OrderStatus = "pending" | "paid"
 
