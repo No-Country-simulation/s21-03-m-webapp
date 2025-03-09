@@ -3,7 +3,7 @@ import Order from "../models/Order";
 import Product from "../models/Product";
 
 export const create = async (req: Request, res: Response) => {
-    const { tableNumber, people, items, discount, discountPercentage,serviceBy } = req.body;
+    const { tableNumber, people, items, discount, discountPercentage, serviceBy } = req.body;
 
     if (!tableNumber || !people) {
         return res.status(400).json({
@@ -34,7 +34,7 @@ export const create = async (req: Request, res: Response) => {
             const discountPer = discountPercentage ? (subtotal * discountPercentage) / 100 : 0;
             total = subtotal - (discount || 0) - discountPer;
         }
-        console.log(serviceBy)
+
         const newOrder = new Order({
             ownerId: req.ownerId,
             tableNumber,
@@ -61,21 +61,23 @@ export const create = async (req: Request, res: Response) => {
 
 export const getAll = async (req: Request, res: Response) => {
 
-try {
+    try {
 
-    let orders = await Order.find({ownerId:req.ownerId}).populate("tableNumber","serviceBy")
+        let orders = await Order.find({ ownerId: req.ownerId })
+        .populate("tableNumber")
+        .populate("serviceBy")
 
-    return res.status(200).json(orders);
-} catch (error) {
-    return res.status(500).json({
-        msg: 'Ocurrio un problema en el servidor.'
-    });
-}
+        return res.status(200).json(orders);
+    } catch (error) {
+        return res.status(500).json({
+            msg: 'Ocurrio un problema en el servidor.'
+        });
+    }
 }
 
 export const edit = async (req: Request, res: Response) => {
     const { id } = req.params
-    const { tableNumber, people, items, discount,serviceBy } = req.body;
+    const { tableNumber, people, items, discount, serviceBy } = req.body;
 
     try {
         const order = await Order.findOne({ _id: id, status: 'pending' })
@@ -113,7 +115,7 @@ export const edit = async (req: Request, res: Response) => {
         order.items = items
         order.discount = discount
         order.subtotal = subtotal
-        order.serviceBy=serviceBy
+        order.serviceBy = serviceBy
         order.total = total
 
         await order.save();
@@ -164,18 +166,19 @@ export const getOrderByTable = async (req: Request, res: Response) => {
 
         // -createdAt -updatedAt
         const order = await Order.findOne({ ownerId: req.ownerId, tableNumber: tableId, status: 'pending' })
-             .populate("items.productId", "name")
-             .populate("serviceBy") 
-            .select("-__v -ownerId -items._id")
-             .lean()
-    
+            .populate("tableNumber")
+            .populate("serviceBy")
+            .populate("items.productId", "name")
+          .select("-__v -ownerId -items._id")
+            .lean()
+        console.log(order)
         if (!order) {
             const order = {
                 tableNumber: tableId,
                 items: [],
                 status: "pending"
             }
-            return res.json({msg:"No se encontro la orden",order});
+            return res.json({ msg: "No se encontro la orden", order });
         }
         const formattedOrder = {
             ...order,

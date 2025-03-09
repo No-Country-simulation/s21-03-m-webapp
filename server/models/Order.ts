@@ -6,19 +6,19 @@ const OrderSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Owner",
     },
-    serviceBy:{
-        type:Types.ObjectId,
-        ref:"Member",
-        default:null
+    serviceBy: {
+        type: Types.ObjectId,
+        ref: "Member",
+        default: null
     },
     tableNumber: {
         type: Types.ObjectId,
-        ref:"Table",
+        ref: "Table",
         require: true
     },
     people: {
         type: Number,
-        default:1
+        default: 1
     },
     items: [
         {
@@ -34,13 +34,14 @@ const OrderSchema = new Schema({
                 type: Number,
                 required: true,
             },
-            comentaries:{
-                types:String
+            comentaries: {
+                types: String
             }
         }
     ],
     subtotal: {
         type: Number,
+        default: 0
     },
     discount: {
         type: Number,
@@ -52,20 +53,21 @@ const OrderSchema = new Schema({
     },
     total: {
         type: Number,
+        default: 0
     },
     status: {
         type: String,
         enum: ["pending", "completed", "canceled", "paid"],
         default: "pending"
     },
-    createdAt:{
-        type:Date,
-        default:Date.now()
+    createdAt: {
+        type: Date,
+        default: Date.now()
     },
-    closedAt:{
-        type:Date
+    closedAt: {
+        type: Date
     }
-},{ timestamps: true });
+}, { timestamps: true });
 
 
 
