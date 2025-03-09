@@ -22,11 +22,12 @@ export interface Item {
 
 export interface OrderRequest {
 	id?: string;
-	tableNumber: string;
-	people: number;
-	items: Array<OrderRequestItem>;
+	tableNumber?: string;
+	people?: number;
+	items?: Array<OrderRequestItem>;
 	discount?: number;
 	discountPercentage?: number;
+	status?: string;
 }
 
 export interface OrderRequestItem {
