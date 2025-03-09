@@ -6,7 +6,14 @@ export type Options = {
     label: string;
 };
 
+interface InitialValues{
+    day: number,
+    month: number,
+    year: number,
+}
+
 interface ContextType {
+    initialValues:InitialValues
     sortedOrders: OrderCompleteResponse[]
     orders: OrderCompleteResponse[];
     setOrders: React.Dispatch<React.SetStateAction<OrderCompleteResponse[]>>;
@@ -28,7 +35,7 @@ export const VentasProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         month: date.getMonth() + 1,
         year: date.getFullYear(),
     };
-    console.log(date.getDate())
+
     const [selectedDay, setSelectedDay] = useState<number>(initialValues.day);
     const [selectedMonth, setSelectedMonth] = useState<number>(initialValues.month);
     const [selectedYear, setSelectedYear] = useState<number>(initialValues.year);
@@ -57,6 +64,7 @@ export const VentasProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     return (
         <VentasContext.Provider
             value={{
+                initialValues,
                 sortedOrders,
                 orders,
                 setOrders,

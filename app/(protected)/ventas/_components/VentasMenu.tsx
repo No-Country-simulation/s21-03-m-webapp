@@ -11,16 +11,9 @@ export type Options = {
 }
 export default function VentasMenu() {
 
-    const date= new Date()
-
-     const initialValues={
-           day:date.getDay()+2,
-           month:date.getMonth()+1,
-           year:date.getFullYear()
-       }
     const {setSelectedDay,
         setSelectedMonth,
-        setSelectedYear}=useVentas()
+        setSelectedYear,initialValues}=useVentas()
   
         
     return (

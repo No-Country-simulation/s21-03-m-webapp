@@ -3,7 +3,6 @@ import { useOrders } from '@/actions/hooks/orders/useOrders'
 import { ApiLoader } from '@/components/library/loading';
 import { VentasTabs } from './VentasTabs';
 import VentasMenu from './VentasMenu';
-import { useVentas } from '@/hooks/useVentas';
 
 
 const VentasClientPage = () => {
