@@ -11,6 +11,8 @@ import { useCreateTables } from '@/actions/hooks/tables/useCreateTables';
 import { useUpdateTables } from '../../../../actions/hooks/tables/useUpdateTables';
 import { Table } from '@/types/tables';
 import TablesInfo from './TablesInfo';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 
 const MAP_HEIGHT = 650;
 const TABLE_SIZE = 70;
@@ -31,8 +33,9 @@ const TablesMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =
 	const [currentTable, setCurrentTable] = useState<Table | null>(null);
 	const [tableNumber, setTableNumber] = useState('');
 	const [mapWidth, setMapWidth] = useState(0);
-	const mapRef = useRef<HTMLDivElement | null>(null);
+	const [dragEnabled, setDragEnabled] = useState(false);
 
+	const mapRef = useRef<HTMLDivElement | null>(null);
 	const { setNodeRef } = useDroppable({ id: 'map-area' });
 
 	useEffect(() => {
@@ -111,6 +114,10 @@ const TablesMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =
 			if (clickedTable) {
 				setCurrentTable(clickedTable);
 			}
+			return;
+		}
+
+		if (!dragEnabled) {
 			return;
 		}
 
@@ -202,7 +209,10 @@ const TablesMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =
 						))}
 					</div>
 				</DndContext>
-				<h2>Bloquear MAPA</h2>
+				<div className="flex items-center gap-4 pl-3 mt-2 cursor-pointer" onClick={() => setDragEnabled(!dragEnabled)}>
+					<Switch id="map-block" className="data-[state=checked]:bg-chart-2 data-[state=unchecked]:bg-destructive" />
+					<Label htmlFor="map-block">Mapa Habilitado</Label>
+				</div>
 			</article>
 			<article className="w-[600px] h-[900px] bg-chart-1 rounded-lg flex flex-col gap-2 items-center justify-center">
 				{currentTable ? (
