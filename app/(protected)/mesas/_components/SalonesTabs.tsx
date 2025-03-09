@@ -63,7 +63,7 @@ const SalonTabs = () => {
 	}
 
 	return (
-		<div className="w-[1000px] h-screen">
+		<div className="w-[1000px]">
 			<div className="flex">
 				<SalonesCreateButton />
 				{salones.map((salon) => (

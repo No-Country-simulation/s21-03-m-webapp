@@ -1,6 +1,4 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { SalonUpdateRequest } from '@/types/salones';
-import { updateSalon } from '@/actions/salones';
 import { toast } from '@/hooks/use-toast';
 import { TOAST_DURATION } from '@/constants/app_constants';
 import { EditProductRequest } from '../../../types/products';

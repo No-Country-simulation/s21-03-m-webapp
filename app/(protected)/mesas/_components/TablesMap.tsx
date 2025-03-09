@@ -202,8 +202,9 @@ const TablesMap = ({ salon, onDelete }: { salon: Salon; onDelete: (id: string) =
 						))}
 					</div>
 				</DndContext>
+				<h2>Bloquear MAPA</h2>
 			</article>
-			<article className="w-[550px] bg-chart-1 rounded-lg flex flex-col gap-2 items-center justify-center">
+			<article className="w-[600px] h-[900px] bg-chart-1 rounded-lg flex flex-col gap-2 items-center justify-center">
 				{currentTable ? (
 					<TablesInfo currentTable={currentTable} key={currentTable._id} />
 				) : (

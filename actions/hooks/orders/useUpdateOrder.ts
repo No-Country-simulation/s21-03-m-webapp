@@ -13,7 +13,6 @@ export function useUpdateOrder() {
 			queryClient.invalidateQueries({ queryKey: ['orders'] });
 			queryClient.setQueryData(['order'], response.order._id);
 			queryClient.invalidateQueries({ queryKey: ['order'] });
-			console.log(response);
 			toast({
 				description: response.msg,
 				duration: TOAST_DURATION,
