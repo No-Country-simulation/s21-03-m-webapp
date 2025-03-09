@@ -60,10 +60,6 @@ const OrderSchema = new Schema({
         enum: ["pending", "completed", "canceled", "paid"],
         default: "pending"
     },
-    createdAt: {
-        type: Date,
-        default: Date.now()
-    },
     closedAt: {
         type: Date
     }

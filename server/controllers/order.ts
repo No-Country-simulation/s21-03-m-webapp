@@ -45,7 +45,7 @@ export const create = async (req: Request, res: Response) => {
             total,
             serviceBy
         });
-        console.log(newOrder)
+     
         await newOrder.save();
 
         return res.status(201).json({
@@ -171,7 +171,7 @@ export const getOrderByTable = async (req: Request, res: Response) => {
             .populate("items.productId", "name")
           .select("-__v -ownerId -items._id")
             .lean()
-        console.log(order)
+    
         if (!order) {
             const order = {
                 tableNumber: tableId,
