@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Table } from '@/types/tables';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -45,6 +45,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const [date, setDate] = useState(new Date());
 	const [people, setPeople] = useState(1);
 	const [orderItems, setOrderItems] = useState<Item[]>([]);
+	const [removedItems, setRemovedItems] = useState<Item[]>([]);
 	const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 	const [initialItems, setInitialItems] = useState<Item[]>([]);
 
@@ -79,6 +80,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	};
 
 	const removeFromOrder = (productId: string) => {
+		setRemovedItems((prev) => [...prev, ...orderItems.filter((item) => item.productId === productId)]);
 		setOrderItems((prevItems) => prevItems.filter((item) => item.productId !== productId));
 	};
 
@@ -115,7 +117,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 				};
 			}),
 		};
-		updateOrder(order);
+		updateOrder(order, { onSuccess: () => setRemovedItems([]) });
 	};
 
 	const handleDate = () => {
@@ -123,10 +125,60 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 		return `${weekday[date.getUTCDay()]} ${date.getDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()}`;
 	};
 
+	const formatPrice = (value: number | undefined) => {
+		if (!value) return Number(0).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
+		return value.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
+	};
+
+	const hasChanges = useMemo(() => {
+		return JSON.stringify(orderItems) !== JSON.stringify(initialItems);
+	}, [orderItems, initialItems]);
+
+	const virtualSubtotal = useMemo(() => {
+		return orderItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
+	}, [orderItems]);
+
+	const virtualTotal = useMemo(() => {
+		return virtualSubtotal;
+	}, [virtualSubtotal]);
+
+	const displayedSubtotal = hasChanges ? virtualSubtotal : tableOrder?.subtotal;
+	const displayedTotal = hasChanges ? virtualTotal : tableOrder?.total;
+	const backgroundColor = hasChanges ? 'bg-yellow-100' : 'bg-background';
+
 	if (isPending) return <ComponentLoader></ComponentLoader>;
 
 	return (
 		<article className="w-full h-full relative">
+			{/* === Dialogs === */}
+			{editProduct && (
+				<EditProductDialog
+					isOpen={editProductDialogOpen}
+					onOpenChange={setEditProductDialogOpen}
+					editProduct={editProduct}
+					setEditProduct={setEditProduct}
+					removeFromOrder={removeFromOrder}
+					setOrderItems={setOrderItems}
+					currentTableNumber={currentTable.number}
+				></EditProductDialog>
+			)}
+			{cancelOrderDialogOpen && (
+				<CancelOrderDialog
+					isOpen={cancelOrderDialogOpen}
+					onOpenChange={setCancelOrderDialogOpen}
+					currentTable={currentTable}
+					currentOrder={tableOrder}
+				></CancelOrderDialog>
+			)}
+			{imprimirTicketDialogOpen && (
+				<ImprimirTicketDialog
+					isOpen={imprimirTicketDialogOpen}
+					onOpenChange={setImprimirTicketDialogOpen}
+					currentTable={currentTable}
+					currentOrder={tableOrder}
+				></ImprimirTicketDialog>
+			)}
+
 			<div className="w-[90%] m-auto py-3 text-white">
 				<h2 className="text-lg font-bold text-center mb-3">Mesa {currentTable.number}</h2>
 				<div className="flex flex-col gap-2">
@@ -166,6 +218,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 							</Select>
 						</div>
 					</section>
+
 					{/* Sección 2: Categorías y Productos */}
 					<section className="flex flex-col gap-2">
 						<div className="flex flex-col">
@@ -213,26 +266,34 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 					</section>
 				</div>
 			</div>
+
 			{/* Sección 3: Orden */}
-			<section className="flex flex-col w-full px-4 relatuve">
+			<section className="flex flex-col w-full px-4">
 				<h2 className="text-xl font-bold text-white">Orden</h2>
-				<div className="flex flex-col bg-white">
-					<article className="p-3 py-5 min-h-[528px]">
+				<div className="flex flex-col bg-white relative grow">
+					<article className="p-3 py-5 min-h-[460px]">
 						{orderItems.length === 0 ? (
 							<div className="flex flex-col items-center justify-center text-black">No hay elementos en la orden.</div>
 						) : (
 							<div className="flex flex-col">
-								{orderItems.map((item) => {
+								{[...orderItems, ...removedItems].map((item, index) => {
+									const isRemoved = removedItems.some((removed) => removed.productId === item.productId);
 									const changed = itemOrderChanged(item);
 									return (
 										<article
-											key={item.productId}
+											key={index}
 											className={`px-1 py-2 cursor-pointer ${
-												changed ? 'bg-green-100 font-semibold' : 'bg-white font-normal'
+												isRemoved
+													? 'line-through opacity-20 cursor-auto'
+													: changed
+														? 'bg-green-100 font-semibold'
+														: 'bg-white font-normal'
 											} hover:bg-gray-100`}
 											onClick={() => {
-												setEditProductDialogOpen(true);
-												setEditProduct(item);
+												if (!isRemoved) {
+													setEditProductDialogOpen(true);
+													setEditProduct(item);
+												}
 											}}
 										>
 											<div className="px-4 border-l-chart-1 border-l-2">
@@ -241,10 +302,12 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 														<p className="text-xs text-gray-600">{item.quantity} x</p>
 														<p className="font-normal text-sm">{item.name}</p>
 													</div>
-													<Pencil
-														size={'15px'}
-														className=" text-chart-2 cursor-pointer hover:text-green-600 transition-all"
-													></Pencil>
+													{!isRemoved && (
+														<Pencil
+															size={'15px'}
+															className=" text-chart-2 cursor-pointer hover:text-green-600 transition-all"
+														/>
+													)}
 												</div>
 											</div>
 										</article>
@@ -253,36 +316,19 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 							</div>
 						)}
 					</article>
+					<div className={`${backgroundColor} py-2 px-3 flex flex-col gap-2`}>
+						<div className="flex items-center justify-between text-sm">
+							<h2>Subtotal</h2>
+							<span>{formatPrice(displayedSubtotal)}</span>
+						</div>
+						<div className="flex items-center justify-between text-sm">
+							<h2 className="font-extrabold">TOTAL</h2>
+							<span>{formatPrice(displayedTotal)}</span>
+						</div>
+					</div>
 				</div>
 			</section>
-			{/* === Dialogs === */}
-			{editProduct && (
-				<EditProductDialog
-					isOpen={editProductDialogOpen}
-					onOpenChange={setEditProductDialogOpen}
-					editProduct={editProduct}
-					setEditProduct={setEditProduct}
-					removeFromOrder={removeFromOrder}
-					setOrderItems={setOrderItems}
-					currentTableNumber={currentTable.number}
-				></EditProductDialog>
-			)}
-			{cancelOrderDialogOpen && (
-				<CancelOrderDialog
-					isOpen={cancelOrderDialogOpen}
-					onOpenChange={setCancelOrderDialogOpen}
-					currentTable={currentTable}
-					currentOrder={tableOrder}
-				></CancelOrderDialog>
-			)}
-			{imprimirTicketDialogOpen && (
-				<ImprimirTicketDialog
-					isOpen={imprimirTicketDialogOpen}
-					onOpenChange={setImprimirTicketDialogOpen}
-					currentTable={currentTable}
-					currentOrder={tableOrder}
-				></ImprimirTicketDialog>
-			)}
+
 			{/* Sección 4: Botón para enviar orden */}
 			<div className="w-full flex flex-row items-center absolute bottom-0 left-0">
 				<Button
@@ -306,9 +352,12 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 							<CirclePercent className="text-chart-1" />
 							Descuento
 						</DropdownMenuItem>
-						<DropdownMenuItem className="cursor-pointer">
+						<DropdownMenuItem
+							className="cursor-pointer"
+							onClick={() => updateTableStatus({ ...currentTable, id: currentTable._id, status: 'Billing' })}
+						>
 							<CircleCheckBig className="text-chart-2" />
-							Mesa Cobrada
+							Cuenta Solicitada
 						</DropdownMenuItem>
 						<DropdownMenuItem className="cursor-pointer" onClick={() => setCancelOrderDialogOpen(true)}>
 							<CircleX className="text-destructive" />
