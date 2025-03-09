@@ -8,16 +8,16 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { useVentas } from "@/hooks/useVentas"
-import { formatDate } from "@/lib/utils"
-
+import { formatDate, formatNumber } from "@/lib/utils"
 import { OrderCompleteResponse } from "@/types/orders"
 import { useEffect, useState } from "react"
 
-type OrderStatus = "pending" | "paid"
+type OrderStatus = "pending" | "completed" | "billing"
 
 export const dictionaryStatus: Record<OrderStatus, string> = {
-    paid: "Pagado",
-    pending: "Pendiente"
+    completed: "Completada",
+    pending: "Pendiente",
+    billing: "Pagando"
 }
 
 
@@ -25,17 +25,17 @@ export function VentasTabs({ orders }: { orders: OrderCompleteResponse[] }) {
 
 
     const [selected, setSelected] = useState("")
-    const { sortedOrders,setOrders} = useVentas()
+    const { sortedOrders, setOrders } = useVentas()
 
 
-    useEffect(()=>{
+    useEffect(() => {
         setOrders(orders)
-    },[orders])
+    }, [orders])
 
 
 
     return (
-        <Table>
+        <Table >
             <TableCaption>Listado de Ventas</TableCaption>
             <TableHeader>
                 <TableRow className="text-center">
@@ -57,7 +57,7 @@ export function VentasTabs({ orders }: { orders: OrderCompleteResponse[] }) {
                         <TableCell className="font-medium">{formatDate(order.createdAt)}</TableCell>
                         <TableCell className="font-medium">{order.closedAt ? order.closedAt : ""}</TableCell>
                         <TableCell className="font-medium">{dictionaryStatus[order.status as OrderStatus]}</TableCell>
-                        <TableCell className="font-medium">${order.total}</TableCell>
+                        <TableCell className="font-medium">${formatNumber(order.total)}</TableCell>
                     </TableRow>
                 ))}
             </TableBody>

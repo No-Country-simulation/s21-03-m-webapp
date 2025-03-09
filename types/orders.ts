@@ -1,3 +1,4 @@
+import { Member } from "./member";
 import { Table } from "./tables";
 
 export interface Order {
@@ -42,6 +43,8 @@ export interface OrderResponse {
 	order: Order;
 }
 
+
+
 export interface OrderCompleteResponse {
 	_id: string;
 	ownerId: string;
@@ -56,4 +59,5 @@ export interface OrderCompleteResponse {
 	createdAt: string;
 	updatedAt: string;
 	closedAt:string
+	serviceBy:Member
 }

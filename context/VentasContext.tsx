@@ -24,6 +24,9 @@ interface ContextType {
     selectedMonth: number;
     selectedYear: number;
     filteredOrders: OrderCompleteResponse[];
+    totalFacturation:number
+    totalPeople:number
+    avaragePerPeople:number
 }
 
 export const VentasContext = createContext<ContextType | undefined>(undefined);
@@ -57,13 +60,33 @@ export const VentasProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             })
             .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); // Orden descendente
     }, [orders, selectedDay, selectedMonth, selectedYear]);
+    
     const sortedOrders = useMemo(() => {
 
         return filteredOrders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     }, [filteredOrders]);
+
+    console.log("Ordenes Filtradas:",sortedOrders)
+
+    const { totalFacturation, totalPeople } = useMemo(() => {
+        return sortedOrders.reduce(
+          (acc, order) => {
+            acc.totalFacturation += order.total;
+            acc.totalPeople += order.people;  
+            return acc;
+          },
+          { totalFacturation: 0, totalPeople: 0} 
+        );
+      }, [sortedOrders]);
+     const avaragePerPeople=totalFacturation/totalPeople 
+
+
     return (
         <VentasContext.Provider
             value={{
+                totalFacturation,
+                 totalPeople,
+                 avaragePerPeople,
                 initialValues,
                 sortedOrders,
                 orders,
