@@ -1,4 +1,4 @@
-import { Table } from "./tables";
+import { Table } from './tables';
 
 export interface Order {
 	_id: string;
@@ -55,5 +55,5 @@ export interface OrderCompleteResponse {
 	status: string;
 	createdAt: string;
 	updatedAt: string;
-	closedAt:string
+	closedAt: string;
 }

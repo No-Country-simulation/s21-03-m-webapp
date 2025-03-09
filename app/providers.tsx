@@ -15,7 +15,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
 				<QueryClientProvider client={queryClient}>
 					<AuthProvider>
 						<VentasProvider>
-						<SidebarProvider>{children}</SidebarProvider>
+							<SidebarProvider>{children}</SidebarProvider>
 						</VentasProvider>
 					</AuthProvider>
 				</QueryClientProvider>
