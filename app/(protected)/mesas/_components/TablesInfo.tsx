@@ -358,8 +358,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 						<Button className="rounded-none py-6 font-extrabold text-md bg-yellow-400 hover:bg-yellow-300">+</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent className="w-44">
-						<DropdownMenuLabel>Opciones</DropdownMenuLabel>
-						<DropdownMenuSeparator />
+						<DropdownMenuLabel>Orden</DropdownMenuLabel>
 						<DropdownMenuItem className="cursor-pointer" onClick={() => setImprimirTicketDialogOpen(true)}>
 							<PrinterCheck className="text-chart-1" />
 							Imprimir Ticket
@@ -368,6 +367,12 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 							<CirclePercent className="text-chart-1" />
 							Descuento
 						</DropdownMenuItem>
+						<DropdownMenuItem className="cursor-pointer" onClick={() => setCancelOrderDialogOpen(true)}>
+							<CircleX className="text-destructive" />
+							Cancelar Orden
+						</DropdownMenuItem>
+						<DropdownMenuSeparator />
+						<DropdownMenuLabel>Mesa</DropdownMenuLabel>
 						<DropdownMenuItem
 							className="cursor-pointer"
 							onClick={() => updateTableStatus({ ...currentTable, id: currentTable._id, status: 'Billing' })}
@@ -383,10 +388,6 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 						>
 							<CircleCheckBig className="text-chart-2" />
 							Cerrar Mesa
-						</DropdownMenuItem>
-						<DropdownMenuItem className="cursor-pointer" onClick={() => setCancelOrderDialogOpen(true)}>
-							<CircleX className="text-destructive" />
-							Cancelar Orden
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
