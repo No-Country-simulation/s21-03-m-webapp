@@ -15,9 +15,10 @@ export async function getOrderByTableId(tableId: string): Promise<Order> {
 	}
 }
 
-export async function getOrders(): Promise<Array<Order>> {
+export async function getOrders() {
 	try {
-		const response = await protected_api.get<Array<Order>>(`${ORDERS}`);
+		const response = await protected_api.get(`${ORDERS}`);
+		
 		return response.data;
 	} catch (error) {
 		if (axios.isAxiosError(error) && error.response) {

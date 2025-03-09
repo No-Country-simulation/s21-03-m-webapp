@@ -1,3 +1,5 @@
+import { Table } from "./tables";
+
 export interface Order {
 	_id: string;
 	ownerId: string;
@@ -38,4 +40,20 @@ export interface OrderRequestItem {
 export interface OrderResponse {
 	msg: string;
 	order: Order;
+}
+
+export interface OrderCompleteResponse {
+	_id: string;
+	ownerId: string;
+	tableNumber: Table;
+	people: number;
+	items: Array<Item>;
+	subtotal: number;
+	discount: number;
+	discountPercentage: number;
+	total: number;
+	status: string;
+	createdAt: string;
+	updatedAt: string;
+	closedAt:string
 }
