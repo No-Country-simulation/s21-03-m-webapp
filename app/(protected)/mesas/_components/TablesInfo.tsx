@@ -32,14 +32,16 @@ import {
 	DropdownMenuTrigger,
 } from '../../../../components/ui/dropdown-menu';
 import { CancelOrderDialog, EditProductDialog, ImprimirTicketDialog } from './dialogs';
+import { useUpdateOrderStatus } from '../../../../actions/hooks/orders/useUpdateOrderStatus';
 
 const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
-	const { data: tableOrder, isPending } = useOrderByTableId(currentTable._id);
+	const { data: tableOrder, isPending, refetch: refetchOrderByTableId } = useOrderByTableId(currentTable._id);
 	const { data: products } = useProducts();
 	const { data: categories } = useCategories();
 	const { data: members } = useMembers();
 	const { mutate: createOrder } = useCreateOrder();
 	const { mutate: updateOrder } = useUpdateOrder();
+	const { mutate: updateOrderStatus } = useUpdateOrderStatus();
 	const { mutate: updateTableStatus } = useUpdateTables();
 
 	const [date, setDate] = useState(new Date());
@@ -118,6 +120,20 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 			}),
 		};
 		updateOrder(order, { onSuccess: () => setRemovedItems([]) });
+	};
+
+	const handleUpdateOrderStatus = (status: string) => {
+		const order: OrderRequest = {
+			id: tableOrder?._id,
+			status: status,
+		};
+		updateOrderStatus(order, {
+			onSuccess: () => {
+				setRemovedItems([]);
+				refetchOrderByTableId();
+				updateTableStatus({ ...currentTable, id: currentTable._id, status: 'Free' });
+			},
+		});
 	};
 
 	const handleDate = () => {
@@ -342,8 +358,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 						<Button className="rounded-none py-6 font-extrabold text-md bg-yellow-400 hover:bg-yellow-300">+</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent className="w-44">
-						<DropdownMenuLabel>Opciones</DropdownMenuLabel>
-						<DropdownMenuSeparator />
+						<DropdownMenuLabel>Orden</DropdownMenuLabel>
 						<DropdownMenuItem className="cursor-pointer" onClick={() => setImprimirTicketDialogOpen(true)}>
 							<PrinterCheck className="text-chart-1" />
 							Imprimir Ticket
@@ -352,16 +367,27 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 							<CirclePercent className="text-chart-1" />
 							Descuento
 						</DropdownMenuItem>
+						<DropdownMenuItem className="cursor-pointer" onClick={() => setCancelOrderDialogOpen(true)}>
+							<CircleX className="text-destructive" />
+							Cancelar Orden
+						</DropdownMenuItem>
+						<DropdownMenuSeparator />
+						<DropdownMenuLabel>Mesa</DropdownMenuLabel>
 						<DropdownMenuItem
 							className="cursor-pointer"
 							onClick={() => updateTableStatus({ ...currentTable, id: currentTable._id, status: 'Billing' })}
 						>
-							<CircleCheckBig className="text-chart-2" />
+							<CircleCheckBig className="text-chart-4" />
 							Cuenta Solicitada
 						</DropdownMenuItem>
-						<DropdownMenuItem className="cursor-pointer" onClick={() => setCancelOrderDialogOpen(true)}>
-							<CircleX className="text-destructive" />
-							Cancelar Orden
+						<DropdownMenuItem
+							className="cursor-pointer"
+							onClick={() => {
+								handleUpdateOrderStatus('completed');
+							}}
+						>
+							<CircleCheckBig className="text-chart-2" />
+							Cerrar Mesa
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
