@@ -4,12 +4,14 @@ const { create, getAll, edit, remove, updateStatus, getOrderByTable } = require(
 const { authCheck } = require('../middleware/auth');
 
 const router = express.Router();
+router.use(authCheck)
 
-router.post('/', authCheck, create);
-router.get('/', authCheck, getAll);
-router.put('/update-status', authCheck, updateStatus);
-router.get('/get-order/:tableId', authCheck, getOrderByTable);
-router.put("/:id", authCheck, edit)
-router.delete("/:id", authCheck, remove)
+
+router.post('/', create);
+router.get('/', getAll);
+router.put('/update-status', updateStatus);
+router.get('/get-order/:tableId', getOrderByTable);
+router.put("/:id", edit)
+router.delete("/:id", remove)
 
 export default router;

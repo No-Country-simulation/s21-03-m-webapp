@@ -1,9 +1,15 @@
 import mongoose, { Schema, Types } from "mongoose";
+import Member from "./Member";
 
 const OrderSchema = new Schema({
     ownerId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Owner",
+    },
+    serviceBy:{
+        type:Types.ObjectId,
+        ref:"Member",
+        default:null
     },
     tableNumber: {
         type: Types.ObjectId,
@@ -12,6 +18,7 @@ const OrderSchema = new Schema({
     },
     people: {
         type: Number,
+        default:1
     },
     items: [
         {
@@ -32,11 +39,6 @@ const OrderSchema = new Schema({
             }
         }
     ],
-    serviceBy:{
-        type:Types.ObjectId,
-        ref:"Member",
-        default:""
-    },
     subtotal: {
         type: Number,
     },
@@ -64,6 +66,8 @@ const OrderSchema = new Schema({
         type:Date
     }
 },{ timestamps: true });
+
+
 
 const Order = mongoose.model('Order', OrderSchema);
 export default Order;

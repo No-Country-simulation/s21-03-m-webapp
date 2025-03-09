@@ -5,22 +5,23 @@ import Product from "../models/Product";
 export const create = async (req: Request, res: Response) => {
     const { tableNumber, people, items, discount, discountPercentage,serviceBy } = req.body;
 
-    if (!tableNumber?.trim() || !people) {
+    if (!tableNumber || !people) {
         return res.status(400).json({
             msg: 'Los campos numero de mesa y cantidad de personas son obligatorios.'
         });
     }
 
     try {
-        const orderExist = await Order.find({ tableNumber, status: 'pending' })
+        const orderExist = await Order.findOne({ tableNumber, status: "pending" });
 
-        if (orderExist.length) {
+        if (orderExist) {
             return res.status(400).json({ msg: `Existe una orden pendiente en la mesa ${tableNumber}.` });
         }
 
+
         let subtotal = 0;
         let total = 0
-        if (items) {
+        if (Array.isArray(items) && items.length > 0) {
             for (const item of items) {
                 const product = await Product.findById(item.productId);
                 if (!product) {
@@ -33,7 +34,7 @@ export const create = async (req: Request, res: Response) => {
             const discountPer = discountPercentage ? (subtotal * discountPercentage) / 100 : 0;
             total = subtotal - (discount || 0) - discountPer;
         }
-
+        console.log(serviceBy)
         const newOrder = new Order({
             ownerId: req.ownerId,
             tableNumber,
@@ -44,7 +45,7 @@ export const create = async (req: Request, res: Response) => {
             total,
             serviceBy
         });
-
+        console.log(newOrder)
         await newOrder.save();
 
         return res.status(201).json({
@@ -62,7 +63,7 @@ export const getAll = async (req: Request, res: Response) => {
 
 try {
 
-    let orders = (await Order.find({ownerId:req.ownerId}).populate("tableNumber"))
+    let orders = await Order.find({ownerId:req.ownerId}).populate("tableNumber","serviceBy")
 
     return res.status(200).json(orders);
 } catch (error) {
@@ -154,33 +155,20 @@ export const updateStatus = async (req: Request, res: Response) => {
     }
 }
 
-/* export const getAllStatusPending = async (req: Request, res: Response) => {
-    try {
-        const orders = await Order.find({ ownerId: req.ownerId, status: 'pending' })
-            .populate("items.productId", "name")
-            .select("-__v -createdAt -updatedAt -ownerId -items._id ")
 
-        return res.status(200).json({
-            orders: orders
-        });
-    } catch (error) {
-        return res.status(500).json({
-            msg: 'Ocurrio un problema en el servidor.'
-        });
-    }
-} */
 
 export const getOrderByTable = async (req: Request, res: Response) => {
 
     try {
         const { tableId } = req.params
-        console.log(tableId)
+
         // -createdAt -updatedAt
         const order = await Order.findOne({ ownerId: req.ownerId, tableNumber: tableId, status: 'pending' })
-            .populate("items.productId", "name")
-            .select("-__v -ownerId -items._id ")
-            .lean()
-
+             .populate("items.productId", "name")
+             .populate("serviceBy") 
+            .select("-__v -ownerId -items._id")
+             .lean()
+    
         if (!order) {
             const order = {
                 tableNumber: tableId,
