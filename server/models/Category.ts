@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import Product from "./Product";
 
 const CategorySchema = new Schema({
     ownerId: {
@@ -21,6 +22,14 @@ const CategorySchema = new Schema({
         trim: true,
     }
 });
+
+
+CategorySchema.pre("deleteOne",{ document: true, query: false },async function(next){
+    await Product.updateMany(this._id,{categoryId:null})
+    next()
+})
+
+
 
 const Category = mongoose.model('Category', CategorySchema);
 export default Category;

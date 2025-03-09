@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
 
 const OrderSchema = new Schema({
     ownerId: {
@@ -6,7 +6,8 @@ const OrderSchema = new Schema({
         ref: "Owner",
     },
     tableNumber: {
-        type: String,
+        type: Types.ObjectId,
+        ref:"Table",
         require: true
     },
     people: {
@@ -26,8 +27,16 @@ const OrderSchema = new Schema({
                 type: Number,
                 required: true,
             },
+            comentaries:{
+                types:String
+            }
         }
     ],
+    serviceBy:{
+        type:Types.ObjectId,
+        ref:"Member",
+        default:""
+    },
     subtotal: {
         type: Number,
     },

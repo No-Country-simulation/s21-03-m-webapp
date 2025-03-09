@@ -93,7 +93,7 @@ export const remove = async (req: Request, res: Response) => {
             msg: "No tiene permiso para eliminar categoria."
         })
     }
-
+    console.log("eliminar")
     try {
         await category.deleteOne();
 
