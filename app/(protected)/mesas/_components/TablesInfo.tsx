@@ -31,7 +31,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '../../../../components/ui/dropdown-menu';
-import { CancelOrderDialog, EditProductDialog } from './dialogs';
+import { CancelOrderDialog, EditProductDialog, ImprimirTicketDialog } from './dialogs';
 
 const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const { data: tableOrder, isPending } = useOrderByTableId(currentTable._id);
@@ -51,6 +51,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const [editProduct, setEditProduct] = useState<Item | null>(null);
 	const [editProductDialogOpen, setEditProductDialogOpen] = useState(false);
 	const [cancelOrderDialogOpen, setCancelOrderDialogOpen] = useState(false);
+	const [imprimirTicketDialogOpen, setImprimirTicketDialogOpen] = useState(false);
 
 	useEffect(() => {
 		if (!isPending && tableOrder) {
@@ -274,6 +275,14 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 					currentOrder={tableOrder}
 				></CancelOrderDialog>
 			)}
+			{imprimirTicketDialogOpen && (
+				<ImprimirTicketDialog
+					isOpen={imprimirTicketDialogOpen}
+					onOpenChange={setImprimirTicketDialogOpen}
+					currentTable={currentTable}
+					currentOrder={tableOrder}
+				></ImprimirTicketDialog>
+			)}
 			{/* Sección 4: Botón para enviar orden */}
 			<div className="w-full flex flex-row items-center absolute bottom-0 left-0">
 				<Button
@@ -289,7 +298,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 					<DropdownMenuContent className="w-44">
 						<DropdownMenuLabel>Opciones</DropdownMenuLabel>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem className="cursor-pointer">
+						<DropdownMenuItem className="cursor-pointer" onClick={() => setImprimirTicketDialogOpen(true)}>
 							<PrinterCheck className="text-chart-1" />
 							Imprimir Ticket
 						</DropdownMenuItem>

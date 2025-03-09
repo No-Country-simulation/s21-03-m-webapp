@@ -27,7 +27,7 @@ export default function CancelOrderDialog({
 	currentOrder,
 }: CancelOrderDialogProps) {
 	const { mutate: deleteOrder } = useDeleteOrder(currentTable._id);
-	if (!currentOrder) return null;
+	if (!currentOrder || !currentTable) return null;
 	return (
 		<Dialog open={isOpen} onOpenChange={onOpenChange}>
 			<DialogContent className="sm:max-w-[425px]">
