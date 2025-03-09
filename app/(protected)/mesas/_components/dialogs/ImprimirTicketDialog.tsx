@@ -126,10 +126,10 @@ export default function ImprimirTicketDialog({
 
 				<DialogFooter className="items-center">
 					<Button
-						variant="destructive"
 						onClick={() => {
 							onOpenChange(false);
 						}}
+						className="bg-chart-2 hover:bg-emerald-500"
 					>
 						Imprimir
 					</Button>

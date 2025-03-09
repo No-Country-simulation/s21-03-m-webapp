@@ -144,7 +144,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 
 	const displayedSubtotal = hasChanges ? virtualSubtotal : tableOrder?.subtotal;
 	const displayedTotal = hasChanges ? virtualTotal : tableOrder?.total;
-	const backgroundColor = hasChanges ? 'bg-yellow-100' : 'bg-background';
+	const backgroundColor = hasChanges ? 'bg-green-100' : 'bg-background';
 
 	if (isPending) return <ComponentLoader></ComponentLoader>;
 

@@ -44,38 +44,39 @@ export default function EditProductDialog({
 						<span className="font-bold"> mesa {currentTableNumber} </span>
 					</DialogDescription>
 				</DialogHeader>
-				<div className="grid gap-4 py-4">
-					<div className="grid grid-cols-4 items-center gap-4">
-						<Label htmlFor="name" className="text-right">
-							Cantidad
-						</Label>
+				<div className="flex flex-col gap-4 py-4 items-center">
+					<div className="w-full flex items-center justify-between">
+						<Label htmlFor="name">Cantidad:</Label>
 						<Input
 							id="name"
 							type="number"
 							min={1}
 							defaultValue={editProduct.quantity}
-							className="col-span-3"
+							className="w-[260px]"
 							onChange={(e) => {
 								const newQuantity = Number(e.target.value);
 								setEditProduct((prev) => (prev ? { ...prev, quantity: newQuantity } : null));
 							}}
 						/>
 					</div>
+					<div className="w-full flex items-center justify-between">
+						<Label htmlFor="name">Comentarios:</Label>
+						<Input id="comentarios" type="text" defaultValue={' '} className="w-[260px]" />
+					</div>
+					<span
+						className="text-destructive text-sm cursor-pointer self-start hover:underline transition-all"
+						onClick={() => {
+							removeFromOrder(editProduct.productId);
+							onOpenChange(false);
+						}}
+					>
+						Remover de la orden
+					</span>
 				</div>
 				<DialogFooter className="items-center">
 					<Button
 						type="submit"
-						variant="destructive"
-						onClick={() => {
-							removeFromOrder(editProduct.productId);
-							setEditProduct(null);
-							onOpenChange(false);
-						}}
-					>
-						Remover
-					</Button>
-					<Button
-						type="submit"
+						variant={'outline'}
 						onClick={() => {
 							setOrderItems((prevItems) =>
 								prevItems.map((item) =>
@@ -86,6 +87,15 @@ export default function EditProductDialog({
 						}}
 					>
 						Guardar cambios
+					</Button>
+					<Button
+						type="submit"
+						variant={'default'}
+						onClick={() => {
+							onOpenChange(false);
+						}}
+					>
+						Cancelar
 					</Button>
 				</DialogFooter>
 			</DialogContent>
