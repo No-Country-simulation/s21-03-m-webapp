@@ -1,19 +1,16 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
 import { TOAST_DURATION } from '@/constants/app_constants';
+import { deleteOrder } from '../../orders';
 
-import { editCategory } from '../../categories';
-import { EditCategoryRequest } from '../../../types/category';
-
-export function useUpdateCategory() {
+export function useDeleteOrder(tableId: string) {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (category: EditCategoryRequest) => editCategory(category),
+		mutationFn: (orderId: string) => deleteOrder(orderId),
 		onSuccess: (response) => {
-			queryClient.invalidateQueries({ queryKey: ['categories'] });
-			queryClient.setQueryData(['category'], response.category._id);
-			queryClient.invalidateQueries({ queryKey: ['category'] });
+			queryClient.invalidateQueries({ queryKey: ['orders'] });
+			queryClient.invalidateQueries({ queryKey: ['order', tableId] });
 			toast({
 				description: response.msg,
 				duration: TOAST_DURATION,

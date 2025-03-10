@@ -1,10 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Table } from '@/types/tables';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
 import { useOrderByTableId } from '@/actions/hooks/orders/useOrderByTableId';
 import { useCreateOrder } from '@/actions/hooks/orders/useCreateOrder';
 import { Item, OrderRequest } from '../../../../types/orders';
@@ -13,23 +12,65 @@ import { useCategories } from '../../../../actions/hooks/categories/useCategorie
 import { Category } from '../../../../types/category';
 import { useUpdateTables } from '../../../../actions/hooks/tables/useUpdateTables';
 import { useUpdateOrder } from '../../../../actions/hooks/orders/useUpdateOrder';
+import { useUpdateOrderStatus } from '../../../../actions/hooks/orders/useUpdateOrderStatus';
+import { useMembers } from '../../../../actions/hooks/members/useMembers';
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '../../../../components/ui/select';
+import { ComponentLoader } from '../../../../components/library/loading';
+import { CircleCheckBig, CirclePercent, CircleX, Pencil, PrinterCheck } from 'lucide-react';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '../../../../components/ui/dropdown-menu';
+import { CancelOrderDialog, EditProductDialog, ImprimirTicketDialog, OrderDiscountDialog } from './dialogs';
+import { useDeleteOrder } from '../../../../actions/hooks/orders/useDeleteOrder';
 
 const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
-	const { data: tableOrder, isPending } = useOrderByTableId(currentTable._id);
+	const { data: tableOrder, isPending, refetch: refetchOrderByTableId } = useOrderByTableId(currentTable._id);
 	const { data: products } = useProducts();
 	const { data: categories } = useCategories();
+	const { data: members } = useMembers();
 	const { mutate: createOrder } = useCreateOrder();
 	const { mutate: updateOrder } = useUpdateOrder();
+	const { mutate: deleteOrder } = useDeleteOrder(currentTable._id);
+	const { mutate: updateOrderStatus } = useUpdateOrderStatus();
 	const { mutate: updateTableStatus } = useUpdateTables();
 
+	const [date, setDate] = useState(new Date());
 	const [people, setPeople] = useState(1);
 	const [orderItems, setOrderItems] = useState<Item[]>([]);
+	const [removedItems, setRemovedItems] = useState<Item[]>([]);
 	const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+	const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
+	const [initialItems, setInitialItems] = useState<Item[]>([]);
+
+	const [editProduct, setEditProduct] = useState<Item | null>(null);
+	const [appliedDiscount, setAppliedDiscount] = useState<number | null>(null);
+	const [appliedDiscountPercentage, setAppliedDiscountPercentage] = useState<number | null>(null);
+	const [editProductDialogOpen, setEditProductDialogOpen] = useState(false);
+	const [cancelOrderDialogOpen, setCancelOrderDialogOpen] = useState(false);
+	const [orderDiscountDialogOpen, setOrderDiscountDialogOpen] = useState(false);
+	const [imprimirTicketDialogOpen, setImprimirTicketDialogOpen] = useState(false);
 
 	useEffect(() => {
 		if (!isPending && tableOrder) {
-			setPeople(tableOrder.people);
+			setDate(tableOrder.createdAt ? new Date(Date.parse(tableOrder.createdAt)) : new Date());
+			setSelectedMemberId(tableOrder.serviceBy ? tableOrder.serviceBy?._id : null);
+			setPeople(tableOrder.people ? tableOrder.people : 1);
+			setAppliedDiscount(tableOrder.discount || null);
+			setAppliedDiscountPercentage(tableOrder.discountPercentage || null);
 			setOrderItems(tableOrder.items);
+			setInitialItems(tableOrder.items);
 		}
 	}, [tableOrder, isPending]);
 
@@ -37,21 +78,27 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 		? products?.filter((product) => product.categoryId === selectedCategory._id)
 		: [];
 
-	const addToOrder = (productId: string, name: string, price: number) => {
-		setSelectedCategory(null);
+	const addToOrder = (productId: string, name: string, price: number, newQuantity?: number) => {
 		setOrderItems((prevItems) => {
 			const existingItem = prevItems.find((item) => item.productId === productId);
 			if (existingItem) {
 				return prevItems.map((item) =>
-					item.productId === productId ? { ...item, quantity: item.quantity + 1 } : item,
+					item.productId === productId ? { ...item, quantity: newQuantity ?? item.quantity + 1 } : item,
 				);
 			}
-			return [...prevItems, { productId, name, price, quantity: 1 }];
+			return [...prevItems, { productId, name, price, quantity: newQuantity ?? 1 }];
 		});
 	};
 
 	const removeFromOrder = (productId: string) => {
+		setRemovedItems((prev) => [...prev, ...orderItems.filter((item) => item.productId === productId)]);
 		setOrderItems((prevItems) => prevItems.filter((item) => item.productId !== productId));
+	};
+
+	const itemOrderChanged = (item: Item) => {
+		const original = initialItems.find((orig) => orig.productId === item.productId);
+		if (!original) return true;
+		return original.quantity !== item.quantity || original.commentaries !== item.commentaries;
 	};
 
 	const handleCreateOrder = () => {
@@ -64,6 +111,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 					quantity: i.quantity,
 				};
 			}),
+			serviceBy: selectedMemberId,
 		};
 		createOrder(order);
 		updateTableStatus({ ...currentTable, id: currentTable._id, status: 'Occupied' });
@@ -80,38 +128,163 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 					quantity: i.quantity,
 				};
 			}),
+			serviceBy: selectedMemberId,
+			discount: appliedDiscount != null ? appliedDiscount : 0,
+			discountPercentage: appliedDiscountPercentage != null ? appliedDiscountPercentage : 0,
 		};
-		updateOrder(order);
+		updateOrder(order, { onSuccess: () => setRemovedItems([]) });
 	};
 
-	if (isPending) {
-		return (
-			<div className="flex w-full items-center justify-center">
-				<div className="animate-spin w-14 h-14 border-[3px] border-t-transparent rounded-full border-white"></div>
-			</div>
-		);
-	}
+	const handleUpdateOrderStatus = (status: string) => {
+		const order: OrderRequest = {
+			id: tableOrder?._id,
+			status: status,
+		};
+		updateOrderStatus(order, {
+			onSuccess: () => {
+				setRemovedItems([]);
+				refetchOrderByTableId();
+				updateTableStatus({ ...currentTable, id: currentTable._id, status: 'Free' });
+			},
+		});
+	};
+
+	const handleDeleteOrder = (orderId: string) => {
+		deleteOrder(orderId, {
+			onSuccess: () => {
+				setRemovedItems([]);
+				refetchOrderByTableId();
+				updateTableStatus({ ...currentTable, id: currentTable._id, status: 'Free' });
+			},
+		});
+	};
+
+	const handleDate = () => {
+		const weekday = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
+		return `${weekday[date.getUTCDay()]} ${date.getDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()}`;
+	};
+
+	const formatPrice = (value: number | undefined) => {
+		if (!value) return Number(0).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
+		return value.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
+	};
+
+	const hasChanges = useMemo(() => {
+		return JSON.stringify(orderItems) !== JSON.stringify(initialItems);
+	}, [orderItems, initialItems]);
+
+	const virtualSubtotal = useMemo(() => {
+		return orderItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
+	}, [orderItems]);
+
+	const displayedSubtotal = hasChanges ? virtualSubtotal : tableOrder?.subtotal;
+
+	const discountedTotal = useMemo(() => {
+		const subtotal = displayedSubtotal ?? 0;
+		let newTotal = subtotal;
+
+		if (appliedDiscountPercentage !== null && appliedDiscountPercentage > 0) {
+			newTotal -= (subtotal * appliedDiscountPercentage) / 100;
+		} else if (appliedDiscount !== null && appliedDiscount > 0) {
+			newTotal -= appliedDiscount;
+		}
+
+		return newTotal;
+	}, [displayedSubtotal, appliedDiscount, appliedDiscountPercentage]);
+
+	const isSubtotalChanged = displayedSubtotal !== (tableOrder?.subtotal ?? 0);
+	const isTotalChanged = discountedTotal !== (tableOrder?.total ?? 0);
+	const backgroundColor = isSubtotalChanged || isTotalChanged ? 'bg-green-100' : 'bg-background';
+
+	if (isPending) return <ComponentLoader></ComponentLoader>;
 
 	return (
 		<article className="w-full h-full relative">
-			<div className="w-[90%] m-auto py-4 text-white">
-				<h2 className="text-lg font-bold text-center mb-4">Mesa {currentTable.number}</h2>
-				<div className="flex flex-col gap-8">
-					{/* Sección 1: Table Number y People */}
-					<section className="flex flex-col gap-2 text-sm font-thin">
-						<div className="flex flex-row gap-2">
-							<p>Fecha: {'10/10/2020'}</p>
+			{/* === Dialogs === */}
+			{editProduct && (
+				<EditProductDialog
+					isOpen={editProductDialogOpen}
+					onOpenChange={setEditProductDialogOpen}
+					editProduct={editProduct}
+					setEditProduct={setEditProduct}
+					removeFromOrder={removeFromOrder}
+					setOrderItems={setOrderItems}
+					currentTableNumber={currentTable.number}
+				></EditProductDialog>
+			)}
+			{cancelOrderDialogOpen && (
+				<CancelOrderDialog
+					isOpen={cancelOrderDialogOpen}
+					onOpenChange={setCancelOrderDialogOpen}
+					currentTable={currentTable}
+					currentOrder={tableOrder}
+					handleDeleteOrder={handleDeleteOrder}
+				></CancelOrderDialog>
+			)}
+			{imprimirTicketDialogOpen && (
+				<ImprimirTicketDialog
+					isOpen={imprimirTicketDialogOpen}
+					onOpenChange={setImprimirTicketDialogOpen}
+					currentTable={currentTable}
+					currentOrder={tableOrder}
+				></ImprimirTicketDialog>
+			)}
+			{orderDiscountDialogOpen && (
+				<OrderDiscountDialog
+					isOpen={orderDiscountDialogOpen}
+					onOpenChange={setOrderDiscountDialogOpen}
+					currentTable={currentTable}
+					currentOrder={tableOrder}
+					setAppliedDiscount={setAppliedDiscount}
+					setAppliedDiscountPercentage={setAppliedDiscountPercentage}
+				></OrderDiscountDialog>
+			)}
+
+			<div className="w-[90%] m-auto py-3 text-white">
+				<h2 className="text-lg font-bold text-center mb-3">Mesa {currentTable.number}</h2>
+				<div className="flex flex-col gap-2">
+					{/* Sección 1: Fecha, People y Members */}
+					<section className="flex flex-col gap-1 text-sm font-thin">
+						<div className="flex flex-row gap-2 items-center">
+							<h2 className="w-[90px]">Fecha:</h2>
+							<span className="font-bold">{handleDate()}</span>
 						</div>
 						<div className="flex flex-row gap-2 items-center">
-							<h2>Personas</h2>
+							<h2 className="w-[90px]">Personas: </h2>
 							<Input
 								type="text"
-								className="bg-white text-black border-none outline-none"
+								className="h-7 bg-white text-black border-none outline-none"
 								value={people}
 								onChange={(e) => setPeople(Number(e.target.value))}
 							/>
 						</div>
+						<div className="flex flex-row gap-2 items-center">
+							<h2 className="w-[90px]">Atiende: </h2>
+							<Select
+								value={selectedMemberId || 'Encargado'}
+								onValueChange={(value) => {
+									setSelectedMemberId(value);
+								}}
+							>
+								<SelectTrigger className="bg-white text-foreground h-7">
+									<SelectValue placeholder="Quien esta atendiendo?" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectGroup>
+										<SelectItem value={'Encargado'}>Encargado</SelectItem>
+										{members?.map((i) => {
+											return (
+												<SelectItem key={i._id} value={i._id}>
+													{i.name}
+												</SelectItem>
+											);
+										})}
+									</SelectGroup>
+								</SelectContent>
+							</Select>
+						</div>
 					</section>
+
 					{/* Sección 2: Categorías y Productos */}
 					<section className="flex flex-col gap-2">
 						<div className="flex flex-col">
@@ -134,7 +307,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 									<Button
 										key={category._id}
 										variant={'outline'}
-										className="text-black"
+										className="h-9 text-black"
 										onClick={() => setSelectedCategory(category)}
 									>
 										{category.name}
@@ -159,47 +332,126 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 					</section>
 				</div>
 			</div>
+
 			{/* Sección 3: Orden */}
 			<section className="flex flex-col w-full px-4">
-				<h2 className="text-xl font-bold mb-2 text-white">Orden</h2>
-				<Card className="flex flex-col bg-white h-full flex-grow">
-					<CardContent className="p-3">
+				<h2 className="text-xl font-bold text-white">Orden</h2>
+				<div className="flex flex-col bg-white relative grow">
+					<article className="p-3 py-5 min-h-[430px]">
 						{orderItems.length === 0 ? (
 							<div className="flex flex-col items-center justify-center text-black">No hay elementos en la orden.</div>
 						) : (
 							<div className="flex flex-col">
-								{orderItems.map((item) => (
-									<Card key={item.productId} className="text-black bg-white">
-										<CardContent className="px-4 py-2">
-											<div className="w-full h-full flex flex-row items-center justify-between">
-												<div className="flex flex-col">
-													<p className="font-medium text-sm">{item.name}</p>
-													<p className="text-xs text-gray-600">
-														{item.quantity} x ${item.price} = ${item.quantity * item.price}
-													</p>
+								{[...orderItems, ...removedItems].map((item, index) => {
+									const isRemoved = removedItems.some((removed) => removed.productId === item.productId);
+									const changed = itemOrderChanged(item);
+									return (
+										<article
+											key={index}
+											className={`px-1 py-2 cursor-pointer ${
+												isRemoved
+													? 'line-through opacity-20 cursor-auto'
+													: changed
+														? 'bg-green-100 font-semibold'
+														: 'bg-white font-normal'
+											} hover:bg-gray-100`}
+											onClick={() => {
+												if (!isRemoved) {
+													setEditProductDialogOpen(true);
+													setEditProduct(item);
+												}
+											}}
+										>
+											<div className="px-4 border-l-chart-1 border-l-2">
+												<div className="flex flex-row items-center justify-between">
+													<div className="flex flex-row gap-2 items-center">
+														<p className="text-xs text-gray-600">{item.quantity} x</p>
+														<p className="font-normal text-sm">{item.name}</p>
+													</div>
+													{!isRemoved && (
+														<Pencil
+															size={'15px'}
+															className=" text-chart-2 cursor-pointer hover:text-green-600 transition-all"
+														/>
+													)}
 												</div>
-												<div className="flex flex-row gap-1">
-													<Button size="sm" variant="destructive" onClick={() => removeFromOrder(item.productId)}>
-														✕
-													</Button>
-												</div>
+												{item.commentaries && <p className="text-gray-400 text-xs">* Incluye comentarios</p>}
 											</div>
-										</CardContent>
-									</Card>
-								))}
+										</article>
+									);
+								})}
 							</div>
 						)}
-					</CardContent>
-				</Card>
+					</article>
+					<div className={`${backgroundColor} py-2 px-3 flex flex-col gap-2`}>
+						<div className="flex items-center justify-between text-sm">
+							<h2>Subtotal</h2>
+							<span>{formatPrice(displayedSubtotal)}</span>
+						</div>
+						{/* Mostrar descuento si existe */}
+						{(appliedDiscount ?? 0) > 0 || (appliedDiscountPercentage ?? 0) > 0 ? (
+							<div className="flex items-center justify-between text-sm text-green-600">
+								<h2>Descuento</h2>
+								<span>
+									-{' '}
+									{formatPrice(appliedDiscount ?? ((displayedSubtotal ?? 0) * (appliedDiscountPercentage ?? 0)) / 100)}
+								</span>
+							</div>
+						) : null}
+						<div className="flex items-center justify-between text-sm">
+							<h2 className="font-extrabold">TOTAL</h2>
+							<span>{formatPrice(discountedTotal)}</span>
+						</div>
+					</div>
+				</div>
 			</section>
+
 			{/* Sección 4: Botón para enviar orden */}
-			<div className="w-full">
+			<div className="w-full flex flex-row items-center absolute bottom-0 left-0">
 				<Button
-					className="w-full bg-green-500 hover:bg-green-400"
-					onClick={tableOrder ? handleUpdateOrder : handleCreateOrder}
+					className="rounded-none w-full py-6 font-bold text-md bg-green-500 hover:bg-green-400"
+					onClick={tableOrder?._id ? handleUpdateOrder : handleCreateOrder}
 				>
-					{tableOrder ? 'Actualizar Orden' : 'Agregar a la cuenta'}
+					{tableOrder?._id ? 'Actualizar Orden' : 'Agregar a la cuenta'}
 				</Button>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button className="rounded-none py-6 font-extrabold text-md bg-yellow-400 hover:bg-yellow-300">+</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent className="w-44">
+						<DropdownMenuLabel>Orden</DropdownMenuLabel>
+						<DropdownMenuItem className="cursor-pointer" onClick={() => setImprimirTicketDialogOpen(true)}>
+							<PrinterCheck className="text-chart-1" />
+							Imprimir Ticket
+						</DropdownMenuItem>
+						<DropdownMenuItem className="cursor-pointer" onClick={() => setOrderDiscountDialogOpen(true)}>
+							<CirclePercent className="text-chart-1" />
+							Descuento
+						</DropdownMenuItem>
+						<DropdownMenuItem className="cursor-pointer" onClick={() => setCancelOrderDialogOpen(true)}>
+							<CircleX className="text-destructive" />
+							Cancelar Orden
+						</DropdownMenuItem>
+						<DropdownMenuSeparator />
+						<DropdownMenuLabel>Mesa</DropdownMenuLabel>
+						<DropdownMenuItem
+							className="cursor-pointer"
+							onClick={() => updateTableStatus({ ...currentTable, id: currentTable._id, status: 'Billing' })}
+						>
+							<CircleCheckBig className="text-chart-4" />
+							Cuenta Solicitada
+						</DropdownMenuItem>
+						<DropdownMenuItem
+							className="cursor-pointer"
+							onClick={() => {
+								handleUpdateOrderStatus('completed');
+							}}
+						>
+							<CircleCheckBig className="text-chart-2" />
+							Cerrar Mesa
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
 			</div>
 		</article>
 	);

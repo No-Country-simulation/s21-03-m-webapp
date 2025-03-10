@@ -15,9 +15,10 @@ export async function getOrderByTableId(tableId: string): Promise<Order> {
 	}
 }
 
-export async function getOrders(): Promise<Array<Order>> {
+export async function getOrders() {
 	try {
-		const response = await protected_api.get<Array<Order>>(`${ORDERS}`);
+		const response = await protected_api.get(`${ORDERS}`);
+
 		return response.data;
 	} catch (error) {
 		if (axios.isAxiosError(error) && error.response) {
@@ -42,6 +43,31 @@ export async function createOrder(body: OrderRequest): Promise<OrderResponse> {
 export async function updateOrder(body: OrderRequest): Promise<OrderResponse> {
 	try {
 		const response = await protected_api.put<OrderResponse>(`${ORDERS}/${body.id}`, body);
+		console.log(response.data);
+		return response.data;
+	} catch (error) {
+		if (axios.isAxiosError(error) && error.response) {
+			throw new Error(error.response.data.msg);
+		}
+		throw new Error(SERVER_ERROR);
+	}
+}
+
+export async function updateOrderStatus(body: OrderRequest): Promise<OrderResponse> {
+	try {
+		const response = await protected_api.put<OrderResponse>(`${ORDERS}/update-status`, body);
+		return response.data;
+	} catch (error) {
+		if (axios.isAxiosError(error) && error.response) {
+			throw new Error(error.response.data.msg);
+		}
+		throw new Error(SERVER_ERROR);
+	}
+}
+
+export async function deleteOrder(orderId: string): Promise<OrderResponse> {
+	try {
+		const response = await protected_api.delete<OrderResponse>(`${ORDERS}/${orderId}`);
 		return response.data;
 	} catch (error) {
 		if (axios.isAxiosError(error) && error.response) {

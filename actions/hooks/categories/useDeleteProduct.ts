@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deleteSalon } from '@/actions/salones';
 import { toast } from '@/hooks/use-toast';
 import { TOAST_DURATION } from '@/constants/app_constants';
 import { deleteCategory } from '../../categories';
