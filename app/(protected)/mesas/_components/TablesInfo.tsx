@@ -12,6 +12,7 @@ import { useCategories } from '../../../../actions/hooks/categories/useCategorie
 import { Category } from '../../../../types/category';
 import { useUpdateTables } from '../../../../actions/hooks/tables/useUpdateTables';
 import { useUpdateOrder } from '../../../../actions/hooks/orders/useUpdateOrder';
+import { useUpdateOrderStatus } from '../../../../actions/hooks/orders/useUpdateOrderStatus';
 import { useMembers } from '../../../../actions/hooks/members/useMembers';
 import {
 	Select,
@@ -31,8 +32,8 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '../../../../components/ui/dropdown-menu';
-import { CancelOrderDialog, EditProductDialog, ImprimirTicketDialog } from './dialogs';
-import { useUpdateOrderStatus } from '../../../../actions/hooks/orders/useUpdateOrderStatus';
+import { CancelOrderDialog, EditProductDialog, ImprimirTicketDialog, OrderDiscountDialog } from './dialogs';
+import { useDeleteOrder } from '../../../../actions/hooks/orders/useDeleteOrder';
 
 const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const { data: tableOrder, isPending, refetch: refetchOrderByTableId } = useOrderByTableId(currentTable._id);
@@ -41,6 +42,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const { data: members } = useMembers();
 	const { mutate: createOrder } = useCreateOrder();
 	const { mutate: updateOrder } = useUpdateOrder();
+	const { mutate: deleteOrder } = useDeleteOrder(currentTable._id);
 	const { mutate: updateOrderStatus } = useUpdateOrderStatus();
 	const { mutate: updateTableStatus } = useUpdateTables();
 
@@ -49,17 +51,24 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const [orderItems, setOrderItems] = useState<Item[]>([]);
 	const [removedItems, setRemovedItems] = useState<Item[]>([]);
 	const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+	const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
 	const [initialItems, setInitialItems] = useState<Item[]>([]);
 
 	const [editProduct, setEditProduct] = useState<Item | null>(null);
+	const [appliedDiscount, setAppliedDiscount] = useState<number | null>(null);
+	const [appliedDiscountPercentage, setAppliedDiscountPercentage] = useState<number | null>(null);
 	const [editProductDialogOpen, setEditProductDialogOpen] = useState(false);
 	const [cancelOrderDialogOpen, setCancelOrderDialogOpen] = useState(false);
+	const [orderDiscountDialogOpen, setOrderDiscountDialogOpen] = useState(false);
 	const [imprimirTicketDialogOpen, setImprimirTicketDialogOpen] = useState(false);
 
 	useEffect(() => {
 		if (!isPending && tableOrder) {
 			setDate(tableOrder.createdAt ? new Date(Date.parse(tableOrder.createdAt)) : new Date());
+			setSelectedMemberId(tableOrder.serviceBy ? tableOrder.serviceBy?._id : null);
 			setPeople(tableOrder.people ? tableOrder.people : 1);
+			setAppliedDiscount(tableOrder.discount || null);
+			setAppliedDiscountPercentage(tableOrder.discountPercentage || null);
 			setOrderItems(tableOrder.items);
 			setInitialItems(tableOrder.items);
 		}
@@ -89,7 +98,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const itemOrderChanged = (item: Item) => {
 		const original = initialItems.find((orig) => orig.productId === item.productId);
 		if (!original) return true;
-		return original.quantity !== item.quantity;
+		return original.quantity !== item.quantity || original.commentaries !== item.commentaries;
 	};
 
 	const handleCreateOrder = () => {
@@ -102,6 +111,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 					quantity: i.quantity,
 				};
 			}),
+			serviceBy: selectedMemberId,
 		};
 		createOrder(order);
 		updateTableStatus({ ...currentTable, id: currentTable._id, status: 'Occupied' });
@@ -118,6 +128,9 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 					quantity: i.quantity,
 				};
 			}),
+			serviceBy: selectedMemberId,
+			discount: appliedDiscount != null ? appliedDiscount : 0,
+			discountPercentage: appliedDiscountPercentage != null ? appliedDiscountPercentage : 0,
 		};
 		updateOrder(order, { onSuccess: () => setRemovedItems([]) });
 	};
@@ -128,6 +141,16 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 			status: status,
 		};
 		updateOrderStatus(order, {
+			onSuccess: () => {
+				setRemovedItems([]);
+				refetchOrderByTableId();
+				updateTableStatus({ ...currentTable, id: currentTable._id, status: 'Free' });
+			},
+		});
+	};
+
+	const handleDeleteOrder = (orderId: string) => {
+		deleteOrder(orderId, {
 			onSuccess: () => {
 				setRemovedItems([]);
 				refetchOrderByTableId();
@@ -154,13 +177,24 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 		return orderItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
 	}, [orderItems]);
 
-	const virtualTotal = useMemo(() => {
-		return virtualSubtotal;
-	}, [virtualSubtotal]);
-
 	const displayedSubtotal = hasChanges ? virtualSubtotal : tableOrder?.subtotal;
-	const displayedTotal = hasChanges ? virtualTotal : tableOrder?.total;
-	const backgroundColor = hasChanges ? 'bg-green-100' : 'bg-background';
+
+	const discountedTotal = useMemo(() => {
+		const subtotal = displayedSubtotal ?? 0;
+		let newTotal = subtotal;
+
+		if (appliedDiscountPercentage !== null && appliedDiscountPercentage > 0) {
+			newTotal -= (subtotal * appliedDiscountPercentage) / 100;
+		} else if (appliedDiscount !== null && appliedDiscount > 0) {
+			newTotal -= appliedDiscount;
+		}
+
+		return newTotal;
+	}, [displayedSubtotal, appliedDiscount, appliedDiscountPercentage]);
+
+	const isSubtotalChanged = displayedSubtotal !== (tableOrder?.subtotal ?? 0);
+	const isTotalChanged = discountedTotal !== (tableOrder?.total ?? 0);
+	const backgroundColor = isSubtotalChanged || isTotalChanged ? 'bg-green-100' : 'bg-background';
 
 	if (isPending) return <ComponentLoader></ComponentLoader>;
 
@@ -184,6 +218,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 					onOpenChange={setCancelOrderDialogOpen}
 					currentTable={currentTable}
 					currentOrder={tableOrder}
+					handleDeleteOrder={handleDeleteOrder}
 				></CancelOrderDialog>
 			)}
 			{imprimirTicketDialogOpen && (
@@ -193,6 +228,16 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 					currentTable={currentTable}
 					currentOrder={tableOrder}
 				></ImprimirTicketDialog>
+			)}
+			{orderDiscountDialogOpen && (
+				<OrderDiscountDialog
+					isOpen={orderDiscountDialogOpen}
+					onOpenChange={setOrderDiscountDialogOpen}
+					currentTable={currentTable}
+					currentOrder={tableOrder}
+					setAppliedDiscount={setAppliedDiscount}
+					setAppliedDiscountPercentage={setAppliedDiscountPercentage}
+				></OrderDiscountDialog>
 			)}
 
 			<div className="w-[90%] m-auto py-3 text-white">
@@ -215,7 +260,12 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 						</div>
 						<div className="flex flex-row gap-2 items-center">
 							<h2 className="w-[90px]">Atiende: </h2>
-							<Select>
+							<Select
+								value={selectedMemberId || 'Encargado'}
+								onValueChange={(value) => {
+									setSelectedMemberId(value);
+								}}
+							>
 								<SelectTrigger className="bg-white text-foreground h-7">
 									<SelectValue placeholder="Quien esta atendiendo?" />
 								</SelectTrigger>
@@ -224,7 +274,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 										<SelectItem value={'Encargado'}>Encargado</SelectItem>
 										{members?.map((i) => {
 											return (
-												<SelectItem key={i._id} value={i.name}>
+												<SelectItem key={i._id} value={i._id}>
 													{i.name}
 												</SelectItem>
 											);
@@ -287,7 +337,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 			<section className="flex flex-col w-full px-4">
 				<h2 className="text-xl font-bold text-white">Orden</h2>
 				<div className="flex flex-col bg-white relative grow">
-					<article className="p-3 py-5 min-h-[460px]">
+					<article className="p-3 py-5 min-h-[430px]">
 						{orderItems.length === 0 ? (
 							<div className="flex flex-col items-center justify-center text-black">No hay elementos en la orden.</div>
 						) : (
@@ -313,7 +363,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 											}}
 										>
 											<div className="px-4 border-l-chart-1 border-l-2">
-												<div className="w-full h-full flex flex-row items-center justify-between">
+												<div className="flex flex-row items-center justify-between">
 													<div className="flex flex-row gap-2 items-center">
 														<p className="text-xs text-gray-600">{item.quantity} x</p>
 														<p className="font-normal text-sm">{item.name}</p>
@@ -325,6 +375,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 														/>
 													)}
 												</div>
+												{item.commentaries && <p className="text-gray-400 text-xs">* Incluye comentarios</p>}
 											</div>
 										</article>
 									);
@@ -337,9 +388,19 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 							<h2>Subtotal</h2>
 							<span>{formatPrice(displayedSubtotal)}</span>
 						</div>
+						{/* Mostrar descuento si existe */}
+						{(appliedDiscount ?? 0) > 0 || (appliedDiscountPercentage ?? 0) > 0 ? (
+							<div className="flex items-center justify-between text-sm text-green-600">
+								<h2>Descuento</h2>
+								<span>
+									-{' '}
+									{formatPrice(appliedDiscount ?? ((displayedSubtotal ?? 0) * (appliedDiscountPercentage ?? 0)) / 100)}
+								</span>
+							</div>
+						) : null}
 						<div className="flex items-center justify-between text-sm">
 							<h2 className="font-extrabold">TOTAL</h2>
-							<span>{formatPrice(displayedTotal)}</span>
+							<span>{formatPrice(discountedTotal)}</span>
 						</div>
 					</div>
 				</div>
@@ -363,7 +424,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 							<PrinterCheck className="text-chart-1" />
 							Imprimir Ticket
 						</DropdownMenuItem>
-						<DropdownMenuItem className="cursor-pointer">
+						<DropdownMenuItem className="cursor-pointer" onClick={() => setOrderDiscountDialogOpen(true)}>
 							<CirclePercent className="text-chart-1" />
 							Descuento
 						</DropdownMenuItem>

@@ -1,3 +1,4 @@
+import { Member } from './member';
 import { Table } from './tables';
 
 export interface Order {
@@ -13,6 +14,7 @@ export interface Order {
 	status: string;
 	createdAt: string;
 	updatedAt: string;
+	serviceBy?: Member;
 }
 
 export interface Item {
@@ -20,6 +22,7 @@ export interface Item {
 	name: string;
 	price: number;
 	quantity: number;
+	commentaries?: string;
 }
 
 export interface OrderRequest {
@@ -30,6 +33,7 @@ export interface OrderRequest {
 	discount?: number;
 	discountPercentage?: number;
 	status?: string;
+	serviceBy?: string | null;
 }
 
 export interface OrderRequestItem {

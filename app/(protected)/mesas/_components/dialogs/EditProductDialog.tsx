@@ -61,7 +61,15 @@ export default function EditProductDialog({
 					</div>
 					<div className="w-full flex items-center justify-between">
 						<Label htmlFor="name">Comentarios:</Label>
-						<Input id="comentarios" type="text" defaultValue={' '} className="w-[260px]" />
+						<Input
+							id="comentarios"
+							type="text"
+							defaultValue={editProduct.commentaries ? editProduct.commentaries : ' '}
+							className="w-[260px]"
+							onChange={(e) => {
+								setEditProduct((prev) => (prev ? { ...prev, commentaries: e.target.value } : null));
+							}}
+						/>
 					</div>
 					<span
 						className="text-destructive text-sm cursor-pointer self-start hover:underline transition-all"
@@ -80,7 +88,9 @@ export default function EditProductDialog({
 						onClick={() => {
 							setOrderItems((prevItems) =>
 								prevItems.map((item) =>
-									item.productId === editProduct.productId ? { ...item, quantity: editProduct.quantity } : item,
+									item.productId === editProduct.productId
+										? { ...item, quantity: editProduct.quantity, commentaries: editProduct.commentaries }
+										: item,
 								),
 							);
 							onOpenChange(false);
