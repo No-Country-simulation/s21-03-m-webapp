@@ -177,14 +177,16 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 		return orderItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
 	}, [orderItems]);
 
-	const displayedSubtotal = hasChanges ? virtualSubtotal : tableOrder?.subtotal;
+	const initialSubtotal = tableOrder?.subtotal ?? 0;
+	const initialTotal = tableOrder?.total ?? 0;
+
+	const displayedSubtotal = hasChanges ? virtualSubtotal : initialSubtotal;
 
 	const discountedTotal = useMemo(() => {
-		const subtotal = displayedSubtotal ?? 0;
-		let newTotal = subtotal;
+		let newTotal = displayedSubtotal ?? 0;
 
 		if (appliedDiscountPercentage !== null && appliedDiscountPercentage > 0) {
-			newTotal -= (subtotal * appliedDiscountPercentage) / 100;
+			newTotal -= (displayedSubtotal * appliedDiscountPercentage) / 100;
 		} else if (appliedDiscount !== null && appliedDiscount > 0) {
 			newTotal -= appliedDiscount;
 		}
@@ -192,8 +194,8 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 		return newTotal;
 	}, [displayedSubtotal, appliedDiscount, appliedDiscountPercentage]);
 
-	const isSubtotalChanged = displayedSubtotal !== (tableOrder?.subtotal ?? 0);
-	const isTotalChanged = discountedTotal !== (tableOrder?.total ?? 0);
+	const isSubtotalChanged = tableOrder && displayedSubtotal !== initialSubtotal;
+	const isTotalChanged = tableOrder && discountedTotal !== initialTotal;
 	const backgroundColor = isSubtotalChanged || isTotalChanged ? 'bg-green-100' : 'bg-background';
 
 	if (isPending) return <ComponentLoader></ComponentLoader>;
@@ -364,9 +366,11 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 										>
 											<div className="px-4 border-l-chart-1 border-l-2">
 												<div className="flex flex-row items-center justify-between">
-													<div className="flex flex-row gap-2 items-center">
+													<div className="flex gap-2 items-center">
 														<p className="text-xs text-gray-600">{item.quantity} x</p>
-														<p className="font-normal text-sm">{item.name}</p>
+														<p className="font-normal text-sm">
+															{item.name} <span className="text-xs opacity-55">( {formatPrice(item.price)} )</span>
+														</p>
 													</div>
 													{!isRemoved && (
 														<Pencil
@@ -375,7 +379,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 														/>
 													)}
 												</div>
-												{item.commentaries && <p className="text-gray-400 text-xs">* Incluye comentarios</p>}
+												{item.commentaries && <p className="text-gray-500 text-xs font-thin">- {item.commentaries}</p>}
 											</div>
 										</article>
 									);

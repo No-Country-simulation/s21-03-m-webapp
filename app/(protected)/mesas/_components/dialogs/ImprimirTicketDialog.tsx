@@ -89,9 +89,14 @@ export default function ImprimirTicketDialog({
 						{currentOrder.items.map((item: Item) => {
 							const lineTotal = item.price * item.quantity;
 							return (
-								<div key={item.productId} className="flex justify-between">
-									<div>
-										<span className="font-semibold">{item.quantity}x</span> {item.name}
+								<div key={item.productId} className="flex justify-between items-center">
+									<div className="flex flex-col items-center">
+										<p>
+											{item.quantity}x {item.name}
+										</p>
+										{item.commentaries && (
+											<p className="font-thin text-xs text-gray-400 pl-2"> - {item.commentaries}</p>
+										)}
 									</div>
 									<div>{formatPrice(lineTotal)}</div>
 								</div>
