@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-import { Member } from "./member";
-import { Table } from "./tables";
-=======
 import { Member } from './member';
 import { Table } from './tables';
->>>>>>> be877b8f56f74962dac326bbad2d8a5ad8aaddea
 
 export interface Order {
 	_id: string;
@@ -51,8 +46,6 @@ export interface OrderResponse {
 	order: Order;
 }
 
-
-
 export interface OrderCompleteResponse {
 	_id: string;
 	ownerId: string;
@@ -66,10 +59,6 @@ export interface OrderCompleteResponse {
 	status: string;
 	createdAt: string;
 	updatedAt: string;
-<<<<<<< HEAD
-	closedAt:string
-	serviceBy:Member
-=======
 	closedAt: string;
->>>>>>> be877b8f56f74962dac326bbad2d8a5ad8aaddea
+	serviceBy: Member;
 }
