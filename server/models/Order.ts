@@ -1,5 +1,5 @@
 import mongoose, { Schema, Types } from "mongoose";
-import Member from "./Member";
+
 
 const OrderSchema = new Schema({
     ownerId: {
@@ -35,7 +35,8 @@ const OrderSchema = new Schema({
                 required: true,
             },
             comentaries: {
-                types: String
+                type: String,
+                default: "",
             }
         }
     ],

@@ -35,6 +35,7 @@ export const create = async (req: Request, res: Response) => {
             const discountPer = discountPercentage ? (subtotal * discountPercentage) / 100 : 0;
             total = subtotal - (discount || 0) - discountPer;
         }
+  
 
         const newOrder = new Order({
             ownerId: req.ownerId,
@@ -48,7 +49,7 @@ export const create = async (req: Request, res: Response) => {
             serviceBy
         });
 
-     
+        console.log(newOrder)
         await newOrder.save();
 
         return res.status(201).json({
@@ -111,6 +112,7 @@ export const edit = async (req: Request, res: Response) => {
             item.price = product.price
             item.comentaries=item.comentaries
         }
+    
 
         const total = subtotal - (discount || 0);
 
@@ -121,7 +123,7 @@ export const edit = async (req: Request, res: Response) => {
         order.subtotal = subtotal
         order.serviceBy = serviceBy
         order.total = total
-
+        console.log(order)
         await order.save();
 
         return res.status(200).json({
@@ -191,6 +193,7 @@ export const getOrderByTable = async (req: Request, res: Response) => {
                 name: item.productId["name"],
                 price: item.price,
                 quantity: item.quantity,
+                comentaries:item.comentaries
             })),
         };
 
