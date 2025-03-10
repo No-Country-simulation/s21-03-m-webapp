@@ -23,13 +23,10 @@ const CategorySchema = new Schema({
     }
 });
 
-
 CategorySchema.pre("deleteOne",{ document: true, query: false },async function(next){
-    await Product.updateMany(this._id,{categoryId:null})
+      await Product.updateMany({categoryId:this._id},{categoryId:null})
     next()
 })
-
-
 
 const Category = mongoose.model('Category', CategorySchema);
 export default Category;

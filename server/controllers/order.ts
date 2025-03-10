@@ -29,6 +29,7 @@ export const create = async (req: Request, res: Response) => {
                 }
                 subtotal += product.price * item.quantity;
                 item.price = product.price
+                item.comentaries=item.comentaries
             }
 
             const discountPer = discountPercentage ? (subtotal * discountPercentage) / 100 : 0;
@@ -42,9 +43,11 @@ export const create = async (req: Request, res: Response) => {
             items,
             subtotal,
             discount,
+            discountPercentage,
             total,
             serviceBy
         });
+
      
         await newOrder.save();
 
@@ -106,6 +109,7 @@ export const edit = async (req: Request, res: Response) => {
             }
             subtotal += product.price * item.quantity;
             item.price = product.price
+            item.comentaries=item.comentaries
         }
 
         const total = subtotal - (discount || 0);
