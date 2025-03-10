@@ -98,7 +98,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const itemOrderChanged = (item: Item) => {
 		const original = initialItems.find((orig) => orig.productId === item.productId);
 		if (!original) return true;
-		return original.quantity !== item.quantity || original.commentaries !== item.commentaries;
+		return original.quantity !== item.quantity || original.comentaries !== item.comentaries;
 	};
 
 	const handleCreateOrder = () => {
@@ -109,9 +109,12 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 				return {
 					productId: i.productId,
 					quantity: i.quantity,
+					comentaries: i.comentaries,
 				};
 			}),
 			serviceBy: selectedMemberId,
+			discount: appliedDiscount != null ? appliedDiscount : 0,
+			discountPercentage: appliedDiscountPercentage != null ? appliedDiscountPercentage : 0,
 		};
 		createOrder(order);
 		updateTableStatus({ ...currentTable, id: currentTable._id, status: 'Occupied' });
@@ -126,6 +129,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 				return {
 					productId: i.productId,
 					quantity: i.quantity,
+					comentaries: i.comentaries,
 				};
 			}),
 			serviceBy: selectedMemberId,
@@ -379,7 +383,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 														/>
 													)}
 												</div>
-												{item.commentaries && <p className="text-gray-500 text-xs font-thin">- {item.commentaries}</p>}
+												{item.comentaries && <p className="text-gray-500 text-xs font-thin">- {item.comentaries}</p>}
 											</div>
 										</article>
 									);

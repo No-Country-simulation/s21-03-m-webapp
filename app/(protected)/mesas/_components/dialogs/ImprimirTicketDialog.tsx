@@ -94,9 +94,7 @@ export default function ImprimirTicketDialog({
 										<p>
 											{item.quantity}x {item.name}
 										</p>
-										{item.commentaries && (
-											<p className="font-thin text-xs text-gray-400 pl-2"> - {item.commentaries}</p>
-										)}
+										{item.comentaries && <p className="font-thin text-xs text-gray-400 pl-2"> - {item.comentaries}</p>}
 									</div>
 									<div>{formatPrice(lineTotal)}</div>
 								</div>

@@ -64,10 +64,10 @@ export default function EditProductDialog({
 						<Input
 							id="comentarios"
 							type="text"
-							defaultValue={editProduct.commentaries ? editProduct.commentaries : ' '}
+							defaultValue={editProduct.comentaries ? editProduct.comentaries : ''}
 							className="w-[260px]"
 							onChange={(e) => {
-								setEditProduct((prev) => (prev ? { ...prev, commentaries: e.target.value } : null));
+								setEditProduct((prev) => (prev ? { ...prev, comentaries: e.target.value } : null));
 							}}
 						/>
 					</div>
@@ -89,7 +89,7 @@ export default function EditProductDialog({
 							setOrderItems((prevItems) =>
 								prevItems.map((item) =>
 									item.productId === editProduct.productId
-										? { ...item, quantity: editProduct.quantity, commentaries: editProduct.commentaries }
+										? { ...item, quantity: editProduct.quantity, comentaries: editProduct.comentaries }
 										: item,
 								),
 							);
