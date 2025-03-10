@@ -28,6 +28,9 @@ export default function VentasMenu() {
 
     return (
         <div className='border p-2 rounded-lg shadow-sm '>
+            <h1 className='text-center p-2 text-xl bg-chart-1 text-white rounded-sm font-bold'>
+                Ver Facturación y Ventas
+                </h1>
             <div className='flex p-2 gap-5 items-center justify-between '>
                 <CalendarSearch className='min-w-8' />
                 <VentasFilter
@@ -41,17 +44,17 @@ export default function VentasMenu() {
                 sortedOrders.length > 0 &&
                 <div className='my-5 flex justify-evenly items-center gap-5 text-center'>
                     <div>
-                    <p className='text-md  font-bold'>Personas:
+                    <p className='text-md  font-bold bg-chart-1 text-white p-1 rounded-sm'>Personas:
                     </p>
                     <span className='text-gray-500 font-normal'> {totalPeople}</span>
                     </div>
 
                     <div>
-                    <p className='text-md  font-bold'>Promedio por Persona: </p>
+                    <p className='text-md  font-bold bg-chart-1 text-white p-1 rounded-sm'>Promedio por Persona: </p>
                     <span className='text-gray-500 font-normal'> ${formatNumber(avaragePerPeople)} </span>
                     </div>
                     <div>
-                    <p className='text-md  font-bold'>Facturación Total:</p>
+                    <p className='text-md  font-bold bg-chart-1 text-white p-1 rounded-sm'>Facturación Total:</p>
                     <span className='text-gray-500 font-normal'> ${formatNumber(totalFacturation)}</span>
 
                     </div>

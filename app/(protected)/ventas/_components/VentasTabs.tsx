@@ -50,7 +50,7 @@ export function VentasTabs({ orders }: { orders: OrderCompleteResponse[] }) {
                 {sortedOrders.map((order) => (
                     <TableRow
                         key={order._id}
-                        className={`text-center cursor-pointer  ${selected === order._id ? "bg-orange-400 hover:bg-none" : ""} hover:bg-orange-300`}
+                        className={`text-center cursor-pointer  ${selected === order._id ? "bg-chart-1 text-white hover:bg-none" : ""} hover:bg-chart-1 hover:text-white `}
                         onClick={() => setSelected(order._id)}
                     >
                         <TableCell className="font-medium">{order.tableNumber.number}</TableCell>
