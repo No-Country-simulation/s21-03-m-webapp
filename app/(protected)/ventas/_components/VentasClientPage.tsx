@@ -11,9 +11,15 @@ const VentasClientPage = () => {
 	if (isError) return <h2>Ocurrió un error, intente más tarde...</h2>;
 	if (orders)
 		return (
-			<div>
+			<div className="w-fit">
 				<VentasMenu />
-				{orders.length > 0 ? <VentasTabs orders={orders} /> : <p>No existen órdenes todavía</p>}
+				{orders.length > 0 ? (
+					<div>
+						<VentasTabs orders={orders} />
+					</div>
+				) : (
+					<p>No existen órdenes todavía</p>
+				)}
 			</div>
 		);
 };

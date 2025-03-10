@@ -17,6 +17,14 @@ export const formatDate = (dateString: string) => {
 	}).format(date);
 	return formatDate;
 };
+export const formatNumber = (numberData: number) => {
+	const newNumber = new Intl.NumberFormat('es-ES', {
+		currencyDisplay: 'symbol',
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2,
+	}).format(numberData);
+	return newNumber;
+};
 
 export const days = Array.from({ length: 31 }, (_, i) => ({
 	id: i + 1,

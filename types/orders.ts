@@ -60,4 +60,5 @@ export interface OrderCompleteResponse {
 	createdAt: string;
 	updatedAt: string;
 	closedAt: string;
+	serviceBy: Member;
 }
