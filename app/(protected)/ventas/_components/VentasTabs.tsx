@@ -16,10 +16,9 @@ export function VentasTabs({ orders }: { orders: OrderCompleteResponse[] }) {
 	const [selected, setSelected] = useState('');
 	const { sortedOrders, setOrders } = useVentas();
 
-
 	useEffect(() => {
 		setOrders(orders);
-	}, [orders,setOrders]);
+	}, [orders, setOrders]);
 
 	return (
 		<Table>
