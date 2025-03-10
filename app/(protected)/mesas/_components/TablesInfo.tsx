@@ -91,7 +91,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const itemOrderChanged = (item: Item) => {
 		const original = initialItems.find((orig) => orig.productId === item.productId);
 		if (!original) return true;
-		return original.quantity !== item.quantity;
+		return original.quantity !== item.quantity || original.commentaries !== item.commentaries;
 	};
 
 	const handleCreateOrder = () => {
@@ -322,7 +322,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 											}}
 										>
 											<div className="px-4 border-l-chart-1 border-l-2">
-												<div className="w-full h-full flex flex-row items-center justify-between">
+												<div className="flex flex-row items-center justify-between">
 													<div className="flex flex-row gap-2 items-center">
 														<p className="text-xs text-gray-600">{item.quantity} x</p>
 														<p className="font-normal text-sm">{item.name}</p>
@@ -334,6 +334,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 														/>
 													)}
 												</div>
+												{item.commentaries && <p className="text-gray-400 text-xs">* Incluye comentarios</p>}
 											</div>
 										</article>
 									);
