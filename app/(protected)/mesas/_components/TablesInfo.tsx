@@ -33,6 +33,7 @@ import {
 	DropdownMenuTrigger,
 } from '../../../../components/ui/dropdown-menu';
 import { CancelOrderDialog, EditProductDialog, ImprimirTicketDialog, OrderDiscountDialog } from './dialogs';
+import { useDeleteOrder } from '../../../../actions/hooks/orders/useDeleteOrder';
 
 const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const { data: tableOrder, isPending, refetch: refetchOrderByTableId } = useOrderByTableId(currentTable._id);
@@ -41,6 +42,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const { data: members } = useMembers();
 	const { mutate: createOrder } = useCreateOrder();
 	const { mutate: updateOrder } = useUpdateOrder();
+	const { mutate: deleteOrder } = useDeleteOrder(currentTable._id);
 	const { mutate: updateOrderStatus } = useUpdateOrderStatus();
 	const { mutate: updateTableStatus } = useUpdateTables();
 
@@ -147,6 +149,16 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 		});
 	};
 
+	const handleDeleteOrder = (orderId: string) => {
+		deleteOrder(orderId, {
+			onSuccess: () => {
+				setRemovedItems([]);
+				refetchOrderByTableId();
+				updateTableStatus({ ...currentTable, id: currentTable._id, status: 'Free' });
+			},
+		});
+	};
+
 	const handleDate = () => {
 		const weekday = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
 		return `${weekday[date.getUTCDay()]} ${date.getDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()}`;
@@ -165,15 +177,10 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 		return orderItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
 	}, [orderItems]);
 
-	const virtualTotal = useMemo(() => {
-		return virtualSubtotal;
-	}, [virtualSubtotal]);
-
 	const displayedSubtotal = hasChanges ? virtualSubtotal : tableOrder?.subtotal;
-	const displayedTotal = hasChanges ? virtualTotal : tableOrder?.total;
 
 	const discountedTotal = useMemo(() => {
-		const subtotal = tableOrder?.subtotal ?? 0;
+		const subtotal = displayedSubtotal ?? 0;
 		let newTotal = subtotal;
 
 		if (appliedDiscountPercentage !== null && appliedDiscountPercentage > 0) {
@@ -183,10 +190,11 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 		}
 
 		return newTotal;
-	}, [tableOrder?.subtotal, appliedDiscount, appliedDiscountPercentage]);
+	}, [displayedSubtotal, appliedDiscount, appliedDiscountPercentage]);
 
+	const isSubtotalChanged = displayedSubtotal !== (tableOrder?.subtotal ?? 0);
 	const isTotalChanged = discountedTotal !== (tableOrder?.total ?? 0);
-	const backgroundColor = isTotalChanged ? 'bg-green-100' : 'bg-background';
+	const backgroundColor = isSubtotalChanged || isTotalChanged ? 'bg-green-100' : 'bg-background';
 
 	if (isPending) return <ComponentLoader></ComponentLoader>;
 
@@ -210,6 +218,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 					onOpenChange={setCancelOrderDialogOpen}
 					currentTable={currentTable}
 					currentOrder={tableOrder}
+					handleDeleteOrder={handleDeleteOrder}
 				></CancelOrderDialog>
 			)}
 			{imprimirTicketDialogOpen && (
@@ -385,9 +394,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 								<h2>Descuento</h2>
 								<span>
 									-{' '}
-									{formatPrice(
-										appliedDiscount ?? ((tableOrder?.subtotal ?? 0) * (appliedDiscountPercentage ?? 0)) / 100,
-									)}
+									{formatPrice(appliedDiscount ?? ((displayedSubtotal ?? 0) * (appliedDiscountPercentage ?? 0)) / 100)}
 								</span>
 							</div>
 						) : null}
