@@ -12,9 +12,9 @@ import {
 export function VentasFilter({ placeholder, options, select,today }:
   {
     options: { id: number, label: string }[],
-    placeholder: string,
+    placeholder?: string,
     select: React.Dispatch<React.SetStateAction<number>>,
-    today:number
+    today?:number
   }) {
 
 
