@@ -42,6 +42,7 @@ export const create = async (req: Request, res: Response) => {
             items,
             subtotal,
             discount,
+            discountPercentage,
             total
         });
 
