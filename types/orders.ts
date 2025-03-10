@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import { Member } from "./member";
 import { Table } from "./tables";
+=======
+import { Member } from './member';
+import { Table } from './tables';
+>>>>>>> be877b8f56f74962dac326bbad2d8a5ad8aaddea
 
 export interface Order {
 	_id: string;
@@ -14,6 +19,7 @@ export interface Order {
 	status: string;
 	createdAt: string;
 	updatedAt: string;
+	serviceBy?: Member;
 }
 
 export interface Item {
@@ -21,6 +27,7 @@ export interface Item {
 	name: string;
 	price: number;
 	quantity: number;
+	commentaries?: string;
 }
 
 export interface OrderRequest {
@@ -31,6 +38,7 @@ export interface OrderRequest {
 	discount?: number;
 	discountPercentage?: number;
 	status?: string;
+	serviceBy?: string | null;
 }
 
 export interface OrderRequestItem {
@@ -58,6 +66,10 @@ export interface OrderCompleteResponse {
 	status: string;
 	createdAt: string;
 	updatedAt: string;
+<<<<<<< HEAD
 	closedAt:string
 	serviceBy:Member
+=======
+	closedAt: string;
+>>>>>>> be877b8f56f74962dac326bbad2d8a5ad8aaddea
 }

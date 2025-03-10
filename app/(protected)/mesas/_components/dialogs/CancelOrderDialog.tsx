@@ -9,7 +9,6 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { useDeleteOrder } from '../../../../../actions/hooks/orders/useDeleteOrder';
 import { Order } from '../../../../../types/orders';
 import { Table } from '../../../../../types/tables';
 
@@ -18,6 +17,7 @@ interface CancelOrderDialogProps {
 	onOpenChange: (open: boolean) => void;
 	currentTable: Table;
 	currentOrder: Order | undefined;
+	handleDeleteOrder: (orderId: string) => void;
 }
 
 export default function CancelOrderDialog({
@@ -25,8 +25,8 @@ export default function CancelOrderDialog({
 	onOpenChange,
 	currentTable,
 	currentOrder,
+	handleDeleteOrder,
 }: CancelOrderDialogProps) {
-	const { mutate: deleteOrder } = useDeleteOrder(currentTable._id);
 	if (!currentOrder || !currentTable) return null;
 	return (
 		<Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -44,7 +44,7 @@ export default function CancelOrderDialog({
 						type="submit"
 						variant="destructive"
 						onClick={() => {
-							deleteOrder(currentOrder._id);
+							handleDeleteOrder(currentOrder._id);
 							onOpenChange(false);
 						}}
 					>

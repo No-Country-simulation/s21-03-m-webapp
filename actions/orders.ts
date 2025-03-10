@@ -43,6 +43,7 @@ export async function createOrder(body: OrderRequest): Promise<OrderResponse> {
 export async function updateOrder(body: OrderRequest): Promise<OrderResponse> {
 	try {
 		const response = await protected_api.put<OrderResponse>(`${ORDERS}/${body.id}`, body);
+		console.log(response.data);
 		return response.data;
 	} catch (error) {
 		if (axios.isAxiosError(error) && error.response) {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React  from 'react'
 import { CalendarSearch } from 'lucide-react';
 import { formatNumber } from '@/lib/utils';
 import { useVentas } from '@/hooks/useVentas';
@@ -12,8 +12,8 @@ export const filterOptions = [
     { id: 2, label: "Rango" }
 ]
 
-
 export default function VentasMenu() {
+	
 
     const {
         totalFacturation,

@@ -22,11 +22,12 @@ export const dictionaryStatus: Record<OrderStatus, string> = {
 
 
 export function VentasTabs({ orders }: { orders: OrderCompleteResponse[] }) {
+	const [selected, setSelected] = useState('');
+	const { sortedOrders, setOrders } = useVentas();
 
-
-    const [selected, setSelected] = useState("")
-    const { sortedOrders, setOrders } = useVentas()
-
+	useEffect(() => {
+		setOrders(orders);
+	}, [orders, setOrders]);
 
     useEffect(() => {
         setOrders(orders)
