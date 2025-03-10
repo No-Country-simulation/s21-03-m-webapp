@@ -12,6 +12,7 @@ import { useCategories } from '../../../../actions/hooks/categories/useCategorie
 import { Category } from '../../../../types/category';
 import { useUpdateTables } from '../../../../actions/hooks/tables/useUpdateTables';
 import { useUpdateOrder } from '../../../../actions/hooks/orders/useUpdateOrder';
+import { useUpdateOrderStatus } from '../../../../actions/hooks/orders/useUpdateOrderStatus';
 import { useMembers } from '../../../../actions/hooks/members/useMembers';
 import {
 	Select,
@@ -31,8 +32,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '../../../../components/ui/dropdown-menu';
-import { CancelOrderDialog, EditProductDialog, ImprimirTicketDialog } from './dialogs';
-import { useUpdateOrderStatus } from '../../../../actions/hooks/orders/useUpdateOrderStatus';
+import { CancelOrderDialog, EditProductDialog, ImprimirTicketDialog, OrderDiscountDialog } from './dialogs';
 
 const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const { data: tableOrder, isPending, refetch: refetchOrderByTableId } = useOrderByTableId(currentTable._id);
@@ -53,8 +53,11 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const [initialItems, setInitialItems] = useState<Item[]>([]);
 
 	const [editProduct, setEditProduct] = useState<Item | null>(null);
+	const [appliedDiscount, setAppliedDiscount] = useState<number | null>(null);
+	const [appliedDiscountPercentage, setAppliedDiscountPercentage] = useState<number | null>(null);
 	const [editProductDialogOpen, setEditProductDialogOpen] = useState(false);
 	const [cancelOrderDialogOpen, setCancelOrderDialogOpen] = useState(false);
+	const [orderDiscountDialogOpen, setOrderDiscountDialogOpen] = useState(false);
 	const [imprimirTicketDialogOpen, setImprimirTicketDialogOpen] = useState(false);
 
 	useEffect(() => {
@@ -62,6 +65,8 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 			setDate(tableOrder.createdAt ? new Date(Date.parse(tableOrder.createdAt)) : new Date());
 			setSelectedMemberId(tableOrder.serviceBy ? tableOrder.serviceBy?._id : null);
 			setPeople(tableOrder.people ? tableOrder.people : 1);
+			setAppliedDiscount(tableOrder.discount || null);
+			setAppliedDiscountPercentage(tableOrder.discountPercentage || null);
 			setOrderItems(tableOrder.items);
 			setInitialItems(tableOrder.items);
 		}
@@ -122,6 +127,8 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 				};
 			}),
 			serviceBy: selectedMemberId,
+			discount: appliedDiscount != null ? appliedDiscount : 0,
+			discountPercentage: appliedDiscountPercentage != null ? appliedDiscountPercentage : 0,
 		};
 		updateOrder(order, { onSuccess: () => setRemovedItems([]) });
 	};
@@ -164,7 +171,22 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 
 	const displayedSubtotal = hasChanges ? virtualSubtotal : tableOrder?.subtotal;
 	const displayedTotal = hasChanges ? virtualTotal : tableOrder?.total;
-	const backgroundColor = hasChanges ? 'bg-green-100' : 'bg-background';
+
+	const discountedTotal = useMemo(() => {
+		const subtotal = tableOrder?.subtotal ?? 0;
+		let newTotal = subtotal;
+
+		if (appliedDiscountPercentage !== null && appliedDiscountPercentage > 0) {
+			newTotal -= (subtotal * appliedDiscountPercentage) / 100;
+		} else if (appliedDiscount !== null && appliedDiscount > 0) {
+			newTotal -= appliedDiscount;
+		}
+
+		return newTotal;
+	}, [tableOrder?.subtotal, appliedDiscount, appliedDiscountPercentage]);
+
+	const isTotalChanged = discountedTotal !== (tableOrder?.total ?? 0);
+	const backgroundColor = isTotalChanged ? 'bg-green-100' : 'bg-background';
 
 	if (isPending) return <ComponentLoader></ComponentLoader>;
 
@@ -197,6 +219,16 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 					currentTable={currentTable}
 					currentOrder={tableOrder}
 				></ImprimirTicketDialog>
+			)}
+			{orderDiscountDialogOpen && (
+				<OrderDiscountDialog
+					isOpen={orderDiscountDialogOpen}
+					onOpenChange={setOrderDiscountDialogOpen}
+					currentTable={currentTable}
+					currentOrder={tableOrder}
+					setAppliedDiscount={setAppliedDiscount}
+					setAppliedDiscountPercentage={setAppliedDiscountPercentage}
+				></OrderDiscountDialog>
 			)}
 
 			<div className="w-[90%] m-auto py-3 text-white">
@@ -296,7 +328,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 			<section className="flex flex-col w-full px-4">
 				<h2 className="text-xl font-bold text-white">Orden</h2>
 				<div className="flex flex-col bg-white relative grow">
-					<article className="p-3 py-5 min-h-[460px]">
+					<article className="p-3 py-5 min-h-[430px]">
 						{orderItems.length === 0 ? (
 							<div className="flex flex-col items-center justify-center text-black">No hay elementos en la orden.</div>
 						) : (
@@ -347,9 +379,21 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 							<h2>Subtotal</h2>
 							<span>{formatPrice(displayedSubtotal)}</span>
 						</div>
+						{/* Mostrar descuento si existe */}
+						{(appliedDiscount ?? 0) > 0 || (appliedDiscountPercentage ?? 0) > 0 ? (
+							<div className="flex items-center justify-between text-sm text-green-600">
+								<h2>Descuento</h2>
+								<span>
+									-{' '}
+									{formatPrice(
+										appliedDiscount ?? ((tableOrder?.subtotal ?? 0) * (appliedDiscountPercentage ?? 0)) / 100,
+									)}
+								</span>
+							</div>
+						) : null}
 						<div className="flex items-center justify-between text-sm">
 							<h2 className="font-extrabold">TOTAL</h2>
-							<span>{formatPrice(displayedTotal)}</span>
+							<span>{formatPrice(discountedTotal)}</span>
 						</div>
 					</div>
 				</div>
@@ -373,7 +417,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 							<PrinterCheck className="text-chart-1" />
 							Imprimir Ticket
 						</DropdownMenuItem>
-						<DropdownMenuItem className="cursor-pointer">
+						<DropdownMenuItem className="cursor-pointer" onClick={() => setOrderDiscountDialogOpen(true)}>
 							<CirclePercent className="text-chart-1" />
 							Descuento
 						</DropdownMenuItem>
