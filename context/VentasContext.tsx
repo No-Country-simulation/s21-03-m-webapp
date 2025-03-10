@@ -20,7 +20,6 @@ interface FilterRange{
 
 
 interface ContextType {
-<<<<<<< HEAD
     initialValues:InitialValues
     sortedOrders: OrderCompleteResponse[]
     orders: OrderCompleteResponse[];
@@ -41,28 +40,12 @@ interface ContextType {
     rangeFilter: number
     setRangeFilter:React.Dispatch<React.SetStateAction<number>>;
 
-=======
-	initialValues: InitialValues;
-	sortedOrders: OrderCompleteResponse[];
-	orders: OrderCompleteResponse[];
-	setOrders: React.Dispatch<React.SetStateAction<OrderCompleteResponse[]>>;
-	setSelectedDay: React.Dispatch<React.SetStateAction<number>>;
-	setSelectedMonth: React.Dispatch<React.SetStateAction<number>>;
-	setSelectedYear: React.Dispatch<React.SetStateAction<number>>;
-	selectedDay: number;
-	selectedMonth: number;
-	selectedYear: number;
-	filteredOrders: OrderCompleteResponse[];
->>>>>>> be877b8f56f74962dac326bbad2d8a5ad8aaddea
 }
 
-    // Obtener la fecha y hora local en formato adecuado
 
-   
 export const VentasContext = createContext<ContextType | undefined>(undefined);
 
 export const VentasProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-<<<<<<< HEAD
     const now = new Date();
     const initialValues = {
         day: now.getDate(),
@@ -171,52 +154,4 @@ export const VentasProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             {children}
         </VentasContext.Provider>
     );
-=======
-	const date = new Date();
-	const initialValues = {
-		day: date.getDate(),
-		month: date.getMonth() + 1,
-		year: date.getFullYear(),
-	};
-
-	const [selectedDay, setSelectedDay] = useState<number>(initialValues.day);
-	const [selectedMonth, setSelectedMonth] = useState<number>(initialValues.month);
-	const [selectedYear, setSelectedYear] = useState<number>(initialValues.year);
-	const [orders, setOrders] = useState<OrderCompleteResponse[]>([]);
-
-	const filteredOrders = useMemo(() => {
-		return orders
-			.filter((order) => {
-				const orderDate = new Date(order.createdAt);
-				return (
-					orderDate.getDate() === selectedDay &&
-					orderDate.getMonth() + 1 === selectedMonth &&
-					orderDate.getFullYear() === selectedYear
-				);
-			})
-			.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); // Orden descendente
-	}, [orders, selectedDay, selectedMonth, selectedYear]);
-	const sortedOrders = useMemo(() => {
-		return filteredOrders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-	}, [filteredOrders]);
-	return (
-		<VentasContext.Provider
-			value={{
-				initialValues,
-				sortedOrders,
-				orders,
-				setOrders,
-				selectedDay,
-				selectedMonth,
-				selectedYear,
-				setSelectedDay,
-				setSelectedMonth,
-				setSelectedYear,
-				filteredOrders,
-			}}
-		>
-			{children}
-		</VentasContext.Provider>
-	);
->>>>>>> be877b8f56f74962dac326bbad2d8a5ad8aaddea
 };
