@@ -49,6 +49,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	const [orderItems, setOrderItems] = useState<Item[]>([]);
 	const [removedItems, setRemovedItems] = useState<Item[]>([]);
 	const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+	const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
 	const [initialItems, setInitialItems] = useState<Item[]>([]);
 
 	const [editProduct, setEditProduct] = useState<Item | null>(null);
@@ -59,6 +60,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 	useEffect(() => {
 		if (!isPending && tableOrder) {
 			setDate(tableOrder.createdAt ? new Date(Date.parse(tableOrder.createdAt)) : new Date());
+			setSelectedMemberId(tableOrder.serviceBy ? tableOrder.serviceBy?._id : null);
 			setPeople(tableOrder.people ? tableOrder.people : 1);
 			setOrderItems(tableOrder.items);
 			setInitialItems(tableOrder.items);
@@ -102,6 +104,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 					quantity: i.quantity,
 				};
 			}),
+			serviceBy: selectedMemberId,
 		};
 		createOrder(order);
 		updateTableStatus({ ...currentTable, id: currentTable._id, status: 'Occupied' });
@@ -118,6 +121,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 					quantity: i.quantity,
 				};
 			}),
+			serviceBy: selectedMemberId,
 		};
 		updateOrder(order, { onSuccess: () => setRemovedItems([]) });
 	};
@@ -215,7 +219,12 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 						</div>
 						<div className="flex flex-row gap-2 items-center">
 							<h2 className="w-[90px]">Atiende: </h2>
-							<Select>
+							<Select
+								value={selectedMemberId || 'Encargado'}
+								onValueChange={(value) => {
+									setSelectedMemberId(value);
+								}}
+							>
 								<SelectTrigger className="bg-white text-foreground h-7">
 									<SelectValue placeholder="Quien esta atendiendo?" />
 								</SelectTrigger>
@@ -224,7 +233,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 										<SelectItem value={'Encargado'}>Encargado</SelectItem>
 										{members?.map((i) => {
 											return (
-												<SelectItem key={i._id} value={i.name}>
+												<SelectItem key={i._id} value={i._id}>
 													{i.name}
 												</SelectItem>
 											);

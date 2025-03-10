@@ -41,10 +41,6 @@ export const VentasProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 	const [selectedYear, setSelectedYear] = useState<number>(initialValues.year);
 	const [orders, setOrders] = useState<OrderCompleteResponse[]>([]);
 
-	useEffect(() => {
-		console.log('Fecha seleccionada:', { selectedDay, selectedMonth, selectedYear });
-	}, [selectedDay, selectedMonth, selectedYear]);
-
 	const filteredOrders = useMemo(() => {
 		return orders
 			.filter((order) => {
