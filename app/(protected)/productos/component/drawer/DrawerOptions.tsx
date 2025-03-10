@@ -9,7 +9,7 @@ export function DrawerOptions() {
 	return (
 		<Drawer>
 			<DrawerTrigger asChild>
-				<Button>Opciones</Button>
+				<Button>Crear</Button>
 			</DrawerTrigger>
 
 			<DrawerContent>

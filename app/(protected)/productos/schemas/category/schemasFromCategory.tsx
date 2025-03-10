@@ -12,7 +12,7 @@ const schemaZodCategory = z.object({
 });
 export const editCategoryFormSchema = (category: Category): schemaComponentForm => {
 	return {
-		funtionForm: 'update',
+		funtionForm: 'Editar',
 		type: 'category',
 		schema: schemaZodCategory,
 		campos: [
@@ -35,7 +35,7 @@ export const editCategoryFormSchema = (category: Category): schemaComponentForm 
 	};
 };
 export const createCategoryFormSchema: schemaComponentForm = {
-	funtionForm: 'create',
+	funtionForm: 'Crear',
 	type: 'category',
 	title: 'Crear categoria',
 	campos: [
@@ -60,7 +60,7 @@ export const createCategoryFormSchema: schemaComponentForm = {
 export const deleteCategoryFormSchema = (): schemaComponentForm => {
 	return {
 		type: 'category',
-		funtionForm: 'delete',
+		funtionForm: 'Eliminar',
 		title: '',
 		schema: z.object({}),
 		campos: [],

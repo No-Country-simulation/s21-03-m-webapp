@@ -47,7 +47,7 @@ export function ModalOptionsCustom({ schemaModal, item }: Props) {
 					<DialogTitle>{schemaModal.title}</DialogTitle>
 					<DialogDescription>{schemaModal.description}</DialogDescription>
 				</DialogHeader>
-				{schemaModal.schemaForm.funtionForm === 'update' ? (
+				{schemaModal.schemaForm.funtionForm === 'Editar' ? (
 					<Carousel setApi={setApi}>
 						<CarouselContent>
 							<CarouselItem className="self-center">
@@ -55,7 +55,7 @@ export function ModalOptionsCustom({ schemaModal, item }: Props) {
 									formSchemaData={schemaModal.schemaForm}
 									buttonsCarousel={api?.scrollNext}
 									item={item}
-									categorySelected={categorySelected}
+									categorySelected={categories?.filter((c) => c._id === categorySelected)[0]?._id}
 								></FormOptions>
 							</CarouselItem>
 							<CarouselItem>
