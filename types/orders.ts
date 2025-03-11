@@ -15,6 +15,7 @@ export interface Order {
 	createdAt: string;
 	updatedAt: string;
 	serviceBy?: Member;
+	comentaries?: string;
 }
 
 export interface Item {
@@ -22,7 +23,7 @@ export interface Item {
 	name: string;
 	price: number;
 	quantity: number;
-	commentaries?: string;
+	comentaries?: string;
 }
 
 export interface OrderRequest {
@@ -39,6 +40,7 @@ export interface OrderRequest {
 export interface OrderRequestItem {
 	productId: string;
 	quantity: number;
+	comentaries?: string;
 }
 
 export interface OrderResponse {
@@ -60,4 +62,5 @@ export interface OrderCompleteResponse {
 	createdAt: string;
 	updatedAt: string;
 	closedAt: string;
+	serviceBy: Member;
 }

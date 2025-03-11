@@ -9,9 +9,9 @@ export function VentasFilter({
 	today,
 }: {
 	options: { id: number; label: string }[];
-	placeholder: string;
+	placeholder?: string;
 	select: React.Dispatch<React.SetStateAction<number>>;
-	today: number;
+	today?: number;
 }) {
 	return (
 		<Select defaultValue={String(today)} onValueChange={(value) => select(Number(value))}>
