@@ -10,13 +10,6 @@ export async function generateMetadata(): Promise<Metadata> {
 	};
 }
 
-
 export default async function VentasPage() {
-
-
-	return (
-	
-	<VentasClientPage />
-		
-	);
+	return <VentasClientPage />;
 }

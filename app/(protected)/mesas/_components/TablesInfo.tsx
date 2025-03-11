@@ -126,7 +126,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 				return {
 					productId: i.productId,
 					quantity: i.quantity,
-					comentaries:i.comentaries
+					comentaries: i.comentaries,
 				};
 			}),
 			serviceBy: selectedMemberId,

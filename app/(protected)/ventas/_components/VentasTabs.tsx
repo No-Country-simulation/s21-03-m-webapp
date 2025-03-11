@@ -13,18 +13,12 @@ export const dictionaryStatus: Record<OrderStatus, string> = {
 };
 
 export function VentasTabs({ orders }: { orders: OrderCompleteResponse[] }) {
-	
-	const { sortedOrders,
-         setOrders,
-         setSelectedOrder,
-         selectedOrder   
-        } = useVentas();
+	const { sortedOrders, setOrders, setSelectedOrder, selectedOrder } = useVentas();
 
 	useEffect(() => {
 		setOrders(orders);
-       
 	}, [orders, setOrders]);
-    
+
 	return (
 		<Table>
 			<TableCaption>Listado de Ventas</TableCaption>
@@ -44,7 +38,9 @@ export function VentasTabs({ orders }: { orders: OrderCompleteResponse[] }) {
 						className={`text-center cursor-pointer   ${selectedOrder === order._id ? 'bg-chart-1 text-white hover:bg-none' : ''} hover:bg-chart-1 hover:text-white `}
 						onClick={() => setSelectedOrder(order._id)}
 					>
-						<TableCell className="font-medium">{order.tableNumber?.number ?order.tableNumber?.number : "Mesa Eliminada" }</TableCell>
+						<TableCell className="font-medium">
+							{order.tableNumber?.number ? order.tableNumber?.number : 'Mesa Eliminada'}
+						</TableCell>
 						<TableCell className="font-medium">{formatDate(order.createdAt)}</TableCell>
 						<TableCell className="font-medium">{order.closedAt ? formatDate(order.closedAt) : ''}</TableCell>
 						<TableCell className="font-medium">{dictionaryStatus[order.status as OrderStatus]}</TableCell>
