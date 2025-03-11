@@ -28,6 +28,7 @@ interface Props {
 }
 
 export function ModalOptionsCustom({ schemaModal, item }: Props) {
+	const [isOpen, setIsOpen] = useState(false);
 	const { data: categories } = useCategories();
 	const [categorySelected, setCategorySelected] = useState<string>(item && 'categoryId' in item ? item.categoryId : '');
 
@@ -38,7 +39,7 @@ export function ModalOptionsCustom({ schemaModal, item }: Props) {
 
 	const [api, setApi] = useState<CarouselApi>();
 	return (
-		<Dialog>
+		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger className="" asChild>
 				{schemaModal.buttonModal}
 			</DialogTrigger>
@@ -56,6 +57,7 @@ export function ModalOptionsCustom({ schemaModal, item }: Props) {
 									buttonsCarousel={api?.scrollNext}
 									item={item}
 									categorySelected={categories?.filter((c) => c._id === categorySelected)[0]?._id}
+									setOpenForm={setIsOpen}
 								></FormOptions>
 							</CarouselItem>
 							<CarouselItem>
@@ -81,7 +83,7 @@ export function ModalOptionsCustom({ schemaModal, item }: Props) {
 						</CarouselContent>
 					</Carousel>
 				) : (
-					<FormOptions formSchemaData={schemaModal.schemaForm} item={item} />
+					<FormOptions formSchemaData={schemaModal.schemaForm} item={item} setOpenForm={setIsOpen} />
 				)}
 			</DialogContent>
 		</Dialog>

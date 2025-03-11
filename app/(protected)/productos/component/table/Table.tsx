@@ -12,8 +12,8 @@ export function TableDemo({ context }: Props) {
 	return (
 		<Table>
 			<TableHeader className="!text-center">
-				<TableRow >
-					<TableHead className="">Nombre</TableHead>
+				<TableRow>
+					<TableHead>Nombre</TableHead>
 					<TableHead>Descripcion</TableHead>
 					<TableHead>Precio</TableHead>
 					<TableHead>Objetivo</TableHead>
@@ -25,7 +25,7 @@ export function TableDemo({ context }: Props) {
 				{context.products &&
 					context.products.map((product: Product) => (
 						<TableRow key={product._id}>
-							<TableCell >{product.name}</TableCell>
+							<TableCell>{product.name}</TableCell>
 							<TableCell>{product.description}</TableCell>
 							<TableCell>${product.price}</TableCell>
 							<TableCell>{product.target}</TableCell>

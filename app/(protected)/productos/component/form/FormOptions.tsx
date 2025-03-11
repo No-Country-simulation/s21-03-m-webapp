@@ -25,8 +25,9 @@ interface Props {
 	item?: Product | Category;
 	buttonsCarousel?: ((jump?: boolean) => void) | undefined;
 	categorySelected?: string;
+	setOpenForm: React.Dispatch<React.SetStateAction<boolean>>;
 }
-export function FormOptions({ formSchemaData, children, item, buttonsCarousel, categorySelected }: Props) {
+export function FormOptions({ formSchemaData, children, item, buttonsCarousel, categorySelected, setOpenForm }: Props) {
 	const target: Array<'bar' | 'kitchen' | undefined> = ['kitchen', 'bar'];
 	const [targetSelected, setTargetSelected] = useState<'kitchen' | 'bar' | undefined>(
 		item && 'target' in item ? item.target : undefined,
@@ -39,13 +40,14 @@ export function FormOptions({ formSchemaData, children, item, buttonsCarousel, c
 	const { mutate: updateCategory } = useUpdateCategory();
 	const { mutate: deleteCategory } = useDeleteCategory();
 	/* a modificar */
-	console.log('catselect', categorySelected);
 	const form = useForm<z.infer<typeof formSchemaData.schema>>({
 		resolver: zodResolver(formSchemaData.schema),
 		defaultValues: formSchemaData.defaultValues,
 	});
 
 	const onSubmit: SubmitHandler<z.infer<typeof formSchemaData.schema>> = (data) => {
+		console.log('data', data);
+		setOpenForm(false);
 		/* refactorizar */
 		// CATEGORIES
 		if (targetSelected) {
@@ -57,7 +59,7 @@ export function FormOptions({ formSchemaData, children, item, buttonsCarousel, c
 			if (formSchemaData.funtionForm === 'Crear') {
 				createCategory(data);
 			}
-			if (formSchemaData.funtionForm === 'Eliminar') {
+			if (formSchemaData.funtionForm === 'Editar') {
 				data.id = item?._id;
 				updateCategory(data);
 			}
@@ -87,7 +89,7 @@ export function FormOptions({ formSchemaData, children, item, buttonsCarousel, c
 						<b>{formSchemaData.title}</b>
 					</h2>
 				)}
-				<div className='flex flex-col gap-2 w-4/5'>
+				<div className="flex flex-col gap-2 w-4/5">
 					{formSchemaData.campos.map((campo) => {
 						return (
 							<FormField
@@ -95,7 +97,7 @@ export function FormOptions({ formSchemaData, children, item, buttonsCarousel, c
 								control={form.control}
 								name={campo.name}
 								render={({ field }) => (
-									<FormItem >
+									<FormItem>
 										<FormLabel className={cn({ Id: 'hidden', Categoria: 'hidden', Objetivo: 'hidden' }[campo.label])}>
 											{campo.label}
 										</FormLabel>

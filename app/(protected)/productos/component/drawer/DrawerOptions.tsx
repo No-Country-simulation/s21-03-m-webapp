@@ -6,8 +6,10 @@ import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from '@/components/
 import { CarouselOptions } from '../carrusel/CarouselOptions';
 
 export function DrawerOptions() {
+	const [open, setOpen] = React.useState(false);
+
 	return (
-		<Drawer>
+		<Drawer open={open} onOpenChange={setOpen}>
 			<DrawerTrigger asChild>
 				<Button>Crear</Button>
 			</DrawerTrigger>
@@ -15,7 +17,7 @@ export function DrawerOptions() {
 			<DrawerContent>
 				<DrawerTitle>{/* agregado para evitar errores de shadcn*/}</DrawerTitle>
 				<div className="mx-auto">
-					<CarouselOptions />
+					<CarouselOptions setOpen={setOpen} />
 				</div>
 			</DrawerContent>
 		</Drawer>

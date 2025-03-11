@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import { Product } from '../../../../../types/products';
 
 import { Category } from '../../../../../types/category';
