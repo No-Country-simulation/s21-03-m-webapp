@@ -13,13 +13,13 @@ export type campos = {
 export interface schemaComponentForm {
 	type?: typeForm;
 	title?: string;
-	funtionForm: 'create' | 'update' | 'delete';
+	funtionForm: 'Crear' | 'Editar' | 'Eliminar';
 	schema: ZodSchema;
 	campos: campos[];
 	defaultValues?: EditProductRequest | CreateProductRequest | EditCategoryRequest;
 }
 export interface SchemaModal {
-	typeModal: 'create' | 'update' | 'delete';
+	typeModal: 'Crear' | 'Editar' | 'Eliminar';
 	title: string | React.ReactNode;
 	description: React.ReactNode | string;
 	buttonModal: React.ReactNode;

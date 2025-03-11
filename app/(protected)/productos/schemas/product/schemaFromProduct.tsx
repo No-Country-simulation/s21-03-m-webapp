@@ -21,7 +21,7 @@ const schemaZodEdit = z.object({
 });
 
 export const createProductForm: schemaComponentForm = {
-	funtionForm: 'create',
+	funtionForm: 'Crear',
 	type: 'products',
 	title: 'Crear producto',
 	campos: [
@@ -63,7 +63,7 @@ export const createProductForm: schemaComponentForm = {
 
 export const editProduct = (product: Product): schemaComponentForm => {
 	return {
-		funtionForm: 'update',
+		funtionForm: 'Editar',
 		type: 'products',
 		campos: [
 			{
@@ -107,10 +107,11 @@ export const editProduct = (product: Product): schemaComponentForm => {
 		},
 	};
 };
+
 export const deleteProduct = (): schemaComponentForm => {
 	return {
 		type: 'products',
-		funtionForm: 'delete',
+		funtionForm: 'Eliminar',
 		schema: z.object({}),
 		campos: [],
 	};

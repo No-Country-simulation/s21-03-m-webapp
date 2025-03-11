@@ -13,13 +13,15 @@ import { createCategoryFormSchema } from '../../schemas/category/schemasFromCate
 import { useCategories } from '../../../../../actions/hooks/categories/useCategories';
 import { ItemNav } from '../filter/ItemNav';
 import { cn } from '../../../../../lib/utils';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Category } from '../../../../../types/category';
 
-export function CarouselOptions() {
+interface Props {
+	setOpen: Dispatch<SetStateAction<boolean>>;
+}
+export function CarouselOptions({ setOpen }: Props) {
 	const { data: categories } = useCategories();
 	const [categorySelected, setCategorySelected] = useState<string>();
-	console.log('first', categorySelected);
 
 	const [api, setApi] = useState<CarouselApi>();
 	const [current, setCurrent] = useState(0);
@@ -62,7 +64,7 @@ export function CarouselOptions() {
 					<CarouselItem className="self-center">
 						<Card>
 							<CardContent className="flex justify-center py-6">
-								<FormOptions formSchemaData={createCategoryFormSchema}></FormOptions>
+								<FormOptions formSchemaData={createCategoryFormSchema} setOpenForm={setOpen}></FormOptions>
 							</CardContent>
 						</Card>
 					</CarouselItem>
@@ -73,6 +75,7 @@ export function CarouselOptions() {
 									formSchemaData={createProductForm}
 									buttonsCarousel={api?.scrollNext}
 									categorySelected={categorySelected}
+									setOpenForm={setOpen}
 								></FormOptions>
 							</CardContent>
 						</Card>

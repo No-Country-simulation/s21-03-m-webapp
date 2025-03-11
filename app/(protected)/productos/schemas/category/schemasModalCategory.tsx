@@ -22,7 +22,7 @@ const ButtonOpenModal = ({ children, category, className }: PropsButton) => (
 
 const schemaModalDelete = (category: Category): SchemaModal => {
 	return {
-		typeModal: 'delete',
+		typeModal: 'Eliminar',
 		buttonModal: ButtonOpenModal({ category, children: 'Eliminar', className: 'bg-red-500 hover:bg-red-600' }),
 		title: 'Eliminar Categoria',
 		description: (
@@ -35,7 +35,7 @@ const schemaModalDelete = (category: Category): SchemaModal => {
 };
 const schemaModalEdit = (category: Category): SchemaModal => {
 	return {
-		typeModal: 'update',
+		typeModal: 'Editar',
 		buttonModal: ButtonOpenModal({ category, children: 'Editar', className: 'bg-blue-500 hover:bg-blue-600' }),
 		title: 'Editar Categoria',
 		description: (

@@ -3,8 +3,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
-/* revisar que las flechas no te cambien de posicion en el carrousel del drawer */
-/* branch de tomas 48 */
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Product } from '../../../../../types/products';
@@ -27,8 +25,9 @@ interface Props {
 	item?: Product | Category;
 	buttonsCarousel?: ((jump?: boolean) => void) | undefined;
 	categorySelected?: string;
+	setOpenForm: React.Dispatch<React.SetStateAction<boolean>>;
 }
-export function FormOptions({ formSchemaData, children, item, buttonsCarousel, categorySelected }: Props) {
+export function FormOptions({ formSchemaData, children, item, buttonsCarousel, categorySelected, setOpenForm }: Props) {
 	const target: Array<'bar' | 'kitchen' | undefined> = ['kitchen', 'bar'];
 	const [targetSelected, setTargetSelected] = useState<'kitchen' | 'bar' | undefined>(
 		item && 'target' in item ? item.target : undefined,
@@ -41,25 +40,26 @@ export function FormOptions({ formSchemaData, children, item, buttonsCarousel, c
 	const { mutate: updateCategory } = useUpdateCategory();
 	const { mutate: deleteCategory } = useDeleteCategory();
 	/* a modificar */
-	console.log('catselect', categorySelected);
 	const form = useForm<z.infer<typeof formSchemaData.schema>>({
 		resolver: zodResolver(formSchemaData.schema),
 		defaultValues: formSchemaData.defaultValues,
 	});
 
 	const onSubmit: SubmitHandler<z.infer<typeof formSchemaData.schema>> = (data) => {
+		console.log('data', data);
+		setOpenForm(false);
 		/* refactorizar */
 		// CATEGORIES
 		if (targetSelected) {
 			data.target = targetSelected;
 		}
 		if (formSchemaData.type === 'category') {
-			if (formSchemaData.funtionForm === 'delete') deleteCategory(item!._id);
+			if (formSchemaData.funtionForm === 'Eliminar') deleteCategory(item!._id);
 
-			if (formSchemaData.funtionForm === 'create') {
+			if (formSchemaData.funtionForm === 'Crear') {
 				createCategory(data);
 			}
-			if (formSchemaData.funtionForm === 'update') {
+			if (formSchemaData.funtionForm === 'Editar') {
 				data.id = item?._id;
 				updateCategory(data);
 			}
@@ -67,13 +67,13 @@ export function FormOptions({ formSchemaData, children, item, buttonsCarousel, c
 
 		// PRODUCTS
 		if (formSchemaData.type === 'products') {
-			if (formSchemaData.funtionForm === 'delete') deleteProduct(item!._id);
+			if (formSchemaData.funtionForm === 'Eliminar') deleteProduct(item!._id);
 
-			if (formSchemaData.funtionForm === 'create') {
+			if (formSchemaData.funtionForm === 'Crear') {
 				data.categoryId = categorySelected;
 				createProduct(data);
 			}
-			if (formSchemaData.funtionForm === 'update') {
+			if (formSchemaData.funtionForm === 'Editar') {
 				data.categoryId = categorySelected;
 				data.id = item?._id;
 				updateProduct(data);
@@ -89,27 +89,30 @@ export function FormOptions({ formSchemaData, children, item, buttonsCarousel, c
 						<b>{formSchemaData.title}</b>
 					</h2>
 				)}
-				{formSchemaData.campos.map((campo) => {
-					return (
-						<FormField
-							key={campo.name}
-							control={form.control}
-							name={campo.name}
-							render={({ field }) => (
-								<FormItem className="w-4/5">
-									<FormLabel className={cn({ Id: 'hidden', Categoria: 'hidden', Objetivo: 'hidden' }[campo.label])}>
-										{campo.label}
-									</FormLabel>
-									<FormControl>
-										<InputCustom field={field} campo={campo}></InputCustom>
-									</FormControl>
-									<FormMessage className={cn('text-xs !my-0 ')} />
-								</FormItem>
-							)}
-						/>
-					);
-				})}
-				{formSchemaData.type !== 'category' && formSchemaData.funtionForm !== 'delete' && (
+				<div className="flex flex-col gap-2 w-4/5">
+					{formSchemaData.campos.map((campo) => {
+						return (
+							<FormField
+								key={campo.name}
+								control={form.control}
+								name={campo.name}
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className={cn({ Id: 'hidden', Categoria: 'hidden', Objetivo: 'hidden' }[campo.label])}>
+											{campo.label}
+										</FormLabel>
+										<FormControl>
+											<InputCustom field={field} campo={campo}></InputCustom>
+										</FormControl>
+										<FormMessage className={cn('text-xs !my-0 ')} />
+									</FormItem>
+								)}
+							/>
+						);
+					})}
+				</div>
+
+				{formSchemaData.type !== 'category' && formSchemaData.funtionForm !== 'Eliminar' && (
 					<FormItem className="w-4/5 space-y-0 text-center">
 						<FormLabel className="m-0 p-0 ">Objetivo</FormLabel>
 						<div className="flex gap-2 ">
@@ -124,7 +127,7 @@ export function FormOptions({ formSchemaData, children, item, buttonsCarousel, c
 					</FormItem>
 				)}
 
-				{formSchemaData.type !== 'category' && formSchemaData.funtionForm !== 'delete' && (
+				{formSchemaData.type !== 'category' && formSchemaData.funtionForm !== 'Eliminar' && (
 					<>
 						<FormItem className="w-4/5 mt-3">
 							<FormLabel className="">
@@ -138,7 +141,7 @@ export function FormOptions({ formSchemaData, children, item, buttonsCarousel, c
 
 				{children}
 				<Button className="mt-3" type="submit">
-					Submit
+					{formSchemaData.funtionForm}
 				</Button>
 			</form>
 		</Form>
