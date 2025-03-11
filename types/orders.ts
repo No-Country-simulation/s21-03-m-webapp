@@ -14,6 +14,7 @@ export interface Order {
 	status: string;
 	createdAt: string;
 	updatedAt: string;
+	closedAt?:string
 	serviceBy?: Member;
 	comentaries?: string;
 }
@@ -63,4 +64,10 @@ export interface OrderCompleteResponse {
 	updatedAt: string;
 	closedAt: string;
 	serviceBy: Member;
+	comentaries?:string
+}
+
+export interface OrderResponseComplete {
+	msg: string;
+	order: OrderCompleteResponse;
 }

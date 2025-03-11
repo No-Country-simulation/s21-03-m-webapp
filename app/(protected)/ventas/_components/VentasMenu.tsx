@@ -25,16 +25,16 @@ export default function VentasMenu() {
 			{sortedOrders.length > 0 && (
 				<div className="my-5 flex justify-evenly items-center gap-5 text-center">
 					<div>
-						<p className="text-md  font-bold bg-chart-1 text-white p-1 rounded-sm">Personas:</p>
+						<p className="text-xl  font-bold  text-chart-1 px-3 py-2 ">Personas:</p>
 						<span className="text-gray-500 font-normal"> {totalPeople}</span>
 					</div>
 
 					<div>
-						<p className="text-md  font-bold bg-chart-1 text-white p-1 rounded-sm">Promedio por Persona: </p>
+						<p className="text-xl  font-bold  text-chart-1 px-3 py-2 ">Promedio por Persona: </p>
 						<span className="text-gray-500 font-normal"> ${formatNumber(avaragePerPeople)} </span>
 					</div>
 					<div>
-						<p className="text-md  font-bold bg-chart-1 text-white p-1 rounded-sm">Facturación Total:</p>
+						<p className="text-xl  font-bold  text-chart-1 px-3 py-2 ">Facturación Total:</p>
 						<span className="text-gray-500 font-normal"> ${formatNumber(totalFacturation)}</span>
 					</div>
 				</div>

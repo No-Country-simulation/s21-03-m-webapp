@@ -10,10 +10,13 @@ export async function generateMetadata(): Promise<Metadata> {
 	};
 }
 
-export default async function MembersPage() {
+
+export default async function VentasPage() {
+
+
 	return (
-		<div className="grid sm:grid-cols-2">
-			<VentasClientPage />
-		</div>
+	
+	<VentasClientPage />
+		
 	);
 }
