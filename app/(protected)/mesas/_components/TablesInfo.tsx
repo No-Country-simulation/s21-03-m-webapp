@@ -109,12 +109,9 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 				return {
 					productId: i.productId,
 					quantity: i.quantity,
-					comentaries: i.comentaries,
 				};
 			}),
 			serviceBy: selectedMemberId,
-			discount: appliedDiscount != null ? appliedDiscount : 0,
-			discountPercentage: appliedDiscountPercentage != null ? appliedDiscountPercentage : 0,
 		};
 		createOrder(order);
 		updateTableStatus({ ...currentTable, id: currentTable._id, status: 'Occupied' });
@@ -129,7 +126,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 				return {
 					productId: i.productId,
 					quantity: i.quantity,
-					comentaries: i.comentaries,
+					comentaries:i.comentaries
 				};
 			}),
 			serviceBy: selectedMemberId,
@@ -181,16 +178,14 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 		return orderItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
 	}, [orderItems]);
 
-	const initialSubtotal = tableOrder?.subtotal ?? 0;
-	const initialTotal = tableOrder?.total ?? 0;
-
-	const displayedSubtotal = hasChanges ? virtualSubtotal : initialSubtotal;
+	const displayedSubtotal = hasChanges ? virtualSubtotal : tableOrder?.subtotal;
 
 	const discountedTotal = useMemo(() => {
-		let newTotal = displayedSubtotal ?? 0;
+		const subtotal = displayedSubtotal ?? 0;
+		let newTotal = subtotal;
 
 		if (appliedDiscountPercentage !== null && appliedDiscountPercentage > 0) {
-			newTotal -= (displayedSubtotal * appliedDiscountPercentage) / 100;
+			newTotal -= (subtotal * appliedDiscountPercentage) / 100;
 		} else if (appliedDiscount !== null && appliedDiscount > 0) {
 			newTotal -= appliedDiscount;
 		}
@@ -198,8 +193,8 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 		return newTotal;
 	}, [displayedSubtotal, appliedDiscount, appliedDiscountPercentage]);
 
-	const isSubtotalChanged = tableOrder && displayedSubtotal !== initialSubtotal;
-	const isTotalChanged = tableOrder && discountedTotal !== initialTotal;
+	const isSubtotalChanged = displayedSubtotal !== (tableOrder?.subtotal ?? 0);
+	const isTotalChanged = discountedTotal !== (tableOrder?.total ?? 0);
 	const backgroundColor = isSubtotalChanged || isTotalChanged ? 'bg-green-100' : 'bg-background';
 
 	if (isPending) return <ComponentLoader></ComponentLoader>;
@@ -370,11 +365,9 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 										>
 											<div className="px-4 border-l-chart-1 border-l-2">
 												<div className="flex flex-row items-center justify-between">
-													<div className="flex gap-2 items-center">
+													<div className="flex flex-row gap-2 items-center">
 														<p className="text-xs text-gray-600">{item.quantity} x</p>
-														<p className="font-normal text-sm">
-															{item.name} <span className="text-xs opacity-55">( {formatPrice(item.price)} )</span>
-														</p>
+														<p className="font-normal text-sm">{item.name}</p>
 													</div>
 													{!isRemoved && (
 														<Pencil
@@ -383,7 +376,7 @@ const TablesInfo = ({ currentTable }: { currentTable: Table }) => {
 														/>
 													)}
 												</div>
-												{item.comentaries && <p className="text-gray-500 text-xs font-thin">- {item.comentaries}</p>}
+												{item.comentaries && <p className="text-gray-400 text-xs">* Incluye comentarios</p>}
 											</div>
 										</article>
 									);
