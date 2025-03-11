@@ -29,13 +29,13 @@ export const create = async (req: Request, res: Response) => {
                 }
                 subtotal += product.price * item.quantity;
                 item.price = product.price
-                item.comentaries=item.comentaries
+                item.comentaries = item.comentaries
             }
 
             const discountPer = discountPercentage ? (subtotal * discountPercentage) / 100 : 0;
             total = subtotal - (discount || 0) - discountPer;
         }
-  
+
 
         const newOrder = new Order({
             ownerId: req.ownerId,
@@ -49,7 +49,7 @@ export const create = async (req: Request, res: Response) => {
             serviceBy
         });
 
-        console.log(newOrder)
+
         await newOrder.save();
 
         return res.status(201).json({
@@ -68,8 +68,8 @@ export const getAll = async (req: Request, res: Response) => {
     try {
 
         let orders = await Order.find({ ownerId: req.ownerId })
-        .populate("tableNumber")
-        .populate("serviceBy")
+            .populate("tableNumber")
+            .populate("serviceBy")
 
         return res.status(200).json(orders);
     } catch (error) {
@@ -81,7 +81,7 @@ export const getAll = async (req: Request, res: Response) => {
 
 export const edit = async (req: Request, res: Response) => {
     const { id } = req.params
-    const { tableNumber, people, items, discount, serviceBy } = req.body;
+    const { tableNumber, people, items, discount,discountPercentage, serviceBy } = req.body;
 
     try {
         const order = await Order.findOne({ _id: id, status: 'pending' })
@@ -103,27 +103,32 @@ export const edit = async (req: Request, res: Response) => {
             });
         }
         let subtotal = 0;
-        for (const item of items) {
-            const product = await Product.findById(item.productId);
-            if (!product) {
-                return res.status(404).json({ msg: `Producto con ID ${item.productId} no encontrado` });
+        let total=0
+        if (Array.isArray(items) && items.length > 0) {
+            for (const item of items) {
+                const product = await Product.findById(item.productId);
+                if (!product) {
+                    return res.status(404).json({ msg: `Producto con ID ${item.productId} no encontrado` });
+                }
+                subtotal += product.price * item.quantity;
+                item.price = product.price
+                item.comentaries = item.comentaries
             }
-            subtotal += product.price * item.quantity;
-            item.price = product.price
-            item.comentaries=item.comentaries
-        }
-    
 
-        const total = subtotal - (discount || 0);
+            const discountPer = discountPercentage ? (subtotal * discountPercentage) / 100 : 0;
+            total = subtotal - (discount || 0) - discountPer;
+        }
+       
 
         order.tableNumber = tableNumber
         order.people = people
         order.items = items
         order.discount = discount
+        order.discountPercentage=discountPercentage
         order.subtotal = subtotal
         order.serviceBy = serviceBy
         order.total = total
-        console.log(order)
+
         await order.save();
 
         return res.status(200).json({
@@ -149,6 +154,9 @@ export const updateStatus = async (req: Request, res: Response) => {
         })
     }
     try {
+        if(status==="completed"){
+            order.closedAt=new Date()
+        }
         order.status = status
         await order.save();
 
@@ -164,20 +172,51 @@ export const updateStatus = async (req: Request, res: Response) => {
 }
 
 
+export const getById = async (req: Request, res: Response) => {
+
+    try {
+        const { id } = req.params
+        const order = await Order.findOne({ ownerId: req.ownerId, _id: id })
+            .populate("tableNumber")
+            .populate("serviceBy")
+            .populate("items.productId", "name")
+            .select("-__v -ownerId -items._id")
+            .lean()
+
+        const formattedOrder = {
+            ...order,
+            items: order.items.map((item) => ({
+                productId: item.productId["_id"],
+                name: item.productId["name"],
+                price: item.price,
+                quantity: item.quantity,
+                comentaries: item.comentaries
+            })),
+        };
+
+        return res.status(200).json({
+            order: formattedOrder
+        });
+    } catch (error) {
+        return res.status(500).json({
+            msg: 'Ocurrio un problema en el servidor.'
+        });
+    }
+}
 
 export const getOrderByTable = async (req: Request, res: Response) => {
 
     try {
         const { tableId } = req.params
 
-        // -createdAt -updatedAt
+
         const order = await Order.findOne({ ownerId: req.ownerId, tableNumber: tableId, status: 'pending' })
             .populate("tableNumber")
             .populate("serviceBy")
             .populate("items.productId", "name")
-          .select("-__v -ownerId -items._id")
+            .select("-__v -ownerId -items._id")
             .lean()
-    
+
         if (!order) {
             const order = {
                 tableNumber: tableId,
@@ -193,7 +232,7 @@ export const getOrderByTable = async (req: Request, res: Response) => {
                 name: item.productId["name"],
                 price: item.price,
                 quantity: item.quantity,
-                comentaries:item.comentaries
+                comentaries: item.comentaries
             })),
         };
 
